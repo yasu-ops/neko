@@ -1,0 +1,85 @@
+﻿<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=euc-jp">
+<meta name="viewport" content="width=device-width ">
+<title>小説プロット</title>
+<style>
+	td { text-align: center ; vertical-align: middle ; width: 100px; }
+	td, th {border: 2px #FFCCCC solid; }
+	table{border: 2px transparent solid; empty-cells: hide; }
+	tr:nth-child(1){height:200px;}
+	tr:nth-child(2){height:20px;}
+	tr:nth-child(3){height:200px;}
+	tr:nth-child(4){height:20px;}
+	tr:nth-child(5){height:200px;}
+	.yas {font-weight:bold; font-size:30px;}
+}
+
+</style>
+
+<script type="text/javascript">
+// 配列からランダムに要素を選び出す関数
+// array: 入力配列, num: 選び出す要素数
+function random(array, num) {
+	var a = array; // 入力配列
+	var t = []; // 一時的な配列
+	var r = []; // 結果の配列
+	var l = a.length; // 入力配列の長さ
+	var n = num < l ? num : l; // 選び出す要素数（入力配列の長さを超えない）
+	while (n-- > 0) {
+		var i = Math.random() * l | 0; // ランダムなインデックス
+		r[n] = t[i] || a[i]; // 結果の配列に要素を追加
+		--l;
+		t[i] = t[l] || a[l]; // 一時的な配列に要素を追加
+	}
+	return r; // 結果の配列を返す
+}
+
+// ランダムに選ばれた要素をHTML要素に表示する関数
+
+function jet(){
+	n=6; // 選び出す要素数
+	var arr =["知恵","生命","信頼","勇気","慈愛","秩序","至誠","創造","厳格","治癒","理性","節度","調和","結合","庇護","清楚","善良","解放","変化","幸運","意思","誓約","寛容","公式"];
+	r=random(arr, n); // ランダムに要素を選び出す
+	for(i=0;i<n;i++){
+		jet3(i);
+	} 
+	for(i=0;i<n;i++){
+		setTimeout(jet2,1000*(i+1),i,r[i]);
+	} 
+}
+
+function jet2(x,str){
+	document.getElementById("t"+(x+1)).innerHTML=str; // HTML要素に表示
+}
+function jet3(x){
+	document.getElementById("t"+(x+1)).innerHTML=""; // HTML要素に表示
+}
+
+</script>
+</head>
+
+<body>
+
+<table border=1 style="margin-left: auto; margin-right: auto;">
+
+<tr >	<td></td>	<td></td>	<td>援助者<br><br><span id="t5" class="yas" ></span></td>	<td></td>	</tr>
+
+<tr>	<td></td>	<td></td>	<td></td>	<td></td>	</tr>
+
+<tr>	<td>主人公の<br>過去<br><br><span id="t1" class="yas"></td>	
+		<td>主人公の<br>現在<br><br><span id="t2" class="yas"></td>
+		<td>主人公の<br>近い未来<br><br><span id="t3" class="yas"></td>
+		<td>結末<br>（目的）<br><br><span id="t6" class="yas"></td>	
+</tr>
+
+<tr>	<td></td>	<td></td>	<td></td>	<td></td>	</tr>
+
+<tr>	<td></td>	<td></td>	<td>敵対者<br><br><span id="t4" class="yas" ></td>	<td></td>	</tr>
+
+</table>
+
+<p style="text-align:center;">
+<button style="width:80px;height:40px;font-size:100%;" onclick="jet()">実行</button>
+</body>
+</html>
