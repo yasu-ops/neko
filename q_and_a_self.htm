@@ -1,4 +1,7 @@
-<html>
+ï»¿<html>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=euc-jp">
+<meta name="viewport" content="width=device-width ">
+<title>ç·´ç¿’å•é¡Œ</title>
 <style>
 .c {font-size:24px;}
 .c2 {font-size:40px; color:#F067A6;}
@@ -13,14 +16,14 @@
 .k {color:#FFFFFF;}
 
 .button {
-@display: block;
+ã€€display: block;
   width: 300px;
   padding: 15px;
   background: #F3ECD8;
   text-decoration: none;
   text-align: center;
   font-size:30px;
-  border-radius: 10px; /* ‚±‚±‚ÅŠpŠÛ‚ğw’è */}
+  border-radius: 10px; /* ã“ã“ã§è§’ä¸¸ã‚’æŒ‡å®š */}
 
 </style>
 
@@ -33,14 +36,14 @@ function q(ans) {
 	
 	document.getElementById("start").innerHTML="";
 	q_str=document.getElementById("q_h").innerHTML;
-	question=q_str.split("A");
+	question=q_str.split("ã€");
 	
 	count=document.getElementById("count_h").innerHTML;
 	
 	if(ans==1){
 		batu=document.getElementById("batu_h").innerHTML;
 		if(batu!=""){
-			batu=batu+"A"+count;
+			batu=batu+"ã€"+count;
 		}else{
 			batu=count;
 		}
@@ -54,19 +57,19 @@ function q(ans) {
 		batu=document.getElementById("batu_h").innerHTML;
 		if(batu==""){
 			document.getElementById("res_h").innerHTML="";
-			document.getElementById("question_h").innerHTML="<span class='c2'>---------------------------------------------------------<br>!(^^)!!(^^)!!(^^)!@Š®“š‚Å‚·@!(^^)!!(^^)!!(^^)!<br>---------------------------------------------------------";
+			document.getElementById("question_h").innerHTML="<span class='c2'>---------------------------------------------------------<br>!(^^)!!(^^)!!(^^)!ã€€å®Œç­”ã§ã™ã€€!(^^)!!(^^)!!(^^)!<br>---------------------------------------------------------";
 			document.getElementById("kaisetu_h").innerHTML="";
 		}else{
-			batu_ban=batu.split("A");
+			batu_ban=batu.split("ã€");
 			res_h_str="";
 			q_str="";
 			for(i=0;i<batu_ban.length;i++){
-				q_temp=question[batu_ban[i]].split("");
+				q_temp=question[batu_ban[i]].split("ï¿¥");
 				res_h_str=res_h_str+q_temp[0]+"(<small><b>"+q_temp[1]+"</b></small>)/";
 				if(q_str==""){
 					q_str=question[batu_ban[i]];
 				}else{
-					q_str=q_str+"A"+question[batu_ban[i]];
+					q_str=q_str+"ã€"+question[batu_ban[i]];
 				}
 			}
 			document.getElementById("question_h").innerHTML="";
@@ -75,15 +78,15 @@ function q(ans) {
 			finish_30percent=Math.floor(30*finish_ans/first_q);
 			finish_100percent=Math.floor(100*finish_ans/first_q);
 			res="<table width='70%'><b>";
-			res=res+"‰º‹L‚Ì"+batu_ban.length+"–â‚ğŠÔˆá‚¦‚Ü‚µ‚½B( )“à‚Í³“šB</b>";
+			res=res+"ä¸‹è¨˜ã®"+batu_ban.length+"å•ã‚’é–“é•ãˆã¾ã—ãŸã€‚( )å†…ã¯æ­£ç­”ã€‚</b>";
 			res=res+"<blockquote><font color=blue>" + res_h_str+"</font></blockquote>";
-			res=res+"<p>’B¬“xƒOƒ‰ƒti¡‚ª’B¬‚µ‚½•”•ªj";
-			res=res+"<p>"+"¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡".substr(0,finish_30percent);
-			res=res+"                              ".substr(0,(30-finish_30percent));
-			res=res+"<p>’B¬—¦ "+finish_100percent+"%i³“š”F"+finish_ans+"j</p>";
-			res=res+"ã‚ÌŒë“šˆê——‚ğˆê’Ê‚è’­‚ß‚½‚çA‚à‚¤ˆê“xã‹L‚Ì–â‘è‚É’§í‚µ‚Ä‚İ‚Ä‰º‚³‚¢B";
-			res=res+"<p>‰º‚Ìƒ{ƒ^ƒ“‚ğƒNƒŠƒbƒN‚·‚é‚ÆAã‹L‚Ì–â‘è‚¾‚¯‚ğ‚à‚¤ˆê“x‚â‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B";
-			res=res+"<br><br><button class='button' onclick='q()'>Ä’§í</button> <p></blockquote><p>";
+			res=res+"<p>é”æˆåº¦ã‚°ãƒ©ãƒ•ï¼ˆâ– ãŒé”æˆã—ãŸéƒ¨åˆ†ï¼‰";
+			res=res+"<p>"+"â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– ".substr(0,finish_30percent);
+			res=res+"â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡â–¡".substr(0,(30-finish_30percent));
+			res=res+"<p>é”æˆç‡ "+finish_100percent+"%ï¼ˆæ­£ç­”æ•°ï¼š"+finish_ans+"ï¼‰</p>";
+			res=res+"â—‡ä¸Šã®èª¤ç­”ä¸€è¦§ã‚’ä¸€é€šã‚Šçœºã‚ãŸã‚‰ã€ã‚‚ã†ä¸€åº¦ä¸Šè¨˜ã®å•é¡Œã«æŒ‘æˆ¦ã—ã¦ã¿ã¦ä¸‹ã•ã„ã€‚";
+			res=res+"<p>â—‡ä¸‹ã®ãƒœã‚¿ãƒ³ã‚’ã‚¯ãƒªãƒƒã‚¯ã™ã‚‹ã¨ã€ä¸Šè¨˜ã®å•é¡Œã ã‘ã‚’ã‚‚ã†ä¸€åº¦ã‚„ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚";
+			res=res+"<br><br><button class='button' onclick='q()'>å†æŒ‘æˆ¦</button> <p></blockquote><p>";
 			document.getElementById("res_h").innerHTML=res;
 			document.getElementById("q_h").innerHTML=q_str;
 			document.getElementById("count_h").innerHTML="-1";
@@ -91,12 +94,12 @@ function q(ans) {
 		}
 	}else{
 		temp=question.length-count-1;
-		temp="<table  class='g'><tr><th>‘æ" +(count+1)+"–âi‘S"+question.length+"–âj</th></tr>";
-		q_temp=question[count].split("");
+		temp="<table  class='g'><tr><th>ç¬¬" +(count+1)+"å•ï¼ˆå…¨"+question.length+"å•ï¼‰</th></tr>";
+		q_temp=question[count].split("ï¿¥");
 		document.getElementById("question_h").innerHTML=temp +"<tr><td>"+q_temp[0]+"</td></tr></table>";
 		document.getElementById("kaisetu_h").innerHTML="";
 		document.getElementById("count_h").innerHTML=count;
-		document.getElementById("res_h").innerHTML="<br><br><button class='button' onclick='a()'>³‰ğ‚ğŒ©‚é</button><p>";
+		document.getElementById("res_h").innerHTML="<br><br><button class='button' onclick='a()'>æ­£è§£ã‚’è¦‹ã‚‹</button><p>";
 	}
 }
 function a() {
@@ -105,23 +108,23 @@ function a() {
 	count=document.getElementById("count_h").innerHTML;
 	count=eval(count);
 
-	q_temp=question[count].split("");
-	temp="<table class='g'><tr><th>‘æ" +(count+1)+"–âi‘S"+question.length+"–âj</th></tr><tr><td>"+q_temp[0]+"</td></tr></table>"
-	document.getElementById("question_h").innerHTML=temp+"<table class='g2' ><tr><td>@</td><td></td></tr><tr><td class='g3'>i“š‚¦j</td><td>"+q_temp[1]+"</td></tr></table>";
+	q_temp=question[count].split("ï¿¥");
+	temp="<table class='g'><tr><th>ç¬¬" +(count+1)+"å•ï¼ˆå…¨"+question.length+"å•ï¼‰</th></tr><tr><td>"+q_temp[0]+"</td></tr></table>"
+	document.getElementById("question_h").innerHTML=temp+"<table class='g2' ><tr><td>ã€€</td><td></td></tr><tr><td class='g3'>ï¼ˆç­”ãˆï¼‰</td><td>"+q_temp[1]+"</td></tr></table>";
 	
 	document.getElementById("count_h").innerHTML=count;
-	document.getElementById("res_h").innerHTML="<br><button class='button' onclick='q(0)'>‡‚Á‚Ä‚½!(^^)!</button>@@@<button class='button' onclick='q(1)'>c”O('_')</button>";
+	document.getElementById("res_h").innerHTML="<br><button class='button' onclick='q(0)'>åˆã£ã¦ãŸ!(^^)!</button>ã€€ã€€ã€€<button class='button' onclick='q(1)'>æ®‹å¿µ('_')</button>";
 }
 // -->
 </SCRIPT>
 <body>
 <center>
 <div id="start" class="c">
-<b>g—p•û–@</b><p>
-startƒ{ƒ^ƒ“‚ğ‰Ÿ‚·‚ÆA–â‘è‚ª•\¦‚³‚ê‚Ü‚·B<p>
-“š‚¦‚ğl‚¦‚½‚çA–â‘è‚Ì‰º‚Ìu³‰ğ‚ğŒ©‚évƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ü‚·B<p>
-³‰ğ‚ª•\¦‚³‚ê‚Ü‚·‚Ì‚ÅA‚ ‚Á‚Ä‚¢‚ê‚Îu‡‚Á‚Ä‚½vƒ{ƒ^ƒ“‚ğA‚Ü‚¿‚ª‚Á‚Ä‚¢‚½‚çAuc”Ovƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ü‚·B<p>
-ˆê’Ê‚è‚â‚Á‚½ŒãA‚Ü‚¿‚ª‚Á‚½–â‘è‚¾‚¯Ä’§í‚Å‚«‚é‚Ì‚ÅA”½•œ—ûK‚ª‚Å‚«‚Ü‚·B
+<b>ä½¿ç”¨æ–¹æ³•</b><p>
+startãƒœã‚¿ãƒ³ã‚’æŠ¼ã™ã¨ã€å•é¡ŒãŒè¡¨ç¤ºã•ã‚Œã¾ã™ã€‚<p>
+ç­”ãˆã‚’è€ƒãˆãŸã‚‰ã€å•é¡Œã®ä¸‹ã®ã€Œæ­£è§£ã‚’è¦‹ã‚‹ã€ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ã¾ã™ã€‚<p>
+æ­£è§£ãŒè¡¨ç¤ºã•ã‚Œã¾ã™ã®ã§ã€ã‚ã£ã¦ã„ã‚Œã°ã€Œåˆã£ã¦ãŸã€ãƒœã‚¿ãƒ³ã‚’ã€ã¾ã¡ãŒã£ã¦ã„ãŸã‚‰ã€ã€Œæ®‹å¿µã€ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ã¾ã™ã€‚<p>
+ä¸€é€šã‚Šã‚„ã£ãŸå¾Œã€ã¾ã¡ãŒã£ãŸå•é¡Œã ã‘å†æŒ‘æˆ¦ã§ãã‚‹ã®ã§ã€åå¾©ç·´ç¿’ãŒã§ãã¾ã™ã€‚
 <p><p>
 
 <FORM NAME="F1">
@@ -133,11 +136,11 @@ startƒ{ƒ^ƒ“‚ğ‰Ÿ‚·‚ÆA–â‘è‚ª•\¦‚³‚ê‚Ü‚·B<p>
 <DIV ID="kaisetu_h"></DIV>
 <DIV ID="res_h" class="c"></DIV>
 <br><br>
-<p class="c"><a href=q_and_a_self.htm>Å‰‚©‚ç‚â‚è’¼‚·</a></p>
+<p class="c"><a href=q_and_a_self.htm>æœ€åˆã‹ã‚‰ã‚„ã‚Šç›´ã™</a></p>
 <DIV ID="count_h" class="k">-1</DIV>
 <DIV ID="batu_h"  class="k"></DIV>
-<!--š–â‘è”š-->
+<!--â˜…å•é¡Œæ•°â˜…-->
 <div id="first_q_h"  class="k">3</div>
-<!--š–â‘è“à—eš–â‘è/³‰ğ/‰ğà‚ğuAv‚Å‹æØ‚Á‚Ä‚¢‚ê‚Ü‚·B-->
-<DIV ID="q_h"  class="k">‚ ‚­\•ª–‘«‚·‚é@‚¤‚ñ‚´‚è‚·‚éAˆ§‚Ó‚QŒ‹¥‚·‚é@—‡‚¤A‚ ‚è‚­‚µ‚Ä‰ñ‚é@•à‚«‰ñ‚é@‚¸‚Á‚Æc‚·‚é</DIV>
+<!--â˜…å•é¡Œå†…å®¹â˜…å•é¡Œ/æ­£è§£/è§£èª¬ã‚’ã€Œã€ã€ã§åŒºåˆ‡ã£ã¦ã„ã‚Œã¾ã™ã€‚-->
+<DIV ID="q_h"  class="k">ã‚ãï¿¥ååˆ†æº€è¶³ã™ã‚‹ã€€ã†ã‚“ã–ã‚Šã™ã‚‹ã€é€¢ãµï¼’ï¿¥çµå©šã™ã‚‹ã€€ä¼¼åˆã†ã€ã‚ã‚Šãï¿¥ã—ã¦å›ã‚‹ã€€æ­©ãå›ã‚‹ã€€ãšã£ã¨â€¦ã™ã‚‹</DIV>
 
