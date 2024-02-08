@@ -119,7 +119,7 @@ function q(ans) {
 		temp="<br><br><button class='button' onclick='a()'>正解を見る</button><p>"
 		temp=temp+"<button class='button' onclick='yameru("+(count+1)+")'>もうやめる(^^;)</button><br>";
 		temp=temp+"「もうやめる」を押すとこの問題を含めて、後の問題が×扱いになります。";
-
+		window.scrollTo(0, 0);
 		document.getElementById("res_h").innerHTML=temp;
 	}
 }
