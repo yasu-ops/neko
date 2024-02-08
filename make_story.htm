@@ -50,7 +50,7 @@ function jet(){
 }
 
 function jet2(x,str){
-	document.getElementById("t"+(x+1)).innerHTML=str; // HTML要素に表示
+	document.getElementById("t"+(x+1)).innerHTML=str+"<br>"+"<img src='img/"+str+".jpg' width='75px' height='75px' border='0'>" ; // HTML要素に表示
 }
 function jet3(x){
 	document.getElementById("t"+(x+1)).innerHTML=""; // HTML要素に表示
@@ -63,7 +63,7 @@ function jet3(x){
 
 <table border=1 style="margin-left: auto; margin-right: auto;">
 
-<tr >	<td></td>	<td></td>	<td>援助者<br><br><span id="t5" class="yas" ></span></td>	<td></td>	</tr>
+<tr >	<td></td>	<td></td>	<td>援助者<br><br><br><span id="t5" class="yas" ></span></td>	<td></td>	</tr>
 
 <tr>	<td></td>	<td></td>	<td></td>	<td></td>	</tr>
 
@@ -75,7 +75,7 @@ function jet3(x){
 
 <tr>	<td></td>	<td></td>	<td></td>	<td></td>	</tr>
 
-<tr>	<td></td>	<td></td>	<td>敵対者<br><br><span id="t4" class="yas" ></td>	<td></td>	</tr>
+<tr>	<td></td>	<td></td>	<td>敵対者<br><br><br><span id="t4" class="yas" ></td>	<td></td>	</tr>
 
 </table>
 
