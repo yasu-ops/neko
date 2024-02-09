@@ -2,35 +2,58 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=euc-jp">
 <meta name="viewport" content="width=device-width ">
 <title>練習問題</title>
-<style>
-.c {font-size:24px;}
-.c2 {font-size:40px; color:#F067A6;}
-
-.g {font-size:40px; text-align: center;}
-.g2 {font-size:40px; color:#FF0000; text-align: center;}
-.g3 {font-size:30px; color:#1A4472;}
-.g4 {color:#FF0000;}
-
-.g th{
-    border-bottom: 2px solid #000;
-}
-
-.k {color:#FFFFFF;}
-
-.button {
-　display: block;
-  width: 300px;
-  padding: 15px;
-  background: #F3ECD8;
-  text-decoration: none;
-  text-align: center;
-  font-size:30px;
-  border-radius: 10px; /* ここで角丸を指定 */}
-
-</style>
 
 
 <SCRIPT LANGUAGE="JavaScript">
+function kesu(x){
+	var elements = document.getElementsByClassName('k'+x);
+
+	for(var i = 0; i < elements.length; i++){
+	    	if(elements[i].style.color == 'red'){
+	        	elements[i].style.color = 'white';
+			document.getElementById('b'+x).innerHTML = '見る';
+	    	}else{
+	        	elements[i].style.color = 'red';
+			document.getElementById('b'+x).innerHTML = 'かくす';
+		}
+	}
+}
+
+function mondai_5(x){
+//q_s_hか、bashoら指定した範囲の５題を読み出し、q_hに書き込み、
+//問題・解説・正解を示し
+//startする
+	q2_str=document.getElementById("q_sh").innerHTML;
+	start_num=eval(x);
+	q2=q2_str.split("、");
+	first_q=q2.length;
+	temp1="";
+	temp2="";
+	for(i=(start_num-1);i<(start_num+4);i++){
+		if(i==(start_num-1)){
+			temp1=q2[i];
+		}else{
+			temp1=temp1+"、"+q2[i];
+		}
+		q2_bara=q2[i].split("￥");
+		if(i==(start_num-1)){
+			temp2=q2_bara[0]+"<br>";
+			temp2=temp2+"<button id='b"+i+"' class='button3' onclick='kesu("+i+")'>出す</button>　";
+			temp2=temp2+"<span class='k"+i+"' style='color:white;'>"+q2_bara[2].replace(q2_bara[1],"<b>"+q2_bara[1]+"</b>")+"</span>";
+		}else{
+			temp2=temp2+"<br><br>"+q2_bara[0]+"<br>";
+			temp2=temp2+"<button id='b"+i+"'  class='button3' onclick='kesu("+i+")'>出す</button>　";
+			temp2=temp2+"<span class='k"+i+"' style='color:white;'>"+q2_bara[2].replace(q2_bara[1],"<b>"+q2_bara[1]+"</b>")+"</span>";
+		}
+	};
+	temp2=temp2+"<br><br><b>だいたいおぼえたら、下のボタンをおしてテストしてみよう</b><br><br><button class='button' onClick='q(0)'>力だめしテスト</button>"
+
+	document.getElementById("q_h").innerHTML=temp1;
+	temp2="<b>"+x+"ばんめから"+(x+4)+"ばんめの下の句を出したり、かくしたりしておぼえよう！</b><br><br>"+temp2;
+	temp2=temp2+"<button class='button2' onclick='location.reload()'>はじめのがめんへ</button>";
+	document.getElementById("start").innerHTML=temp2;
+	document.getElementById("start_num").innerHTML=x;
+}
 
 function yameru(x){
 	q_str=document.getElementById("q_h").innerHTML;
@@ -75,7 +98,9 @@ function q(ans) {
 		batu=document.getElementById("batu_h").innerHTML;
 		if(batu==""){
 			document.getElementById("res_h").innerHTML="";
-			document.getElementById("question_h").innerHTML="<span class='c2'>---------------------------------------------------------<br>!(^^)!!(^^)!!(^^)!　完答です　!(^^)!!(^^)!!(^^)!<br>---------------------------------------------------------";
+			temp="<p><p><span class='c2'>---------------------------------------------------------<br>!(^^)!!(^^)!!(^^)!　すごい！やったね！ぜんぶできたよ!(^^)!!(^^)!!(^^)!<br>---------------------------------------------------------";
+			temp=temp+"<p><p><button class='button2' onclick='location.reload()'>はじめのがめんへ</button>";
+			document.getElementById("question_h").innerHTML=temp;
 			document.getElementById("kaisetu_h").innerHTML="";
 		}else{
 			batu_ban=batu.split("、");
@@ -83,7 +108,7 @@ function q(ans) {
 			q_str="";
 			for(i=0;i<batu_ban.length;i++){
 				q_temp=question[batu_ban[i]].split("￥");
-				res_h_str=res_h_str+q_temp[0]+"(<small><b>"+q_temp[1]+"</b></small>)/";
+				res_h_str=res_h_str+"<br>"+q_temp[0]+"→"+q_temp[2].replace(q_temp[1],"<b>"+q_temp[1]+"</b>");
 				if(q_str==""){
 					q_str=question[batu_ban[i]];
 				}else{
@@ -94,33 +119,44 @@ function q(ans) {
 			finish_ans=first_q-batu_ban.length;
 			finish_30percent=Math.floor(30*finish_ans/first_q);
 			finish_100percent=Math.floor(100*finish_ans/first_q);
-			res="<table width='70%'><b>";
-			res=res+"下記の"+batu_ban.length+"問を間違えました。( )内は正答。</b>";
+
+			start_num=eval(document.getElementById("start_num").innerHTML);
+			res="<b>"+start_num+"～"+(start_num+4)+"ばんめの歌をれんしゅうちゅう！</b><br>";
+
+
+			res=res+"<table width='70%'><b>";
+			res=res+"下の"+batu_ban.length+"こ、まちがえてたね。<br>( )のなかはせいかい。</b>";
 			res=res+"<blockquote><font color=blue>" + res_h_str+"</font></blockquote>";
-			res=res+"<p>達成度グラフ（■が達成した部分）";
+			res=res+"<p>やったねグラフ（■ができたところ）";
 			res=res+"<p>"+"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■".substr(0,finish_30percent);
 			res=res+"□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□".substr(0,(30-finish_30percent));
-			res=res+"<p>達成率 "+finish_100percent+"%（正答数："+finish_ans+"）</p>";
-			res=res+"◇上の誤答一覧を一通り眺めたら、もう一度上記の問題に挑戦してみて下さい。";
-			res=res+"<p>◇下のボタンをクリックすると、上記の問題だけをもう一度やることができます。";
-			res=res+"<br><br><button class='button' onclick='q()'>再挑戦</button> <p></blockquote><p>";
+			res=res+"<p>"+finish_100percent+"パーセントできていたよ。（あってたかず："+finish_ans+"）</p>";
+			res=res+"<p>下のボタンをおすと、まちがったやつだけ、もう一回できるよ。";
+			res=res+"<br><br><button class='button' onclick='q()'>まちがいを<br>やっつける！</button> <p>";
+			res=res+"<br><br><button class='button2' onclick='location.reload()'>はじめのがめんへ</button> <p></blockquote><p>";
 			document.getElementById("res_h").innerHTML=res;
 			document.getElementById("q_h").innerHTML=q_str;
 			document.getElementById("count_h").innerHTML="-1";
 			document.getElementById("batu_h").innerHTML="";
-		}
+			
+			}
 	}else{
 		temp=question.length-count-1;
-		temp="<table  class='g'><tr><th>第" +(count+1)+"問（全"+question.length+"問）</th></tr>";
+
+		x=document.getElementById("start_num").innerHTML;
+		temp="<b><span class='c'>"+x+"～"+(eval(x)+4)+"ばんめの歌をれんしゅうちゅう！</span></b><br>";
+
+		temp=temp+"<table  class='g'><tr><th>だい" +(count+1)+"もん（ぜんぶで"+question.length+"もん）</th></tr>";
 		q_temp=question[count].split("￥");
 		document.getElementById("question_h").innerHTML=temp +"<tr><td>"+q_temp[0]+"</td></tr></table>";
 		document.getElementById("kaisetu_h").innerHTML="";
 		document.getElementById("count_h").innerHTML=count;
-		temp="<br><br><button class='button' onclick='a()'>正解を見る</button><p>"
-		temp=temp+"<button class='button' onclick='yameru("+(count+1)+")'>もうやめる(^^;)</button><br>";
-		temp=temp+"「もうやめる」を押すとこの問題を含めて、後の問題が×扱いになります。";
-		window.scrollTo(0, 0);
+		temp="<br><br><button class='button' onclick='a()'>せいかいを見る</button><p><p><p><p><p><p>"
+		//temp=temp+"<button class='button2' onclick='yameru("+(count+1)+")'>もうやめる(^^;)</button>";
+		temp=temp+"<button class='button2' onclick='location.reload()'>はじめのがめんへ</button>";
+		//temp=temp+"「もうやめる」をおすと、このあと、ぜんぶ×になるよ。";
 		document.getElementById("res_h").innerHTML=temp;
+		window.scrollTo(0, 0);
 	}
 }
 function a() {
@@ -128,9 +164,12 @@ function a() {
 	temp=""
 	count=document.getElementById("count_h").innerHTML;
 	count=eval(count);
-
 	q_temp=question[count].split("￥");
-	temp="<table class='g'><tr><th>第" +(count+1)+"問（全"+question.length+"問）</th></tr><tr><td>"+q_temp[0]+"</td></tr></table>"
+
+	x=document.getElementById("start_num").innerHTML;
+	temp="<b><span class='c'>"+x+"～"+(eval(x)+4)+"ばんめの歌をれんしゅうちゅう！</span></b><br>";
+
+	temp=temp+"<table class='g'><tr><th>だい" +(count+1)+"もん（ぜんぶで"+question.length+"もん）</th></tr><tr><td>"+q_temp[0]+"</td></tr></table>"
 	temp=temp+"<table class='g2' ><tr><td>　</td></tr><tr><td>"+q_temp[1]+"</td></tr>"
 	temp=temp+"<tr><td class='g3'>《"+q_temp[2]+"》</td></tr></table>"
 
@@ -138,38 +177,95 @@ function a() {
 	
 	temp=""
 	document.getElementById("count_h").innerHTML=count;
-	temp="<br><button class='button' onclick='q(0)'>合ってた!(^^)!</button>　　　"
-	temp=temp+"<button class='button' onclick='q(1)'>残念('_')</button>";
+	temp="<br><button class='button' onclick='q(0)'>あってた!(^^)!</button>　　　"
+	temp=temp+"<button class='button' onclick='q(1)'>ざんねん('_')</button>";
+	temp=temp+"<br><br><button class='button2' onclick='location.reload()'>はじめのがめんへ</button>";
 
 	document.getElementById("res_h").innerHTML=temp;
 }
 
 </SCRIPT>
+<style>
+.c {font-size:24px;}
+.c2 {font-size:40px; color:#F067A6;}
+
+.g {font-size:40px; text-align: center;}
+.g2 {font-size:40px; color:#FF0000; text-align: center;}
+.g3 {font-size:30px; color:#1A4472;}
+.g4 {color:#FF0000;}
+
+.g th{
+    border-bottom: 2px solid #000;
+}
+
+.k {color:#FFFFFF;}
+.k0 {color:#FFFFFF;}
+.k1 {color:#FFFFFF;}
+.k2 {color:#FFFFFF;}
+.k3 {color:#FFFFFF;}
+.k4 {color:#FFFFFF;}
+
+.button {
+　display: block;
+  width: 300px;
+  padding: 15px;
+  background:#fff3b8;
+  text-decoration: none;
+  text-align: center;
+  font-size:30px;
+  border-radius: 10px; /* ここで角丸を指定 */}
+.button2 {
+　display: block;
+  /* width: 200px; */
+  padding: 15px;
+  background:skyblue;
+  text-decoration: none;
+  text-align: center;
+  font-size:20px;
+  border-radius: 10px; /* ここで角丸を指定 */}
+
+.button3 {
+　display: block;
+  /* width: 200px; */
+  padding: 5px;
+  background:white;
+  text-decoration: none;
+  text-align: center;
+  font-size:20px;
+  border-radius: 10px; /* ここで角丸を指定 */}
+
+</style>
+</head>
+
 <body>
 <center>
 <div id="start" class="c">
-<b>使用方法</b><p>
-startボタンを押すと、問題が表示されます。<p>
-答えを考えたら、問題の下の「正解を見る」ボタンを押します。<p>
-正解が表示されますので、あっていれば「合ってた」ボタンを、まちがっていたら、「残念」ボタンを押します。<p>
-一通りやった後、まちがった問題だけ再挑戦できるので、反復練習ができます。
-<p><p>
-
-<FORM NAME="F1">
-<br><br><button class="button" onClick="q(0)">start</button>
-</FORM>
+<b>★★５つずつ覚えよう★★</b><p>
+下の歌のはんいボタンをおすと、<br>
+歌が５つ出てくるよ。<br>
+上の句をかくしたり、出したりできるから、<br>
+かくしたり、出したりしておぼえるんだ！<br>
+だいじなことだから２回いったよ。<br>
+おぼえたら、ちからだめしテストもできるのだ。<br>
+<button class="button" onClick="mondai_5(1)">　１～　５</button>
+<button class="button" onClick="mondai_5(6)">　６～１０</button>
+<br><button class="button" onClick="mondai_5(11)">１１～１５</button>
+<button class="button" onClick="mondai_5(16)">１６～２０</button>
+<br><button class="button" onClick="mondai_5(21)">２１～２５</button>
+<button class="button" onClick="mondai_5(26)">２６～３０</button>
+<br><button class="button" onClick="mondai_5(31)">３１～３５</button>
+<button class="button" onClick="mondai_5(36)">３６～４０</button>
 
 </div>
 <DIV ID="question_h"></DIV>
 <DIV ID="kaisetu_h"></DIV>
 <DIV ID="res_h" class="c"></DIV>
-<br><br>
-<p class="c"><a href=q_and_a_self.htm>最初からやり直す</a></p>
+
 <DIV ID="count_h" class="k">-1</DIV>
 <DIV ID="batu_h"  class="k"></DIV>
-<!--★問題内容★問題/正解/解説を「、」で区切っていれます。-->
-<DIV ID="q_h"  class="k">ころもほすてふ あまのかくやま￥はるす￥はるすぎて なつきにけらし しろたえの、なかなかしよを ひとりかもねむ￥あし￥あしびきの やまどりのおの しだりおの、こゑきくときそ あきはかなしき￥おく￥おくやまに もみじふみわけ なくしかの、しろきをみれは よそふけにける￥かさ￥かささぎの わたせるはしに おくしもの、みかさのやまに いてしつきかも￥あまの￥あまのはら ふりさけみれば かすがなる、しるもしらぬも あふさかのせき￥これ￥これやこの ゆくもかえるも わかれては、ひとにはつけよ あまのつりふね￥わたのはら ￥わたのはら やそしまかけて こぎいでぬと、をとめのすかた しはしととめむ￥あまつ￥あまつかぜ くものかよいじ ふきとじよ、みたれそめにし われならなくに￥みち￥みちのくの しのぶもじずり たれゆえに、ゆめのかよひち ひとめよくらむ￥す￥すみのえの きしによるなみ よるさえや、もみちのにしき かみのまにまに￥この￥このたびは ぬさもとりあえず たむけやま、あかつきはかり うきものはなし￥ありあ￥ありあけの つれなくみえし わかれより、よしののさとに ふれるしらゆき￥あさぼらけ ￥あさぼらけ ありあけのつきと みるまでに、なかれもあへぬ もみちなりけり￥やまが￥やまがわに かぜのかけたる しがらみは、しつこころなく はなのちるらむ￥ひさ￥ひさかたの ひかりのどけき はるのひに、つらぬきとめぬ たまそちりける￥しら￥しらつゆに かぜのふきしく あきののは、あまりてなとか ひとのこひしき￥あさじ￥あさじうの おののしのはら しのぶれど、ゆくへもしらぬ こひのみちかな￥ゆら￥ゆらのとを わたるふなびと かじをたえ、ひとこそみえね あきはきにけり￥やえ￥やえむぐら しげれるやどの さびしきに、なかくもかなと おもひけるかな￥きみがため ￥きみがため おしからざりし いのちさえ、なこそなかれて なほきこえけれ￥たき￥たきのおとは たえてひさしく なりぬれど、くもかくれにし よはのつきかな￥め￥めぐりあいて みしやそれとも わかぬまに、またふみもみす あまのはしたて￥おおえ￥おおえやま いくののみちの とおければ、けふここのへに にほひぬるかな￥いに￥いにしえの ならのみやこの やえざくら、よにあふさかの せきはゆるさし￥よを￥よをこめて とりのそらねは はかるとも、たつたのかはの にしきなりけり￥あらし￥あらしふく みむろのやまの もみじばは、いつこもおなし あきのゆふくれ￥さ￥さびしさに やどをたちいでて ながむれば、はけしかれとは いのらぬものを￥うか￥うかりける ひとをはつせの やまおろしよ、あはれことしの あきもいぬめり￥ちぎりお￥ちぎりおきし させもがつゆを いのちにて、いくよねさめぬ すまのせきもり￥あわじ￥あわじしま かようちどりの なくこえに、もれいつるつきの かけのさやけさ￥あきか￥あきかぜに たなびくくもの たえまより、たたありあけの つきそのこれる￥ほ￥ほととぎす なきつるかたを ながむれば、うきにたへぬは なみたなりけり￥おも￥おもいわび さてもいのちは あるものを、ねやのひまさへ つれなかりけり￥よも￥よもすがら ものおもうころは あけやらで、きりたちのほる あきのゆふくれ￥む￥むらさめの つゆもまだひぬ まきのはに、しのふることの よはりもそする￥たま￥たまのおよ たえなばたえね ながらえば、ころもかたしき ひとりかもねむ￥きり￥きりぎりす なくやしもよの さむしろに、ふるさとさむく ころもうつなり￥みよ￥みよしのの やまのあきかぜ さよふけて、ふりゆくものは わかみなりけり￥はなさ￥はなさそう あらしのにわの ゆきならで、なほあまりある むかしなりけり￥もも￥ももしきや ふるきのきばの しのぶにも
 
-
-</DIV>
+<DIV ID="start_num" class="k"></DIV>
+<DIV ID="q_h"  class="k"></DIV>
+<!--★問題内容★問題￥正解￥解説を「、」で区切っていれます。￥も、も全角-->
+<DIV ID="q_sh"  class="k">ころもほすてふ あまのかくやま￥はるす￥はるすぎて なつきにけらし しろたえの、なかなかしよを ひとりかもねむ￥あし￥あしびきの やまどりのおの しだりおの、こゑきくときそ あきはかなしき￥おく￥おくやまに もみじふみわけ なくしかの、しろきをみれは よそふけにける￥かさ￥かささぎの わたせるはしに おくしもの、みかさのやまに いてしつきかも￥あまの￥あまのはら ふりさけみれば かすがなる、しるもしらぬも あふさかのせき￥これ￥これやこの ゆくもかえるも わかれては、ひとにはつけよ あまのつりふね￥わたのはら ￥わたのはら やそしまかけて こぎいでぬと、をとめのすかた しはしととめむ￥あまつ￥あまつかぜ くものかよいじ ふきとじよ、みたれそめにし われならなくに￥みち￥みちのくの しのぶもじずり たれゆえに、ゆめのかよひち ひとめよくらむ￥す￥すみのえの きしによるなみ よるさえや、もみちのにしき かみのまにまに￥この￥このたびは ぬさもとりあえず たむけやま、あかつきはかり うきものはなし￥ありあ￥ありあけの つれなくみえし わかれより、よしののさとに ふれるしらゆき￥あさぼらけ ￥あさぼらけ ありあけのつきと みるまでに、なかれもあへぬ もみちなりけり￥やまが￥やまがわに かぜのかけたる しがらみは、しつこころなく はなのちるらむ￥ひさ￥ひさかたの ひかりのどけき はるのひに、つらぬきとめぬ たまそちりける￥しら￥しらつゆに かぜのふきしく あきののは、あまりてなとか ひとのこひしき￥あさじ￥あさじうの おののしのはら しのぶれど、ゆくへもしらぬ こひのみちかな￥ゆら￥ゆらのとを わたるふなびと かじをたえ、ひとこそみえね あきはきにけり￥やえ￥やえむぐら しげれるやどの さびしきに、なかくもかなと おもひけるかな￥きみがため ￥きみがため おしからざりし いのちさえ、なこそなかれて なほきこえけれ￥たき￥たきのおとは たえてひさしく なりぬれど、くもかくれにし よはのつきかな￥め￥めぐりあいて みしやそれとも わかぬまに、またふみもみす あまのはしたて￥おおえ￥おおえやま いくののみちの とおければ、けふここのへに にほひぬるかな￥いに￥いにしえの ならのみやこの やえざくら、よにあふさかの せきはゆるさし￥よを￥よをこめて とりのそらねは はかるとも、たつたのかはの にしきなりけり￥あらし￥あらしふく みむろのやまの もみじばは、いつこもおなし あきのゆふくれ￥さ￥さびしさに やどをたちいでて ながむれば、はけしかれとは いのらぬものを￥うか￥うかりける ひとをはつせの やまおろしよ、あはれことしの あきもいぬめり￥ちぎりお￥ちぎりおきし させもがつゆを いのちにて、いくよねさめぬ すまのせきもり￥あわじ￥あわじしま かようちどりの なくこえに、もれいつるつきの かけのさやけさ￥あきか￥あきかぜに たなびくくもの たえまより、たたありあけの つきそのこれる￥ほ￥ほととぎす なきつるかたを ながむれば、うきにたへぬは なみたなりけり￥おも￥おもいわび さてもいのちは あるものを、ねやのひまさへ つれなかりけり￥よも￥よもすがら ものおもうころは あけやらで、きりたちのほる あきのゆふくれ￥む￥むらさめの つゆもまだひぬ まきのはに、しのふることの よはりもそする￥たま￥たまのおよ たえなばたえね ながらえば、ころもかたしき ひとりかもねむ￥きり￥きりぎりす なくやしもよの さむしろに、ふるさとさむく ころもうつなり￥みよ￥みよしのの やまのあきかぜ さよふけて、ふりゆくものは わかみなりけり￥はなさ￥はなさそう あらしのにわの ゆきならで、なほあまりある むかしなりけり￥もも￥ももしきや ふるきのきばの しのぶにも</DIV>
 
