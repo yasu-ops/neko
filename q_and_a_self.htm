@@ -1,8 +1,8 @@
 ﻿<html>
+<head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=euc-jp">
 <meta name="viewport" content="width=device-width ">
 <title>練習問題</title>
-
 
 <SCRIPT LANGUAGE="JavaScript">
 function kesu(x){
@@ -49,7 +49,7 @@ function mondai_5(x){
 	temp2=temp2+"<br><br><b>だいたいおぼえたら、下のボタンをおしてテストしてみよう</b><br><br><button class='button' onClick='q(0)'>力だめしテスト</button>"
 
 	document.getElementById("q_h").innerHTML=temp1;
-	temp2="<b>"+x+"ばんめから"+(x+4)+"ばんめの下の句を出したり、かくしたりしておぼえよう！</b><br><br>"+temp2;
+	temp2="<b>"+x+"ばんめから"+(x+4)+"ばんめの上の句を出したり、かくしたりしておぼえよう！</b><br><br>"+temp2;
 	temp2=temp2+"<button class='button2' onclick='location.reload(true)'>はじめのがめんへ</button>";
 	document.getElementById("start").innerHTML=temp2;
 	document.getElementById("start_num").innerHTML=x;
@@ -234,19 +234,36 @@ function a() {
   font-size:20px;
   border-radius: 10px; /* ここで角丸を指定 */}
 
+.waku {
+  width: 600px;
+  border: 2px #000 dashed;
+  padding: 5px;
+  background:white;
+  text-decoration: none;
+  font-size:20px;
+  border-radius: 10px; /* ここで角丸を指定 */}
 </style>
 </head>
 
 <body>
+
 <center>
 <div id="start" class="c">
-<b>★★５つずつ覚えよう★★</b><p>
+<b>★★百人一首を５つずつ覚えるのだ！★★</b><p>
 下の歌のはんいボタンをおすと、<br>
 歌が５つ出てくるよ。<br>
 上の句をかくしたり、出したりできるから、<br>
 かくしたり、出したりしておぼえるんだ！<br>
 だいじなことだから２回いったよ。<br>
-おぼえたら、ちからだめしテストもできるのだ。<br>
+おぼえたら、ちからだめしテストもできるのだ。<br><br>
+<table class="waku">
+<tr><td align=center>～ちょこっとアドバイス～</td></tr>
+<tr><td>
+<ul>
+<li>まいにち、５こずつとか、かずをきめてやるといいよ。</li>
+<li>まずは上の句ぜんたいがすらっといえるようにしよう。<br>それができたら、きまり字だ。</li>
+</ul>
+</td></tr></table><br>
 <button class="button" onClick="mondai_5(1)">　１～　５</button>
 <button class="button" onClick="mondai_5(6)">　６～１０</button>
 <br><button class="button" onClick="mondai_5(11)">１１～１５</button>
