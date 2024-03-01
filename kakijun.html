@@ -304,36 +304,39 @@
     }
   </script>
 </head>
-<body >
+<body bgcolor="#00C4CC" >
+  
 <table>
 <tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
-<tr><td>漢字１字</td><td><input type="text" id="ji1" ></td><td><input type="text" id="ji2" ></td><td><input type="text" id="ji3" ></td><td><input type="text" id="ji4" ></td><td>タブキーで移動</td></tr>
-<tr><td>用例※省略可</td><td><input type="text" id="rei1" ></td><td><input type="text" id="rei2" ></td><td><input type="text" id="rei3" ></td><td><input type="text" id="rei4" ></td><td></td></tr>
-<tr><td>読み※省略可</td><td><input type="text" id="yomi1" ></td><td><input type="text" id="yomi2" ></td><td><input type="text" id="yomi3" ></td><td><input type="text" id="yomi4" ></td><td><button onclick="touroku();">登録</button></td></tr>
+<tr><td><b>漢字１字</b></td><td><input type="text" id="ji1" ></td><td><input type="text" id="ji2" ></td><td><input type="text" id="ji3" ></td><td><input type="text" id="ji4" ></td><td><b>タブキーで移動</b></td></tr>
+<tr><td><b>用例※省略可</b></td><td><input type="text" id="rei1" ></td><td><input type="text" id="rei2" ></td><td><input type="text" id="rei3" ></td><td><input type="text" id="rei4" ></td><td></td></tr>
+<tr><td><b>読み※省略可</b></td><td><input type="text" id="yomi1" ></td><td><input type="text" id="yomi2" ></td><td><input type="text" id="yomi3" ></td><td><input type="text" id="yomi4" ></td><td><button onclick="touroku();">登録</button></td></tr>
 </table>
 
-だい<span id="set_count"></span>もん：<span id="data"></span>　　<button onclick="reset();">ぜんぶけす</button>　　<button onclick="location.replace('https://yasu-ops.github.io/neko/index2.htm');">メニューにもどる</button>
-
-<table border=1>
+だい<span id="set_count">１</span>もん：<span id="data"></span>　　<button onclick="reset();">ぜんぶけす</button>　　<button onclick="location.replace('https://yasu-ops.github.io/neko/index2.htm');">メニューにもどる</button>
+</b>
+<br>
+<table >
+<tr><td color="white"><b>みほん</b></td><td><b>かきじゅん</b></td><td><b>れんしゅう</b></td><td colspan="2"><b>いまやっている、れんしゅうのきろく</b></td></tr>
 <tr>
 <!-- お手本 -->
-<td rowspan="2" width="200"  style="text-align:center;writing-mode:vertical-rl">
-	<span  id=yomi style="font-size:75px"></span><br>
+<td bgcolor="white" style="border: 2px solid black;" rowspan="2" width="200"  style="text-align:center;writing-mode:vertical-rl">
+	<span  id=yomi style="font-size:75px;"></span><br>
 	<span  id=rei style="font-family: 'Noto Serif JP', serif;font-size:150px;font-weight: 400;font-style: normal;"></span><br>
 </td>
-<td rowspan="2"><!--書き順 -->
+<td   rowspan="2"><!--書き順 -->
 	<!--<iframe id="frame0" src="" width="200" height="400" style="transform: scale(0.5);"></iframe>-->
-	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-    <div style="width:200px;height:400px;overflow:hidden;">
-        <iframe id="frame0" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	<div  style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
+        <iframe  id="frame0" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
     </div>
 </div>
 <div>
 		<button type="button" onclick="openURL()">かきじゅんをみる</button>
 	</div>
 </td>
-<td rowspan="2"> <!-- キャンバス -->
-  <div>れんしゅう<span id="count">1</span>かいめ</div>
+<td bgcolor="white" style="border: 2px solid black;" rowspan="2"> <!-- キャンバス -->
+  <div><span id="count">1</span>かいめ</div>
   <canvas id="canvas" frameborder="1" width="400" height="400"></canvas>
   <div>
     <!-- <input id="inputColor" type="color" value="#ff0000"> -->
@@ -354,16 +357,17 @@
   </div>
 </td>
 <!-- 記録 -->
+
 <td>
 	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-	    <div style="width:200px;height:400px;overflow:hidden;">
+	    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
 	        <iframe id="frame1" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
 	    </div>
 	</div>
 </td>
 <td>
 	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-	    <div style="width:200px;height:400px;overflow:hidden;">
+	    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
 	        <iframe id="frame2" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
 	    </div>
 	</div>
@@ -372,14 +376,14 @@
 <tr>
 <td>
 <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-	    <div style="width:200px;height:400px;overflow:hidden;">
+	    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
 	        <iframe id="frame3" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
 	    </div>
 	</div>
 </td>
 <td>
 	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-	    <div style="width:200px;height:400px;overflow:hidden;">
+	    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
 	        <iframe id="frame4" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
 	    </div>
 	</div>
@@ -387,60 +391,61 @@
 
 
 </tr></table>
+<br><b>４もん、ぜんぶのきろく</b>
 
 <table><tr>
 <td>
 	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-	    <div style="width:200px;height:400px;overflow:hidden;">
+	    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
 	        <iframe id="frame11" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
 	    </div>
 	</div>
 </td>
 <td>
 	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-	    <div style="width:200px;height:400px;overflow:hidden;">
+	    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
 	        <iframe id="frame12" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
 	    </div>
 	</div>
 </td>
 <td>
   <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-	    <div style="width:200px;height:400px;overflow:hidden;">
+	    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
 	        <iframe id="frame21" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
 	    </div>
 	</div>
 </td>
 <td>
 	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-	    <div style="width:200px;height:400px;overflow:hidden;">
+	    <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
 	        <iframe id="frame22" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
 	    </div>
 	</div>
 </td>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame31" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame32" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
   <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame41" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame42" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
@@ -450,56 +455,56 @@
 <tr>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame13" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame14" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
   <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame23" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame24" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame33" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame34" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
   <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame43" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
   </td>
   <td>
     <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-        <div style="width:200px;height:400px;overflow:hidden;">
+        <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
             <iframe id="frame44" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
         </div>
     </div>
