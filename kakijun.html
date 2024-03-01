@@ -1,0 +1,525 @@
+<html>
+<head>
+  <meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap" rel="stylesheet">  <link rel="stylesheet" href="css/base.css" />
+  <style>
+    /* canvas タグの背景にルーラーを指定 */
+    #myCanvas {
+      background: url(imgs/bg_ruler.png) no-repeat;
+    }
+    .noto-serif jp-regular {
+	  font-family: "Noto Serif JP", serif;
+	  font-weight: 400;
+	  font-style: normal;
+	}
+
+  </style>
+  <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+  <script>
+    window.addEventListener("load", init);
+    var ji = new Array();
+    var rei= new Array();
+    var yomi= new Array();
+
+    function init() {
+
+      // 変数の宣言
+      let i
+
+      // canvas要素を取得する
+      const c = document.getElementById('canvas')
+      // canvasの2Dコンテキストを取得する
+      const ctx = c.getContext('2d')
+      
+      // 線の色を青にする
+      ctx.strokeStyle = 'blue'
+      
+      // 線の太さを1にする
+      ctx.lineWidth = 9
+      
+      // ドラッグ中かどうかを表すフラグ
+      let dragging = false
+      // 前回のポインタの位置を記録する変数
+      let lastPos
+
+
+      // ポインタの位置に線を描く関数
+      function move(pos) {
+        // ドラッグ中なら
+        if (dragging) {
+          // 前回の位置から現在の位置まで線を引く
+          // パスの始点
+          ctx.moveTo(lastPos[0], lastPos[1])
+          // パスの終点
+          ctx.lineTo(pos[0], pos[1])
+          //パスを描画
+          ctx.stroke()
+          // 現在の位置を記録する
+          lastPos = pos
+        }
+      }
+      // ドラッグを開始する関数
+      function down(pos) {
+        // ドラッグ中フラグを真にする
+        dragging = true
+        // 現在の位置を記録する
+        lastPos = pos
+      }
+      // ドラッグを終了する関数
+      function up(pos) {
+        // 現在の位置に線を描く
+        move(pos)
+        // ドラッグ中フラグを偽にする
+        dragging = false
+      }
+      // イベントオブジェクトからcanvas内の相対座標を取得する関数
+      function pos(e) {
+        // canvasの左上隅の座標を取得する
+        const x = e.clientX - c.getBoundingClientRect().left
+        const y = e.clientY - c.getBoundingClientRect().top
+        // xとyを配列として返す
+        return [x, y]
+      }
+
+      /* 
+      マウスダウンイベントeが発生したら、
+      １　pos(e)で、そのイベントの開始位置の座標を取得し、
+      ２　ドラッグフラッグをtrueにして、
+      ３　その座標をlastposに格納する
+      */
+      c.addEventListener('mousedown', (e) => {
+        // ドラッグを開始する
+        down(pos(e))
+      })
+      /* 
+      マウスアップイベントeが発生したら、
+      １　pos(e)で、そのイベントの開始位置の座標を取得し、
+      ２　move(e)で、記録されたlastposから現在の位置までの線を引く
+      ３　ドラッグフラッグをfalseにする
+      */
+      c.addEventListener('mouseup', (e) => {
+        // ドラッグを終了する
+        up(pos(e))
+      })
+      /* 
+      マウス移動イベントeが発生したら、
+      １　pos(e)で、そのイベントの開始位置の座標を取得し、
+      ２　move(e)で、記録されたlastposから現在の位置までの線を引く
+      ３　ドラッグフラッグをfalseにする
+      */
+      c.addEventListener('mousemove', (e) => {
+        // ポインタの位置に線を描く
+        move(pos(e))
+      })
+      /* 
+      タッチスタートイベントeが発生したら、
+      １　pos(e.changedTouches[0])で、そのイベントの1本目の指を開始位置の座標を取得し、
+      ２　ドラッグフラッグをtrueにして、
+      ３　その座標をlastposに格納する
+      */
+      c.addEventListener('touchstart', (e) => {
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+          // ドラッグを開始する
+          down(pos(e.changedTouches[0]))
+        }
+      })
+      /* 
+      タッチエンドイベントeが発生したら、
+      １　pos(e.changedTouches[0])で、そのイベントの1本目の指を開始位置の座標を取得し、
+      ２　move(e)で、記録されたlastposから現在の位置までの線を引く
+      ３　ドラッグフラッグをfalseにする
+      */
+      c.addEventListener('touchend', (e) => {
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+          // ドラッグを終了する
+          up(pos(e.changedTouches[0]))
+        }
+      })
+      /* 
+      タッチ移動イベントeが発生したら、
+      １　pos(e)で、そのイベントの開始位置の座標を取得し、
+      ２　move(e)で、記録されたlastposから現在の位置までの線を引く
+      ３　ドラッグフラッグをfalseにする
+      */
+      c.addEventListener('touchmove', (e) => {
+          e.preventDefault()
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+          // ポインタ
+          move(pos(e.changedTouches[0]))
+        }
+      })
+      
+      function clear() {
+        ctx.clearRect(0, 0, c.width, c.height);
+        // canvasに再描画する
+        ctx.beginPath();
+        ctx.stroke();
+      }
+      
+      document.querySelector("#buttonclear").addEventListener("click", function(){
+        clear();
+      })
+      
+      document.querySelector("#Colorbutton").addEventListener("click", function(){
+        ctx.strokeStyle = document.querySelector("#inputColor").value;
+      })
+
+      document.querySelector("#hutoku").addEventListener("click", function(){
+            var a=ctx.lineWidth;
+            ctx.lineWidth=a+1;
+            document.getElementById("hutosa").innerHTML=ctx.lineWidth;
+      })
+
+      document.querySelector("#hosoku").addEventListener("click", function(){
+            var a=ctx.lineWidth;
+            ctx.lineWidth=a-1;
+            document.getElementById("hutosa").innerHTML=ctx.lineWidth;
+        
+      })
+
+      // 保存ボタンの処理
+      document.querySelector("#buttonSave").addEventListener("click", function(){
+        //1 ボタンを押した回数を調べる        
+        count_str=document.getElementById("count").innerHTML;
+        count=eval(count_str)
+        
+
+        // canvasの内容をPNG形式のデータURLとして取得する
+        var png = canvas.toDataURL("image/png");
+
+        //3 画像を保存
+        localStorage.setItem("gazou"+count, png);
+
+        //Canvasタグから画像に変換
+        //var c2 = new createjs.Stage("canvas");
+        //var png = c2.toDataURL();
+
+        clear();
+        
+        //画像を記録エリアに表示
+        var v = localStorage.getItem("gazou"+count);
+        document.getElementById("frame"+count).src =  v;
+
+        // 没新規ウインドウで画像を表示
+        //window.open(png);
+        //document.getElementById("frame").src =  png;
+        if(count!=4){
+          count=count+1;
+          document.getElementById("count").innerHTML=count;
+        }else{
+          count=1;
+          document.getElementById("count").innerHTML=count;
+          num=eval(document.getElementById("set_count").innerHTML);
+          document.getElementById("iruka").innerHTML="<img src='./0"+num+".png'>";
+          for(i=1;i<5;i++){
+            var v = localStorage.getItem("gazou"+i);
+            document.getElementById("frame"+i).src =  "";
+            document.getElementById("frame"+num+i).src =  v;
+          }
+          if(num<4 && ji[num]!=""){
+              num=num+1;
+              document.getElementById("set_count").innerHTML=num;
+              document.getElementById("data").innerHTML=ji[num-1];
+              document.getElementById("rei").innerHTML=rei[num-1];
+              document.getElementById("yomi").innerHTML=yomi[num-1];
+              document.getElementById("frame0").src=""
+          }else{
+              document.getElementById("set_count").innerHTML=1;
+              document.getElementById("data").innerHTML="";
+              document.getElementById("rei").innerHTML="";
+              document.getElementById("yomi").innerHTML="";
+              document.getElementById("frame0").src="";
+              document.getElementById("frame1").src="";
+              document.getElementById("frame2").src="";
+              document.getElementById("frame3").src="";
+              document.getElementById("frame4").src="";
+          }
+        }
+        //4 ボタンを押した回数を保存
+        if(count!=1){
+              openURL()
+        }
+      })
+    } 
+
+
+
+    // 読込ボタンの処理
+    document.querySelector("#buttonLoad").addEventListener("click", function(){
+      var v = localStorage.getItem("gazou");
+      document.getElementById("frame2").src =  v;
+    });
+
+    // お手本表示
+    function openURL() {
+
+      // テキストボックスの値を取得
+      var u = document.getElementById("data").innerHTML;
+      
+      // iframeのsrc属性にURLを代入
+      document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/?svg=" + u;
+
+      var iframe = document.getElementById("frame0").getElementsByTagName('iframe');
+
+      var body = iframe.contentDocument.body;
+      body.style.padding = 0;
+      body.style.margin = 0;
+    }
+
+    function touroku(){
+        for(i=1;i<5;i++){
+            ji[i-1] = document.getElementById("ji"+i).value;
+            if(document.getElementById("rei"+i).value==""){
+              rei[i-1]=document.getElementById("ji"+i).value;; 
+            }else{
+              rei[i-1]= document.getElementById("rei"+i).value;
+            }
+            yomi[i-1] = document.getElementById("yomi"+i).value;
+        }
+        document.getElementById("data").innerHTML=ji[0];
+        document.getElementById("rei").innerHTML=rei[0];
+        document.getElementById("yomi").innerHTML=yomi[0];
+        document.getElementById("set_count").innerHTML=1;        
+    }
+
+    function reset(){
+      document.getElementById("data").innerHTML=ji[0];
+      document.getElementById("rei").innerHTML=rei[0];
+      document.getElementById("yomi").innerHTML=yomi[0];
+      document.getElementById("set_count").innerHTML=1;        
+      document.getElementById("count").innerHTML=1;        
+      document.getElementById("frame0").src=""
+      for(i=1;i<5;i++){
+        document.getElementById("frame"+i).src="";
+        for(j=1;j<5;j++){
+            document.getElementById("frame"+i+j).src="";
+        }
+      }
+      document.getElementById("iruka").innerHTML="";
+    }
+  </script>
+</head>
+<body >
+<table>
+<tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+<tr><td>漢字１字</td><td><input type="text" id="ji1" ></td><td><input type="text" id="ji2" ></td><td><input type="text" id="ji3" ></td><td><input type="text" id="ji4" ></td><td>タブキーで移動</td></tr>
+<tr><td>用例※省略可</td><td><input type="text" id="rei1" ></td><td><input type="text" id="rei2" ></td><td><input type="text" id="rei3" ></td><td><input type="text" id="rei4" ></td><td></td></tr>
+<tr><td>読み※省略可</td><td><input type="text" id="yomi1" ></td><td><input type="text" id="yomi2" ></td><td><input type="text" id="yomi3" ></td><td><input type="text" id="yomi4" ></td><td><button onclick="touroku();">登録</button></td></tr>
+</table>
+
+だい<span id="set_count"></span>もん：<span id="data"></span>　　<button onclick="reset();">ぜんぶけす</button>
+
+<table border=1>
+<tr>
+<!-- お手本 -->
+<td rowspan="2" width="200"  style="text-align:center;writing-mode:vertical-rl">
+	<span  id=yomi style="font-size:75px"></span><br>
+	<span  id=rei style="font-family: 'Noto Serif JP', serif;font-size:150px;font-weight: 400;font-style: normal;"></span><br>
+</td>
+<td rowspan="2"><!--書き順 -->
+	<!--<iframe id="frame0" src="" width="200" height="400" style="transform: scale(0.5);"></iframe>-->
+	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+    <div style="width:200px;height:400px;overflow:hidden;">
+        <iframe id="frame0" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+    </div>
+</div>
+<div>
+		<button type="button" onclick="openURL()">かきじゅんをみる</button>
+	</div>
+</td>
+<td rowspan="2"> <!-- キャンバス -->
+  <div>れんしゅう<span id="count">1</span>かいめ</div>
+  <canvas id="canvas" frameborder="1" width="400" height="400"></canvas>
+  <div>
+    <!-- <input id="inputColor" type="color" value="#ff0000"> -->
+    <button id="buttonclear">やりなおし</button>　　
+    <input id="inputColor" type="color" list="color-picker">
+    <datalist id="color-picker">
+      <option value="#ff0000">
+      <option value="#00ff00">
+      <option value="#0000ff">
+    </datalist>
+    <button id="colorbutton">けってい</button>　　
+    <button id="buttonSave">かけた！</button><br>
+    　　　　　　　　　
+    <button id="hosoku">ほそく</button>
+    <button id="hutoku">ふとく</button>
+    ふとさ：<span id="hutosa">9</span>
+    
+  </div>
+</td>
+<!-- 記録 -->
+<td>
+	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+	    <div style="width:200px;height:400px;overflow:hidden;">
+	        <iframe id="frame1" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	    </div>
+	</div>
+</td>
+<td>
+	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+	    <div style="width:200px;height:400px;overflow:hidden;">
+	        <iframe id="frame2" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	    </div>
+	</div>
+</td>
+<td rowspan="2"><sapn id="iruka"></sapn></td>
+<tr>
+<td>
+<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+	    <div style="width:200px;height:400px;overflow:hidden;">
+	        <iframe id="frame3" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	    </div>
+	</div>
+</td>
+<td>
+	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+	    <div style="width:200px;height:400px;overflow:hidden;">
+	        <iframe id="frame4" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	    </div>
+	</div>
+</td>
+
+
+</tr></table>
+
+<table><tr>
+<td>
+	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+	    <div style="width:200px;height:400px;overflow:hidden;">
+	        <iframe id="frame11" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	    </div>
+	</div>
+</td>
+<td>
+	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+	    <div style="width:200px;height:400px;overflow:hidden;">
+	        <iframe id="frame12" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	    </div>
+	</div>
+</td>
+<td>
+  <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+	    <div style="width:200px;height:400px;overflow:hidden;">
+	        <iframe id="frame21" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	    </div>
+	</div>
+</td>
+<td>
+	<div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+	    <div style="width:200px;height:400px;overflow:hidden;">
+	        <iframe id="frame22" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+	    </div>
+	</div>
+</td>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame31" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame32" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+  <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame41" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame42" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  </tr>
+  
+<tr>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame13" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame14" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+  <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame23" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame24" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame33" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame34" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+  <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame43" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  <td>
+    <div style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+        <div style="width:200px;height:400px;overflow:hidden;">
+            <iframe id="frame44" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+        </div>
+    </div>
+  </td>
+  </tr></table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
