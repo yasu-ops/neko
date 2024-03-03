@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 <head>
   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=euc-jp">
   <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, no-store, must-revalidate">
@@ -261,18 +261,20 @@
 
     // お手本表示
     function openURL() {
+      if(document.getElementById("data").innerHTML!""){
 
-      // テキストボックスの値を取得
-      var u = document.getElementById("data").innerHTML;
-      
-      // iframeのsrc属性にURLを代入
-      document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/?svg=" + u;
+        // テキストボックスの値を取得
+        var u = document.getElementById("data").innerHTML;
+        
+        // iframeのsrc属性にURLを代入
+        document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/?svg=" + u;
 
-      var iframe = document.getElementById("frame0").getElementsByTagName('iframe');
+        var iframe = document.getElementById("frame0").getElementsByTagName('iframe');
 
-      var body = iframe.contentDocument.body;
-      body.style.padding = 0;
-      body.style.margin = 0;
+        var body = iframe.contentDocument.body;
+        body.style.padding = 0;
+        body.style.margin = 0;
+      }
     }
 
     function touroku(){
@@ -292,12 +294,14 @@
     }
 
     function reset(){
-      document.getElementById("data").innerHTML=ji[0];
-      document.getElementById("rei").innerHTML=rei[0];
-      document.getElementById("yomi").innerHTML=yomi[0];
-      document.getElementById("set_count").innerHTML=1;        
-      document.getElementById("count").innerHTML=1;        
-      document.getElementById("frame0").src=""
+      if(document.getElementById("data").innerHTML=""){
+        document.getElementById("data").innerHTML=ji[0];
+        document.getElementById("rei").innerHTML=rei[0];
+        document.getElementById("yomi").innerHTML=yomi[0];
+        document.getElementById("set_count").innerHTML=1;        
+        document.getElementById("count").innerHTML=1;        
+        document.getElementById("frame0").src=""
+      }
       for(i=1;i<5;i++){
         document.getElementById("frame"+i).src="";
         for(j=1;j<5;j++){
@@ -311,14 +315,15 @@
 <body bgcolor="#00C4CC" >
   
 <table>
-<tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
-<tr><td><b>漢字１字</b></td><td><input type="text" id="ji1" ></td><td><input type="text" id="ji2" ></td><td><input type="text" id="ji3" ></td><td><input type="text" id="ji4" ></td><td><b>タブキーで移動</b></td></tr>
-<tr><td><b>用例※省略可</b></td><td><input type="text" id="rei1" ></td><td><input type="text" id="rei2" ></td><td><input type="text" id="rei3" ></td><td><input type="text" id="rei4" ></td><td></td></tr>
-<tr><td><b>読み※省略可</b></td><td><input type="text" id="yomi1" ></td><td><input type="text" id="yomi2" ></td><td><input type="text" id="yomi3" ></td><td><input type="text" id="yomi4" ></td><td><button onclick="touroku();">登録</button></td></tr>
+
+<tr><td width="300" rowspan="4" style="text-align: center; border: 2px solid black;"><span style="color:black;font-size:35px;font-family: 'Noto Serif JP', serif;font-weight: 600;">かんじれんしゅう</span></td><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td></td><td rowspan="4"><img src="iruka.png"  width="130px"></td></tr>
+<tr><td><b>漢字１字</b></td><td><input type="text" id="ji1" size="10"></td><td><input type="text" id="ji2" size="10" ></td><td><input type="text" id="ji3" size="10" ></td><td><input type="text" id="ji4" size="10" ></td><td><b>タブキーで移動</b></td></tr>
+<tr><td><b>用例※省略可</b></td><td><input type="text" id="rei1" size="10" ></td><td><input type="text" id="rei2" size="10" ></td><td><input type="text" id="rei3" size="10" ></td><td><input type="text" id="rei4" size="10" ></td><td></td></tr>
+<tr><td><b>読み※省略可</b></td><td><input type="text" id="yomi1" size="10" ></td><td><input type="text" id="yomi2" size="10" ></td><td><input type="text" id="yomi3" size="10" ></td><td><input type="text" id="yomi4" size="10" ></td><td><button onclick="touroku();">登録</button></td></tr>
+
 </table>
 
-だい<span id="set_count">１</span>もん：<span id="data"></span>　　<button onclick="reset();">ぜんぶけす</button>　　<button onclick="location.replace('https://yasu-ops.github.io/neko/index2.htm');">メニューにもどる</button>
-</b>
+だい<span id="set_count">１</span>もん：<span id="data"></span>　　<button onclick="reset();">ぜんぶけす</button>　　<button onclick="location.replace('https://yasu-ops.github.io/neko/index2.htm');">まえのメニューにもどる</button>
 <br>
 <table >
 <tr><td color="white"><b>みほん</b></td><td><b>かきじゅん</b></td><td><b>れんしゅう</b></td><td colspan="2"><b>いまやっている、れんしゅうのきろく</b></td></tr>
@@ -514,21 +519,6 @@
     </div>
   </td>
   </tr></table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </body>
 </html>
