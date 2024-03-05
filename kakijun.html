@@ -262,13 +262,16 @@
     // お手本表示
     function openURL() {
       if(document.getElementById("data").innerHTML!=""){
-
         // テキストボックスの値を取得
         var u = document.getElementById("data").innerHTML;
-        
-        // iframeのsrc属性にURLを代入
-        document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/?svg=" + u;
+        var unicodeValue = u.charCodeAt(0);
+        // Replace 'u' with '00' in the Unicode value
+        const unicodeValueStr = "0" + unicodeValue.toString(16).substr(0);
 
+        // iframeのsrc属性にURLを代入
+        // document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/?svg=" + u;
+        document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/svg/" + unicodeValueStr+".svg";
+        alert("https://www.miraisoft.de/anikanjivgx/svg/" + unicodeValueStr+".svg");
         var iframe = document.getElementById("frame0").getElementsByTagName('iframe');
 
         var body = iframe.contentDocument.body;
