@@ -57,48 +57,48 @@
             constructor() {
                 this.app = document.getElementById('app');
                 this.textareas = [];
-                //output—p
+                //outputç”¨
                 this.outputArea = null;
                 //this.highlightedGroup = null;
                 this.addTextarea();
                 this.addClearButton();
 
-                // yas01 ƒOƒ‹[ƒv”Ô†ŠÇ—‚Ì‚½‚ß‚Ì’Ç‰Á
+                // yas01 ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·ç®¡ç†ã®ãŸã‚ã®è¿½åŠ 
                 this.maxGroupNumber = 0;
                 this.groupNumberDisplay = document.createElement('div');
                 this.groupNumberDisplay.id = 'max-group-number';
                 document.body.insertBefore(this.groupNumberDisplay, document.body.firstChild);
                 this.updateMaxGroupNumberDisplay();  
 
-                // V‚µ‚¢o—ÍƒGƒŠƒA‚Ì’Ç‰Á
+                // æ–°ã—ã„å‡ºåŠ›ã‚¨ãƒªã‚¢ã®è¿½åŠ 
                 //this.createOutputArea();
                 
             }
 
-            // V‚µ‚¢ƒƒ\ƒbƒh: o—ÍƒGƒŠƒA‚Ìì¬
+            // æ–°ã—ã„ãƒ¡ã‚½ãƒƒãƒ‰: å‡ºåŠ›ã‚¨ãƒªã‚¢ã®ä½œæˆ
             createOutputArea() {
 
                 this.outputArea = document.createElement('div');
                 this.outputArea.id = 'output-area';
-                //this.outputArea.contentEditable = true; // ƒŠƒbƒ`ƒeƒLƒXƒg‚Ì•ÒW‚ğ‰Â”\‚É‚·‚é
+                //this.outputArea.contentEditable = true; // ãƒªãƒƒãƒãƒ†ã‚­ã‚¹ãƒˆã®ç·¨é›†ã‚’å¯èƒ½ã«ã™ã‚‹
                 this.outputArea.style.border = '1px solid #ccc';
                 this.outputArea.style.padding = '10px';
                 this.outputArea.style.marginTop = '20px';
                 this.outputArea.style.minHeight = '100px';
-                this.outputArea.style.fontFamily = 'monospace'; // “™•ƒtƒHƒ“ƒg‚ğg—p
-                this.outputArea.style.display = 'none'; // ‰Šúó‘Ô‚Å”ñ•\¦
+                this.outputArea.style.fontFamily = 'monospace'; // ç­‰å¹…ãƒ•ã‚©ãƒ³ãƒˆã‚’ä½¿ç”¨
+                this.outputArea.style.display = 'none'; // åˆæœŸçŠ¶æ…‹ã§éè¡¨ç¤º
                 
 
                 const outputButton = document.createElement('button');
-                outputButton.textContent = 'ƒeƒLƒXƒg‚ğ‘‚«o‚·';
+                outputButton.textContent = 'ãƒ†ã‚­ã‚¹ãƒˆã‚’æ›¸ãå‡ºã™';
                 outputButton.onclick = () => this.writeOutput();
                 
                 const outputButton2 = document.createElement('button');
-                outputButton2.textContent = 'ƒcƒŠ[}‚É‚·‚é';
+                outputButton2.textContent = 'ãƒ„ãƒªãƒ¼å›³ã«ã™ã‚‹';
                 outputButton2.onclick = () => this.writeOutput2();
 
                 const outputButton3 = document.createElement('button');
-                outputButton3.textContent = 'ƒ}ƒCƒ“ƒhƒ}ƒbƒv‚É‚·‚é';
+                outputButton3.textContent = 'ãƒã‚¤ãƒ³ãƒ‰ãƒãƒƒãƒ—ã«ã™ã‚‹';
                 outputButton3.onclick = () => this.writeOutput3();
 
                 this.app.appendChild(outputButton);
@@ -155,12 +155,12 @@
                 }
             }
 
-            // V‚µ‚¢ƒƒ\ƒbƒh: ƒeƒLƒXƒg‚Ì‘‚«o‚µ
+            // æ–°ã—ã„ãƒ¡ã‚½ãƒƒãƒ‰: ãƒ†ã‚­ã‚¹ãƒˆã®æ›¸ãå‡ºã—
             writeOutput2() {
                 let output = '';
                 const textareasData = [];
                 
-                // ƒAƒ‹ƒtƒ@ƒxƒbƒg‚ÌŒÄ‚Ñ–¼‚ğ¶¬‚·‚éŠÖ”
+                // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ™ãƒƒãƒˆã®å‘¼ã³åã‚’ç”Ÿæˆã™ã‚‹é–¢æ•°
                 const generateAlphabetLabel = (index) => {
                     let label = '';
                     while (index >= 0) {
@@ -170,7 +170,7 @@
                     return label;
                 };
 
-                // ƒeƒLƒXƒgƒGƒŠƒA‚Ì“à—e‚ğûW
+                // ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®å†…å®¹ã‚’åé›†
                 this.textareas.forEach((textareaDiv, index) => {
                     const textarea = textareaDiv.querySelector('textarea');
                     const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
@@ -179,7 +179,7 @@
                     textareasData.push({ label, content, indent });
                 });
 
-                // ŠÖ˜A•t‚¯‚Æo—Í‚Ì¶¬
+                // é–¢é€£ä»˜ã‘ã¨å‡ºåŠ›ã®ç”Ÿæˆ
                 for (let i = 1; i < textareasData.length; i++) {
                     const current = textareasData[i];
                     if (current.indent > 0) {
@@ -200,7 +200,7 @@
                 window.myfunction();
             }
 
-            // HTMLƒGƒXƒP[ƒv—p‚Ìƒwƒ‹ƒp[ƒƒ\ƒbƒh
+            // HTMLã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ç”¨ã®ãƒ˜ãƒ«ãƒ‘ãƒ¼ãƒ¡ã‚½ãƒƒãƒ‰
             escapeHtml(unsafe) {
                 return unsafe
                     .replace(/&/g, "&amp;")
@@ -210,7 +210,7 @@
                     .replace(/'/g, "&#039;");
             }
 
-            // V‚µ‚¢ƒƒ\ƒbƒh: ƒeƒLƒXƒg‚Ì‘‚«o‚µ
+            // æ–°ã—ã„ãƒ¡ã‚½ãƒƒãƒ‰: ãƒ†ã‚­ã‚¹ãƒˆã®æ›¸ãå‡ºã—
 
             addClearButton() {
                 const clearButton = document.createElement('button');
@@ -233,12 +233,12 @@
                 const controls = document.createElement('div');
                 controls.className = 'controls';
 
-                const buttons = ['-', '•Â', 'ŠJ', 'G'];
+                const buttons = ['-', 'é–‰', 'é–‹', 'G'];
                 buttons.forEach(label => {
                     const button = document.createElement('button');
                     button.textContent = label;
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
-                    if (label === '•Â') {
+                    if (label === 'é–‰') {
                         button.classList.add('close-button');
                     }
                     controls.appendChild(button);
@@ -290,40 +290,40 @@
                 if (event.ctrlKey) {
                     if (event.key === 'ArrowUp') {
                         event.preventDefault();
-                        //ƒJ[ƒ\ƒ‹‚ª‚ ‚é‚Ì‚ªƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚Ìê‡
+                        //ã‚«ãƒ¼ã‚½ãƒ«ãŒã‚ã‚‹ã®ãŒãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®å ´åˆ
                         if (textarea.style.backgroundColor === 'yellow') {
-                            //^ãæ“¾
+                            //çœŸä¸Šå–å¾—
                             const aboveContainer = this.textareas[index - 1];
                             const aboveTextarea = aboveContainer.querySelector('textarea');
-                            //^ã‚ªƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚éê‡
+                            //çœŸä¸ŠãŒãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ã‚‹å ´åˆ
                             if (aboveTextarea.style.backgroundColor === 'yellow') {
-                                //©g‚ÌƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚éƒeƒLƒXƒgƒGƒŠƒA‚Ì”‚ğ”‚¦‚é
+                                //è‡ªèº«ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®æ•°ã‚’æ•°ãˆã‚‹
                                 let tcount=this.countGroupMembers(index);
                                 //alert(index);
                                 //alert(tcount);
-                                //index‚ğŒ¸‚¶‚È‚ª‚çA‚»‚Ì”‚¾‚¯up‚ğŒJ‚è•Ô‚·
+                                //indexã‚’æ¸›ã˜ãªãŒã‚‰ã€ãã®æ•°ã ã‘upã‚’ç¹°ã‚Šè¿”ã™
                                 for(let i=0;i<tcount;i++){
                                     //alert(i);
                                     this.moveHighlightedUp(index-i);
                                 }
                             } else {
-                                //^ã‚ªƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ê‡
+                                //çœŸä¸ŠãŒãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„å ´åˆ
                                 this.moveHighlightedUp(index);
                             }
-                        //ƒJ[ƒ\ƒ‹‚ª‚ ‚é‚Ì‚ÍƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ƒeƒLƒXƒgƒGƒŠƒA‚Ìê‡    
+                        //ã‚«ãƒ¼ã‚½ãƒ«ãŒã‚ã‚‹ã®ã¯ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®å ´åˆ    
                         } else {
-                            //‚»‚ê‚ª‚Ä‚Á‚Ø‚ñ‚ÌƒeƒLƒXƒgƒGƒŠƒA‚È‚ç‰½‚à‚µ‚È‚¢
+                            //ãã‚ŒãŒã¦ã£ãºã‚“ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãªã‚‰ä½•ã‚‚ã—ãªã„
                             if (index > 0) { 
-                                // ‚Qsg‚Á‚ÄA^ã‚ÌƒeƒLƒXƒgƒGƒŠƒAæ“¾
+                                // ï¼’è¡Œä½¿ã£ã¦ã€çœŸä¸Šã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢å–å¾—
                                 const aboveContainer = this.textareas[index - 1];
                                 const aboveTextarea = aboveContainer.querySelector('textarea');
-                                // ^ã‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ªƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚éê‡
+                                // çœŸä¸Šã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãŒãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ã‚‹å ´åˆ
                                 if (aboveTextarea.style.backgroundColor === 'yellow') {
-                                    // ƒJ[ƒ\ƒ‹‚ğ^ã‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ÉˆÚ‚µ‚ÄA
-                                    //^ã‚É‚ ‚éƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚ğ‰º‚É‰º‚ë‚·ì‹Æ
+                                    // ã‚«ãƒ¼ã‚½ãƒ«ã‚’çœŸä¸Šã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã«ç§»ã—ã¦ã€
+                                    //çœŸä¸Šã«ã‚ã‚‹ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä¸‹ã«ä¸‹ã‚ã™ä½œæ¥­
                                     //aboveTextarea.focus(); 
 
-                                    // ƒtƒH[ƒJƒXˆÚ“®Œã‚ÉƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+                                    // ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ç§»å‹•å¾Œã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
                                     //let newContainer = document.activeElement.closest('.textarea-container');
                                     //let newIndex = this.textareas.indexOf(newContainer);
                                     //console.log("New focused textarea index:", newIndex);
@@ -336,9 +336,9 @@
                                     this.moveCursor(cindex,0); 
                                     
                                 } else {
-                                    //ƒJ[ƒ\ƒ‹ˆÊ’u‚ÍŒ»İ‚ÌƒeƒLƒXƒgƒGƒŠƒA“à‚ÌƒJ[ƒ\ƒ‹ˆÊ’u‚É‚È‚éB
+                                    //ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã¯ç¾åœ¨ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢å†…ã®ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã«ãªã‚‹ã€‚
                                     const cursorPosition = textarea.selectionStart;
-                                    //index‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ª^ã‚Æ“ü‚ê‘Ö‚í‚é
+                                    //indexã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãŒçœŸä¸Šã¨å…¥ã‚Œæ›¿ã‚ã‚‹
                                     this.swapWithAbove(index, cursorPosition);
                                 }
 
@@ -347,34 +347,34 @@
                         }
                     } else if (event.key === 'ArrowDown') {
                         event.preventDefault();
-                        //ƒJ[ƒ\ƒ‹‚ª‚ ‚é‚Ì‚ªƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚Ìê‡
+                        //ã‚«ãƒ¼ã‚½ãƒ«ãŒã‚ã‚‹ã®ãŒãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®å ´åˆ
                         if (textarea.style.backgroundColor === 'yellow') {
-                            //©g‚ÌƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚éƒeƒLƒXƒgƒGƒŠƒA‚Ì”‚ğ”‚¦‚é
+                            //è‡ªèº«ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®æ•°ã‚’æ•°ãˆã‚‹
                             let tcount=this.countGroupMembers(index);
-                            //©•ª‚ÌƒOƒ‹[ƒv‚Ì^‰ºæ“¾
+                            //è‡ªåˆ†ã®ã‚°ãƒ«ãƒ¼ãƒ—ã®çœŸä¸‹å–å¾—
                             const belowContainer = this.textareas[index + tcount];
                             const belowTextarea = belowContainer.querySelector('textarea');
-                            //©•ª‚ÌƒOƒ‹[ƒv‚Ì^‰º‚ªƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚éê‡
+                            //è‡ªåˆ†ã®ã‚°ãƒ«ãƒ¼ãƒ—ã®çœŸä¸‹ãŒãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ã‚‹å ´åˆ
                             if (belowTextarea.style.backgroundColor === 'yellow') {
-                                //index‚ğ‘‚â‚µ‚È‚ª‚çA‚»‚Ì”‚¾‚¯up‚ğŒJ‚è•Ô‚·
+                                //indexã‚’å¢—ã‚„ã—ãªãŒã‚‰ã€ãã®æ•°ã ã‘upã‚’ç¹°ã‚Šè¿”ã™
                                 for(let i=0;i<tcount;i++){
                                     this.moveHighlightedDown(index+i);
                                 }
                             } else {
-                                //^‰º‚ªƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ê‡
+                                //çœŸä¸‹ãŒãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„å ´åˆ
                                 this.moveHighlightedDown(index);
                             }
-                        //ƒJ[ƒ\ƒ‹‚ª‚ ‚é‚Ì‚ÍƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ƒeƒLƒXƒgƒGƒŠƒA‚Ìê‡    
+                        //ã‚«ãƒ¼ã‚½ãƒ«ãŒã‚ã‚‹ã®ã¯ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®å ´åˆ    
                         } else {
-                            //‚»‚ê‚ªˆê”Ô‰º‚ÌƒeƒLƒXƒgƒGƒŠƒA‚È‚ç‰½‚à‚µ‚È‚¢
+                            //ãã‚ŒãŒä¸€ç•ªä¸‹ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãªã‚‰ä½•ã‚‚ã—ãªã„
                             if (index < this.textareas.length - 1) { 
-                                // ‚Qsg‚Á‚ÄA^‰º‚ÌƒeƒLƒXƒgƒGƒŠƒAæ“¾
+                                // ï¼’è¡Œä½¿ã£ã¦ã€çœŸä¸‹ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢å–å¾—
                                 const belowContainer = this.textareas[index + 1];
                                 const belowTextarea = belowContainer.querySelector('textarea');
-                                //^‰º‚ªƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚éê‡
+                                //çœŸä¸‹ãŒãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ã‚‹å ´åˆ
                                 if (belowTextarea.style.backgroundColor === 'yellow') {
-                                    // ƒJ[ƒ\ƒ‹‚ğ‚»‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ÉˆÚ‚µ‚ÄA
-                                    //‚»‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ğã‚É‚ ‚°‚é
+                                    // ã‚«ãƒ¼ã‚½ãƒ«ã‚’ãã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã«ç§»ã—ã¦ã€
+                                    //ãã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä¸Šã«ã‚ã’ã‚‹
                                     //this.moveCursor(index+1,0);  
                                     this.moveHighlightedUp((index+1));
                                     
@@ -383,9 +383,9 @@
                                     let cindex = this.textareas.indexOf(container);
                                     this.moveCursor(cindex,0); 
                                 } else {
-                                    //ƒJ[ƒ\ƒ‹ˆÊ’u‚ÍŒ»İ‚ÌƒeƒLƒXƒgƒGƒŠƒA“à‚ÌƒJ[ƒ\ƒ‹ˆÊ’u‚É‚È‚éB
+                                    //ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã¯ç¾åœ¨ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢å†…ã®ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã«ãªã‚‹ã€‚
                                     const cursorPosition = textarea.selectionStart;
-                                    //index‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ª^‰º‚Æ“ü‚ê‘Ö‚í‚é
+                                    //indexã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãŒçœŸä¸‹ã¨å…¥ã‚Œæ›¿ã‚ã‚‹
                                     this.swapWithBelow(index, cursorPosition);
                                 }
                             }
@@ -425,17 +425,17 @@
                 }
             }
             
-            //currentIndex: Œ»İ‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ÌƒCƒ“ƒfƒbƒNƒXBdirection: ˆÚ“®‚·‚é•ûŒüB1‚È‚çŸ‚ÌƒeƒLƒXƒgƒGƒŠƒAA-1‚È‚ç‘O‚ÌƒeƒLƒXƒgƒGƒŠƒAB
+            //currentIndex: ç¾åœ¨ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã€‚direction: ç§»å‹•ã™ã‚‹æ–¹å‘ã€‚1ãªã‚‰æ¬¡ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã€-1ãªã‚‰å‰ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã€‚
             moveCursor(currentIndex, direction) {
-                //Œ»İ‚ÌƒCƒ“ƒfƒbƒNƒX‚É•ûŒü‚ğ‰ÁZ‚µ‚ÄAˆÚ“®æ‚ÌƒCƒ“ƒfƒbƒNƒX‚ğŒvZ‚µ‚Ü‚·B
+                //ç¾åœ¨ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«æ–¹å‘ã‚’åŠ ç®—ã—ã¦ã€ç§»å‹•å…ˆã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¨ˆç®—ã—ã¾ã™ã€‚
                 const targetIndex = currentIndex + direction;
-                //ƒ^[ƒQƒbƒgƒCƒ“ƒfƒbƒNƒX‚ª—LŒø‚È”ÍˆÍ“à‚É‚ ‚é‚©‚ğŠm”F‚µ‚Ü‚·B
+                //ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒæœ‰åŠ¹ãªç¯„å›²å†…ã«ã‚ã‚‹ã‹ã‚’ç¢ºèªã—ã¾ã™ã€‚
                 if (targetIndex >= 0 && targetIndex < this.textareas.length) {
-                    //ƒ^[ƒQƒbƒgƒCƒ“ƒfƒbƒNƒX‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ğæ“¾‚µAƒtƒH[ƒJƒX‚ğˆÚ“®‚µ‚Ü‚·B
+                    //ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’å–å¾—ã—ã€ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’ç§»å‹•ã—ã¾ã™ã€‚
                     const targetTextarea = this.textareas[targetIndex].querySelector('textarea');
                     targetTextarea.focus();
-                    //direction‚ª1‚Ìê‡AƒJ[ƒ\ƒ‹‚ğƒeƒLƒXƒgƒGƒŠƒA‚Ìæ“ª‚ÉˆÚ“®‚µ‚Ü‚·B
-                    //direction‚ª-1‚Ìê‡AƒJ[ƒ\ƒ‹‚ğƒeƒLƒXƒgƒGƒŠƒA‚Ì––”ö‚ÉˆÚ“®‚µ‚Ü‚·B
+                    //directionãŒ1ã®å ´åˆã€ã‚«ãƒ¼ã‚½ãƒ«ã‚’ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®å…ˆé ­ã«ç§»å‹•ã—ã¾ã™ã€‚
+                    //directionãŒ-1ã®å ´åˆã€ã‚«ãƒ¼ã‚½ãƒ«ã‚’ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®æœ«å°¾ã«ç§»å‹•ã—ã¾ã™ã€‚
                     if (direction === 1) {
                         targetTextarea.selectionStart = targetTextarea.selectionEnd = 0;
                     } else {
@@ -470,7 +470,7 @@
                 this.updateTextareaNumbers();
                 this.updateCloseButtons();
 
-                // o—ÍƒGƒŠƒA‚Æƒ{ƒ^ƒ“‚ğÄì¬
+                // å‡ºåŠ›ã‚¨ãƒªã‚¢ã¨ãƒœã‚¿ãƒ³ã‚’å†ä½œæˆ
                 this.createOutputArea();
                 }
 
@@ -490,13 +490,13 @@
                     case '-':
                         this.removeTextarea(index);
                         break;
-                    case '•Â':
+                    case 'é–‰':
                         //0707 this.clearAllHighlights();            
                         //this.toggleHighlightGroup(index);
                         this.highlightGroup(index);
                         this.toggleVisibility(index, false);
                         break;
-                    case 'ŠJ':
+                    case 'é–‹':
                         this.toggleVisibility(index, true);
                         break;
                     case 'G':
@@ -542,13 +542,13 @@
                 const startIndent = this.getIndent(this.textareas[index]);
                 let newGroupNumber;
                 
-                // yas ƒOƒ‹[ƒv‰»‚³‚ê‚Ä‚¢‚È‚¢ê‡AV‚µ‚¢ƒOƒ‹[ƒv”Ô†‚ğŠ„‚è“–‚Ä‚é
+                // yas ã‚°ãƒ«ãƒ¼ãƒ—åŒ–ã•ã‚Œã¦ã„ãªã„å ´åˆã€æ–°ã—ã„ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·ã‚’å‰²ã‚Šå½“ã¦ã‚‹
                 if (this.getGroupNumber(this.textareas[index]) === 0) {
                     this.maxGroupNumber++;
                     newGroupNumber = this.maxGroupNumber;
                     this.updateMaxGroupNumberDisplay();
                 } else {
-                    // Šù‚ÉƒOƒ‹[ƒv‰»‚³‚ê‚Ä‚¢‚éê‡A‚»‚ÌƒOƒ‹[ƒv”Ô†‚ğg—p
+                    // æ—¢ã«ã‚°ãƒ«ãƒ¼ãƒ—åŒ–ã•ã‚Œã¦ã„ã‚‹å ´åˆã€ãã®ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·ã‚’ä½¿ç”¨
                     newGroupNumber = this.getGroupNumber(this.textareas[index]);
                 }
 
@@ -575,12 +575,12 @@
                 textarea.dataset.groupNumber = number.toString();
                 const groupNumberDisplay = container.querySelector('.group-number-display');
                 if (groupNumberDisplay) {
-                    groupNumberDisplay.textContent = `ƒOƒ‹[ƒv: ${number}`;
+                    groupNumberDisplay.textContent = `ã‚°ãƒ«ãƒ¼ãƒ—: ${number}`;
                 }
             }
             //yas
             updateMaxGroupNumberDisplay() {
-                this.groupNumberDisplay.textContent = `Å‘åƒOƒ‹[ƒv”Ô†: ${this.maxGroupNumber}`;
+                this.groupNumberDisplay.textContent = `æœ€å¤§ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·: ${this.maxGroupNumber}`;
             }
 
 
@@ -622,44 +622,44 @@
                 this.updateDOM();
             }
 
-            //show‚ªtrue‚¾‚Æ‚Q‚Â–ÚˆÈ~‚ª•\¦Afalse‚¾‚Æ”ñ•\¦‚É‚È‚é
+            //showãŒtrueã ã¨ï¼’ã¤ç›®ä»¥é™ãŒè¡¨ç¤ºã€falseã ã¨éè¡¨ç¤ºã«ãªã‚‹
             toggleVisibility(startIndex, show) {
-                // ƒfƒoƒbƒO—pFŠJnƒCƒ“ƒfƒbƒNƒX‚ğƒƒOo—Í
+                // ãƒ‡ãƒãƒƒã‚°ç”¨ï¼šé–‹å§‹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ãƒ­ã‚°å‡ºåŠ›
                 console.log(startIndex);
 
-                // ŠJn—v‘f‚ÌƒCƒ“ƒfƒ“ƒgƒŒƒxƒ‹‚ğæ“¾
+                // é–‹å§‹è¦ç´ ã®ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆãƒ¬ãƒ™ãƒ«ã‚’å–å¾—
                 const startIndent = this.getIndent(this.textareas[startIndex]);
-                //‚Q‚Â–ÚˆÈ~‚ğˆ—
+                //ï¼’ã¤ç›®ä»¥é™ã‚’å‡¦ç†
                 let i = startIndex + 1;
                 let hasHiddenTextareas = false;
 
-                // ŠJn—v‘f‚æ‚è[‚¢ƒCƒ“ƒfƒ“ƒg‚Ì—v‘f‚ğˆ—
+                // é–‹å§‹è¦ç´ ã‚ˆã‚Šæ·±ã„ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã®è¦ç´ ã‚’å‡¦ç†
                 while (i < this.textareas.length) {
                     const currentIndent = this.getIndent(this.textareas[i]);
-                    // ŠJn—v‘fˆÈ‰º‚ÌƒCƒ“ƒfƒ“ƒgƒŒƒxƒ‹‚É‚È‚Á‚½‚çˆ—‚ğI—¹
+                    // é–‹å§‹è¦ç´ ä»¥ä¸‹ã®ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆãƒ¬ãƒ™ãƒ«ã«ãªã£ãŸã‚‰å‡¦ç†ã‚’çµ‚äº†
                     if (currentIndent <= startIndent) break;
 
-                    // ‚Q‚Â–ÚˆÈ~‚ğ‚P‚Â‚¸‚Â•\¦i”ñ•\¦j‚É
+                    // ï¼’ã¤ç›®ä»¥é™ã‚’ï¼‘ã¤ãšã¤è¡¨ç¤ºï¼ˆéè¡¨ç¤ºï¼‰ã«
                     this.textareas[i].style.display = show ? 'flex' : 'none';
-                    //”ñ•\¦‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ª‚ ‚é‚©‚ğ•Ï”‚ÉŠi”[
-                    //‚±‚ê‚Í–{“–‚Í‚P‰ñ‚¾‚¯‚Å‚¢‚¢‚ñ‚¾‚¯‚ÇA–ˆ‰ñ‚â‚Á‚Ä‚é
+                    //éè¡¨ç¤ºã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãŒã‚ã‚‹ã‹ã‚’å¤‰æ•°ã«æ ¼ç´
+                    //ã“ã‚Œã¯æœ¬å½“ã¯ï¼‘å›ã ã‘ã§ã„ã„ã‚“ã ã‘ã©ã€æ¯å›ã‚„ã£ã¦ã‚‹
                     if (!show) hasHiddenTextareas = true;
                     i++;
                 }
 
-                // ƒfƒoƒbƒO—pFˆ—Œã‚ÌŠJnƒCƒ“ƒfƒbƒNƒX‚ğƒƒOo—Í
+                // ãƒ‡ãƒãƒƒã‚°ç”¨ï¼šå‡¦ç†å¾Œã®é–‹å§‹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ãƒ­ã‚°å‡ºåŠ›
                 console.log(startIndex);
 
-                // •\¦‚ÉØ‚è‘Ö‚¦‚éê‡A’x‰„‚µ‚ÄƒtƒH[ƒJƒX‚ğİ’è
+                // è¡¨ç¤ºã«åˆ‡ã‚Šæ›¿ãˆã‚‹å ´åˆã€é…å»¶ã—ã¦ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’è¨­å®š
                 setTimeout(() => {
                     const nowTextarea = this.textareas[startIndex].querySelector('textarea');
                     nowTextarea.focus();
                     this.moveCursor(startIndex, 0);
-                    // ƒJ[ƒ\ƒ‹‚ğæ“ª‚ÉˆÚ“®
+                    // ã‚«ãƒ¼ã‚½ãƒ«ã‚’å…ˆé ­ã«ç§»å‹•
                     nowTextarea.selectionStart = nowTextarea.selectionEnd = 0;
-                }, 100); // 100ms‚Ì’x‰„‚ğ’Ç‰Á
+                }, 100); // 100msã®é…å»¶ã‚’è¿½åŠ 
 
-                // •Â‚¶‚éƒ{ƒ^ƒ“‚ÌƒXƒ^ƒCƒ‹‚ğXV
+                // é–‰ã˜ã‚‹ãƒœã‚¿ãƒ³ã®ã‚¹ã‚¿ã‚¤ãƒ«ã‚’æ›´æ–°
                 const closeButton = this.textareas[startIndex].querySelector('.close-button');
                 if (hasHiddenTextareas) {
                     closeButton.classList.add('bold');
@@ -667,7 +667,7 @@
                     closeButton.classList.remove('bold');
                 }
 
-                // DOMXVˆ—‚ğŒÄ‚Ño‚µ
+                // DOMæ›´æ–°å‡¦ç†ã‚’å‘¼ã³å‡ºã—
                 this.updateDOM();
             }
 
@@ -700,57 +700,57 @@
             countGroupMembers(cindex){
                 let now_index=cindex;
                 let now_gpnum=this.getGroupNumber(this.textareas[cindex]);
-                // ƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾‚·‚é
+                // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—ã™ã‚‹
                 const highlightedIndexes = this.getHighlightedIndexes();
-                //‚±‚ÌƒnƒCƒ‰ƒCƒgƒOƒ‹[ƒv‚ÌÅŒã”ö‚Ì”cˆ¬---------------------------------
+                //ã“ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã‚°ãƒ«ãƒ¼ãƒ—ã®æœ€å¾Œå°¾ã®æŠŠæ¡---------------------------------
                 while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
-                    //ƒJƒŒƒ“ƒgƒCƒ“ƒfƒbƒNƒX‚ğ‘‚â‚µ‚Ä‚¢‚­
+                    //ã‚«ãƒ¬ãƒ³ãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å¢—ã‚„ã—ã¦ã„ã
                     cindex++;
                 }
-                // ÅI“I‚Ècindex‚Ì’l‚ğŠm”F
+                // æœ€çµ‚çš„ãªcindexã®å€¤ã‚’ç¢ºèª
                 return (cindex-now_index);
             }
 
 
             moveHighlightedUp(cindex,direction) {
-                //‚±‚ÌƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚ÌƒOƒ‹[ƒv”Ô†‚ğæ“¾‚·‚é
+                //ã“ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·ã‚’å–å¾—ã™ã‚‹
                 let now_gpnum=this.getGroupNumber(this.textareas[cindex]);
 
-                // ƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾‚·‚é
+                // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—ã™ã‚‹
                 const highlightedIndexes = this.getHighlightedIndexes();
 
                 //
-                // cindex‚Ì‰Šú’l‚ğŠm”F
+                // cindexã®åˆæœŸå€¤ã‚’ç¢ºèª
                 console.log('Initial cindex:', cindex);
 
-                //‚±‚ÌƒnƒCƒ‰ƒCƒgƒOƒ‹[ƒv‚ÌÅŒã”ö‚Ì”cˆ¬---------------------------------
+                //ã“ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã‚°ãƒ«ãƒ¼ãƒ—ã®æœ€å¾Œå°¾ã®æŠŠæ¡---------------------------------
                 while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
-                    //ƒJƒŒƒ“ƒgƒCƒ“ƒfƒbƒNƒX‚ğ‘‚â‚µ‚Ä‚¢‚­
+                    //ã‚«ãƒ¬ãƒ³ãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å¢—ã‚„ã—ã¦ã„ã
                     cindex++;
                 }
-                // ÅI“I‚Ècindex‚Ì’l‚ğŠm”F
+                // æœ€çµ‚çš„ãªcindexã®å€¤ã‚’ç¢ºèª
                 let lastHighlightedIndex=cindex-1;
                 console.log('lastHighlightedIndex:', lastHighlightedIndex);
 
-                //‚±‚ÌƒnƒCƒ‰ƒCƒgƒOƒ‹[ƒv‚Ìæ“ª‚Ì”cˆ¬---------------------------------
+                //ã“ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã‚°ãƒ«ãƒ¼ãƒ—ã®å…ˆé ­ã®æŠŠæ¡---------------------------------
                 cindex=lastHighlightedIndex
                 while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
-                    //ƒJƒŒƒ“ƒgƒCƒ“ƒfƒbƒNƒX‚ğ‘‚â‚µ‚Ä‚¢‚­
+                    //ã‚«ãƒ¬ãƒ³ãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å¢—ã‚„ã—ã¦ã„ã
                     cindex--;
                 }
-                // ÅI“I‚Ècindex‚Ì’l‚ğŠm”F
+                // æœ€çµ‚çš„ãªcindexã®å€¤ã‚’ç¢ºèª
                 let firstHighlightedIndex=cindex+1;
                 console.log('firstHighlightedIndex:', firstHighlightedIndex);
 
-                // ƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚Ì’†‚Åˆê”Ôã‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ª‚Ps–Ú‚Å‚Í‚È‚¢‚±‚Æ‚ğŠm”F‚·‚é
+                // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ä¸­ã§ä¸€ç•ªä¸Šã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãŒï¼‘è¡Œç›®ã§ã¯ãªã„ã“ã¨ã‚’ç¢ºèªã™ã‚‹
                 if (firstHighlightedIndex != 0) {
-                    //ƒnƒCƒ‰ƒCƒg‚³‚ê‚½¬W’c‚Ì^ã‚ÌƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ƒeƒLƒXƒgƒGƒŠƒA‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+                    //ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸå°é›†å›£ã®çœŸä¸Šã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
                     let currentIndex = firstHighlightedIndex-1 ;
                     console.log('currentIndex:', currentIndex);
                     
-                    // ƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ƒJƒŒƒ“ƒgƒCƒ“ƒfƒbƒNƒX‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ğ‰º‚ÉˆÚ“®
+                    // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„ã‚«ãƒ¬ãƒ³ãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä¸‹ã«ç§»å‹•
                     for (let i = currentIndex; i < lastHighlightedIndex ; i++) {
-                        // ƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ƒeƒLƒXƒgƒGƒŠƒA‚ğã‚É(ƒJ[ƒ\ƒ‹ˆÊ’u‚ÍƒeƒLƒXƒg‚Ìæ“ª‚É)
+                        // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä¸Šã«(ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã¯ãƒ†ã‚­ã‚¹ãƒˆã®å…ˆé ­ã«)
                         console.log('i:', i);
                         this.swapWithBelow(i, 0); 
                     }
@@ -763,90 +763,90 @@
                 //const container = textarea.closest('.textarea-container');
                 //let cindex = this.textareas.indexOf(container);
                 
-                //‚±‚ÌƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚ÌƒOƒ‹[ƒv”Ô†‚ğæ“¾‚·‚é
+                //ã“ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·ã‚’å–å¾—ã™ã‚‹
                 let now_gpnum=this.getGroupNumber(this.textareas[cindex]);
 
-                // ƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾‚·‚é
+                // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—ã™ã‚‹
                 const highlightedIndexes = this.getHighlightedIndexes();
                 
-                // cindex‚Ì‰Šú’l‚ğŠm”F
+                // cindexã®åˆæœŸå€¤ã‚’ç¢ºèª
                 console.log('Initial cindex:', cindex);
 
-                //‚±‚ÌƒnƒCƒ‰ƒCƒgƒOƒ‹[ƒv‚ÌÅŒã”ö‚Ì”cˆ¬---------------------------------
+                //ã“ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã‚°ãƒ«ãƒ¼ãƒ—ã®æœ€å¾Œå°¾ã®æŠŠæ¡---------------------------------
                 while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
-                    //ƒJƒŒƒ“ƒgƒCƒ“ƒfƒbƒNƒX‚ğ‘‚â‚µ‚Ä‚¢‚­
+                    //ã‚«ãƒ¬ãƒ³ãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å¢—ã‚„ã—ã¦ã„ã
                     cindex++;
                 }
-                // ÅI“I‚Ècindex‚Ì’l‚ğŠm”F
+                // æœ€çµ‚çš„ãªcindexã®å€¤ã‚’ç¢ºèª
                 let lastHighlightedIndex=cindex-1;
                 console.log('lastHighlightedIndex:', lastHighlightedIndex);
 
-                //‚±‚ÌƒnƒCƒ‰ƒCƒgƒOƒ‹[ƒv‚Ìæ“ª‚Ì”cˆ¬---------------------------------
+                //ã“ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã‚°ãƒ«ãƒ¼ãƒ—ã®å…ˆé ­ã®æŠŠæ¡---------------------------------
                 cindex=lastHighlightedIndex
                 while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
-                    //ƒJƒŒƒ“ƒgƒCƒ“ƒfƒbƒNƒX‚ğ‘‚â‚µ‚Ä‚¢‚­
+                    //ã‚«ãƒ¬ãƒ³ãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å¢—ã‚„ã—ã¦ã„ã
                     cindex--;
                 }
-                // ÅI“I‚Ècindex‚Ì’l‚ğŠm”F
+                // æœ€çµ‚çš„ãªcindexã®å€¤ã‚’ç¢ºèª
                 let firstHighlightedIndex=cindex+1;
                 console.log('firstHighlightedIndex:', firstHighlightedIndex);
 
-                // ƒnƒCƒ‰ƒCƒg‚³‚ê‚½ƒeƒLƒXƒgƒGƒŠƒA‚Ì’†‚Åˆê”Ô‰º‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ªÅIs‚Å‚Í‚È‚¢‚±‚Æ‚ğŠm”F‚·‚é
+                // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ä¸­ã§ä¸€ç•ªä¸‹ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãŒæœ€çµ‚è¡Œã§ã¯ãªã„ã“ã¨ã‚’ç¢ºèªã™ã‚‹
                 if (lastHighlightedIndex < this.textareas.length - 1) {
-                    //ƒnƒCƒ‰ƒCƒg‚³‚ê‚½¬W’c‚Ì^‰º‚ÌƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ƒeƒLƒXƒgƒGƒŠƒA‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+                    //ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚ŒãŸå°é›†å›£ã®çœŸä¸‹ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
                     let currentIndex = lastHighlightedIndex + 1;
                     console.log('currentIndex:', currentIndex);
 
 
-                    // ƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ƒJƒŒƒ“ƒgƒCƒ“ƒfƒbƒNƒX‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ğã‚ÉˆÚ“®
+                    // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„ã‚«ãƒ¬ãƒ³ãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä¸Šã«ç§»å‹•
                     for (let i = currentIndex; i > firstHighlightedIndex ; i--) {
-                        // ƒnƒCƒ‰ƒCƒg‚³‚ê‚Ä‚¢‚È‚¢ƒeƒLƒXƒgƒGƒŠƒA‚ğã‚É(ƒJ[ƒ\ƒ‹ˆÊ’u‚ÍƒeƒLƒXƒg‚Ìæ“ª‚É)
+                        // ãƒã‚¤ãƒ©ã‚¤ãƒˆã•ã‚Œã¦ã„ãªã„ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä¸Šã«(ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã¯ãƒ†ã‚­ã‚¹ãƒˆã®å…ˆé ­ã«)
                         console.log('i:', i);
                         this.swapWithAbove(i, 0); 
                     }
                     this.moveCursor(firstHighlightedIndex+1,0)
                 }
             }
-            //index‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ğindex-1i‚P‚Âãj‚ÌƒeƒLƒXƒgƒGƒŠƒA‚Æ“ü‚ê‘Ö‚¦‚é
-            //ƒeƒLƒXƒg‚Ìæ“ª‚ÉƒJ[ƒ\ƒ‹‚ğ’u‚«‚½‚¢ê‡‚ÍcursorPosition‚Í0‚É‚·‚é
-            //ƒeƒLƒXƒgƒGƒŠƒA‚Ì‚Ç‚±‚ÉƒJ[ƒ\ƒ‹‚ğ’u‚­‚©w’è‚µ‚½‚È‚¢‚Æ‚«‚Ínull‚É‚·‚é
+            //indexã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’index-1ï¼ˆï¼‘ã¤ä¸Šï¼‰ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã¨å…¥ã‚Œæ›¿ãˆã‚‹
+            //ãƒ†ã‚­ã‚¹ãƒˆã®å…ˆé ­ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’ç½®ããŸã„å ´åˆã¯cursorPositionã¯0ã«ã™ã‚‹
+            //ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã©ã“ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’ç½®ãã‹æŒ‡å®šã—ãŸãªã„ã¨ãã¯nullã«ã™ã‚‹
             swapWithAbove(index, cursorPosition) {
-                // ã‚ÉŒğŠ·‚·‚éƒeƒLƒXƒgƒGƒŠƒA‚ª‚ ‚é‚±‚Æ‚ğŠm”F‚·‚é
+                // ä¸Šã«äº¤æ›ã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ãŒã‚ã‚‹ã“ã¨ã‚’ç¢ºèªã™ã‚‹
                 if (index > 0) {
-                    console.log('‰º:', index);
-                    console.log('ã:', index-1);
+                    console.log('ä¸‹:', index);
+                    console.log('ä¸Š:', index-1);
                     const temp = this.textareas[index];
 
                     this.textareas[index] = this.textareas[index - 1];
-                    this.textareas[index - 1] = temp; // Œ»İ‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ğã‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ÆŒğŠ·‚·‚é
+                    this.textareas[index - 1] = temp; // ç¾åœ¨ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä¸Šã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã¨äº¤æ›ã™ã‚‹
 
-                    this.updateDOM(); // DOM ‚ğXV‚µ‚ÄV‚µ‚¢‡˜‚ğ”½‰f‚³‚¹‚é
+                    this.updateDOM(); // DOM ã‚’æ›´æ–°ã—ã¦æ–°ã—ã„é †åºã‚’åæ˜ ã•ã›ã‚‹
 
                     const aboveTextarea = this.textareas[index - 1].querySelector('textarea');
-                    aboveTextarea.focus(); // ˆÚ“®‚µ‚½ƒeƒLƒXƒgƒGƒŠƒA‚ÉƒtƒH[ƒJƒX‚ğİ’è‚·‚é
+                    aboveTextarea.focus(); // ç§»å‹•ã—ãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã«ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’è¨­å®šã™ã‚‹
                     if (cursorPosition !== null) {
-                        //cursorPosition‚ÉƒJ[ƒ\ƒ‹‚ğ’u‚­
+                        //cursorPositionã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’ç½®ã
                         aboveTextarea.selectionStart = aboveTextarea.selectionEnd = cursorPosition; 
                     }
                 }
             }
 
-            //index‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ğindex+1i‚P‚Â‰ºj‚ÌƒeƒLƒXƒgƒGƒŠƒA‚Æ“ü‚ê‘Ö‚¦‚é
-            //ƒeƒLƒXƒg‚Ìæ“ª‚ÉƒJ[ƒ\ƒ‹‚ğ’u‚«‚½‚¢ê‡‚ÍcursorPosition‚Í0‚É‚·‚é
-            //ƒeƒLƒXƒgƒGƒŠƒA‚Ì‚Ç‚±‚ÉƒJ[ƒ\ƒ‹‚ğ’u‚­‚©w’è‚µ‚½‚È‚¢‚Æ‚«‚Ínull‚É‚·‚é
+            //indexã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’index+1ï¼ˆï¼‘ã¤ä¸‹ï¼‰ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã¨å…¥ã‚Œæ›¿ãˆã‚‹
+            //ãƒ†ã‚­ã‚¹ãƒˆã®å…ˆé ­ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’ç½®ããŸã„å ´åˆã¯cursorPositionã¯0ã«ã™ã‚‹
+            //ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®ã©ã“ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’ç½®ãã‹æŒ‡å®šã—ãŸãªã„ã¨ãã¯nullã«ã™ã‚‹
             swapWithBelow(index, cursorPosition) {
-                if (index < this.textareas.length - 1) { // ÅŒã‚ÌƒeƒLƒXƒgƒGƒŠƒA‚Å‚Í‚È‚¢‚±‚Æ‚ğŠm”F‚·‚é
+                if (index < this.textareas.length - 1) { // æœ€å¾Œã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã§ã¯ãªã„ã“ã¨ã‚’ç¢ºèªã™ã‚‹
                     const temp = this.textareas[index];
                     this.textareas[index] = this.textareas[index + 1];
-                    this.textareas[index + 1] = temp;// Œ»İ‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ğ‰º‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ÆŒğŠ·‚·‚é
+                    this.textareas[index + 1] = temp;// ç¾åœ¨ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä¸‹ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã¨äº¤æ›ã™ã‚‹
 
                     this.updateDOM();
 
                     const belowTextarea = this.textareas[index + 1].querySelector('textarea');
-                    belowTextarea.focus(); // ˆÚ“®‚µ‚½ƒeƒLƒXƒgƒGƒŠƒA‚ÉƒtƒH[ƒJƒX‚ğİ’è‚·‚é
+                    belowTextarea.focus(); // ç§»å‹•ã—ãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã«ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’è¨­å®šã™ã‚‹
                     if (cursorPosition !== null) {
                         belowTextarea.selectionStart = belowTextarea.selectionEnd = cursorPosition;
-                        // ƒJ[ƒ\ƒ‹ˆÊ’u‚ğ•Û‚·‚éiw’è‚³‚ê‚Ä‚¢‚éê‡j
+                        // ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã‚’ä¿æŒã™ã‚‹ï¼ˆæŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆï¼‰
                     }
                 }
             }
@@ -866,7 +866,7 @@
         new TextareaManager();
     </script>
     <textarea id="moto"></textarea><br> 
-    <!--<button onclick="myfunction()">ƒcƒŠ[}ì¬step2FƒcƒŠ[}ì¬</button>-->
+    <!--<button onclick="myfunction()">ãƒ„ãƒªãƒ¼å›³ä½œæˆstep2ï¼šãƒ„ãƒªãƒ¼å›³ä½œæˆ</button>-->
     <pre id="yasu">
     </pre>
       <script type="module">
