@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Textarea Application</title>
+    <style>
+        .textarea-container {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .controls {
+            margin-right: 10px;
+        }
+        .textarea-wrapper {
+            position: relative;
+        }
+        textarea {
+            width: 300px;
+            min-height: 24px;
+            resize: none;
+            overflow-y: hidden;
+            box-sizing: border-box;
+            padding: 4px;
+            line-height: 16px;
+            font-family: monospace;
+        }
+        .textarea-number {
+            position: absolute;
+            right: -30px;
+            top: 0;
+            width: 30px;
+            text-align: center;
+            box-sizing: border-box;
+            padding: 4px 2px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #999;
+            background-color: #f0f0f0;
+            user-select: none;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        #moto {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        class TextareaManager {
+            constructor() {
+                this.app = document.getElementById('app');
+                this.textareas = [];
+                //output用
+                this.outputArea = null;
+                //this.highlightedGroup = null;
+                this.addTextarea();
+                this.addClearButton();
+
+                // yas01 グループ番号管理のための追加
+                this.maxGroupNumber = 0;
+                this.groupNumberDisplay = document.createElement('div');
+                this.groupNumberDisplay.id = 'max-group-number';
+                document.body.insertBefore(this.groupNumberDisplay, document.body.firstChild);
+                this.updateMaxGroupNumberDisplay();  
+
+                // 新しい出力エリアの追加
+                //this.createOutputArea();
+                
+            }
+
+            // 新しいメソッド: 出力エリアの作成
+            createOutputArea() {
+
+                this.outputArea = document.createElement('div');
+                this.outputArea.id = 'output-area';
+                //this.outputArea.contentEditable = true; // リッチテキストの編集を可能にする
+                this.outputArea.style.border = '1px solid #ccc';
+                this.outputArea.style.padding = '10px';
+                this.outputArea.style.marginTop = '20px';
+                this.outputArea.style.minHeight = '100px';
+                this.outputArea.style.fontFamily = 'monospace'; // 等幅フォントを使用
+                this.outputArea.style.display = 'none'; // 初期状態で非表示
+                
+
+                const outputButton = document.createElement('button');
+                outputButton.textContent = 'テキストを書き出す';
+                outputButton.onclick = () => this.writeOutput();
+                
+                const outputButton2 = document.createElement('button');
+                outputButton2.textContent = 'ツリー図にする';
+                outputButton2.onclick = () => this.writeOutput2();
+
+                const outputButton3 = document.createElement('button');
+                outputButton3.textContent = 'マインドマップにする';
+                outputButton3.onclick = () => this.writeOutput3();
+
+                this.app.appendChild(outputButton);
+                this.app.appendChild(outputButton2);
+                this.app.appendChild(outputButton3);
+                this.app.appendChild(this.outputArea);
+            }
+
+            writeOutput3() {
+                let output = '';
+                const textareasData = [];
+                
+                this.textareas.forEach(textareaDiv => {
+                    const textarea = textareaDiv.querySelector('textarea');
+                    const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
+                    const spaces = ' '.repeat(indent);
+
+                    const escapedText = spaces+textarea.value+'\n';
+                    
+                    output += escapedText;
+                    
+                });
+
+                //this.outputArea.innerHTML = output;
+                document.getElementById('moto').innerHTML = 'mindmap\n'+output;
+                window.myfunction();
+            }
+
+
+            writeOutput() {
+                let output = '';
+                this.textareas.forEach(textareaDiv => {
+                    const textarea = textareaDiv.querySelector('textarea');
+                    const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
+                    const indentPx = indent * 20;
+                    
+                    const escapedText = this.escapeHtml(textarea.value).replace(/\n/g, '<br>');
+                    /*
+                    output += `<blockquote style="margin-left: ${indentPx}px; padding-left: 10px; line-height: 1.3;">
+                        ${escapedText}
+                    </blockquote>`;
+                    */
+                    
+                    output += `<blockquote style="margin-left: ${indentPx}px; padding-left: 10px; line-height: 1.3;">
+                        <ul><li>${escapedText}</ul>
+                    </blockquote>`;
+                    
+                });
+                this.outputArea.innerHTML = output;
+                if (output.trim() !== "") {
+                    this.outputArea.style.display = 'block';
+                } else {
+                    this.outputArea.style.display = 'none';
+                }
+            }
+
+            // 新しいメソッド: テキストの書き出し
+            writeOutput2() {
+                let output = '';
+                const textareasData = [];
+                
+                // アルファベットの呼び名を生成する関数
+                const generateAlphabetLabel = (index) => {
+                    let label = '';
+                    while (index >= 0) {
+                        label = String.fromCharCode((index % 26) + 65) + label;
+                        index = Math.floor(index / 26) - 1;
+                    }
+                    return label;
+                };
+
+                // テキストエリアの内容を収集
+                this.textareas.forEach((textareaDiv, index) => {
+                    const textarea = textareaDiv.querySelector('textarea');
+                    const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
+                    const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>');
+                    const label = generateAlphabetLabel(index);
+                    textareasData.push({ label, content, indent });
+                });
+
+                // 関連付けと出力の生成
+                for (let i = 1; i < textareasData.length; i++) {
+                    const current = textareasData[i];
+                    if (current.indent > 0) {
+                        let relatedLabel = '';
+                        for (let j = i - 1; j >= 0; j--) {
+                            if (textareasData[j].indent < current.indent) {
+                                relatedLabel = textareasData[j].label;
+                                //output += `${relatedLabel}[${textareasData[j].content}]-->${current.label}[${current.content}]<br>`;
+                                output += `${relatedLabel}[${textareasData[j].content}]-->${current.label}[${current.content}]\n`;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //this.outputArea.innerHTML = output;
+                document.getElementById('moto').innerHTML = 'graph LR\n'+output;
+                window.myfunction();
+            }
+
+            // HTMLエスケープ用のヘルパーメソッド
+            escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            // 新しいメソッド: テキストの書き出し
+
+            addClearButton() {
+                const clearButton = document.createElement('button');
+                clearButton.textContent = '??';
+                clearButton.addEventListener('click', () => this.clearAllHighlights());
+                this.app.insertBefore(clearButton, this.app.firstChild);
+            }
+
+            clearAllHighlights() {
+                this.textareas.forEach(container => {
+                    container.querySelector('textarea').style.backgroundColor = '';
+                });
+                //this.highlightedGroup = null;
+            }
+
+            createTextareaElement(indent = 0) {
+                const container = document.createElement('div');
+                container.className = 'textarea-container';
+
+                const controls = document.createElement('div');
+                controls.className = 'controls';
+
+                const buttons = ['-', '閉', '開', 'G'];
+                buttons.forEach(label => {
+                    const button = document.createElement('button');
+                    button.textContent = label;
+                    button.addEventListener('click', () => this.handleButtonClick(label, container));
+                    if (label === '閉') {
+                        button.classList.add('close-button');
+                    }
+                    controls.appendChild(button);
+                });
+
+                const textareaWrapper = document.createElement('div');
+                textareaWrapper.className = 'textarea-wrapper';
+
+                const textarea = document.createElement('textarea');
+                textarea.style.marginLeft = `${indent * 20}px`;
+                textarea.rows = 1;
+                textarea.addEventListener('input', this.handleInput.bind(this));
+                textarea.addEventListener('keydown', this.handleKeyDown.bind(this));
+
+                const textareaNumber = document.createElement('div');
+                textareaNumber.className = 'textarea-number';
+
+                textareaWrapper.appendChild(textarea);
+                textareaWrapper.appendChild(textareaNumber);
+
+                container.appendChild(controls);
+                container.appendChild(textareaWrapper);
+
+                return container;
+            }
+
+            handleInput(event) {
+                this.autoResize(event);
+            }
+
+            autoResize(event) {
+                const textarea = event.target;
+                textarea.style.height = 'auto';
+                textarea.style.height = (textarea.scrollHeight) + 'px';
+            }
+
+            updateTextareaNumbers() {
+                this.textareas.forEach((container, index) => {
+                    const textareaNumber = container.querySelector('.textarea-number');
+                    textareaNumber.textContent = index;
+                });
+            }
+
+            handleKeyDown(event) {
+                const textarea = event.target;
+                const container = textarea.closest('.textarea-container');
+                const index = this.textareas.indexOf(container);
+ 
+                if (event.ctrlKey) {
+                    if (event.key === 'ArrowUp') {
+                        event.preventDefault();
+                        //カーソルがあるのがハイライトされたテキストエリアの場合
+                        if (textarea.style.backgroundColor === 'yellow') {
+                            //真上取得
+                            const aboveContainer = this.textareas[index - 1];
+                            const aboveTextarea = aboveContainer.querySelector('textarea');
+                            //真上がハイライトされている場合
+                            if (aboveTextarea.style.backgroundColor === 'yellow') {
+                                //自身のハイライトされているテキストエリアの数を数える
+                                let tcount=this.countGroupMembers(index);
+                                //alert(index);
+                                //alert(tcount);
+                                //indexを減じながら、その数だけupを繰り返す
+                                for(let i=0;i<tcount;i++){
+                                    //alert(i);
+                                    this.moveHighlightedUp(index-i);
+                                }
+                            } else {
+                                //真上がハイライトされていない場合
+                                this.moveHighlightedUp(index);
+                            }
+                        //カーソルがあるのはハイライトされていないテキストエリアの場合    
+                        } else {
+                            //それがてっぺんのテキストエリアなら何もしない
+                            if (index > 0) { 
+                                // ２行使って、真上のテキストエリア取得
+                                const aboveContainer = this.textareas[index - 1];
+                                const aboveTextarea = aboveContainer.querySelector('textarea');
+                                // 真上のテキストエリアがハイライトされている場合
+                                if (aboveTextarea.style.backgroundColor === 'yellow') {
+                                    // カーソルを真上のテキストエリアに移して、
+                                    //真上にあるハイライトされたテキストエリアを下に下ろす作業
+                                    //aboveTextarea.focus(); 
+
+                                    // フォーカス移動後にインデックスを取得
+                                    //let newContainer = document.activeElement.closest('.textarea-container');
+                                    //let newIndex = this.textareas.indexOf(newContainer);
+                                    //console.log("New focused textarea index:", newIndex);
+
+                                    this.moveHighlightedDown((index-1)); 
+
+                                    let textarea = event.target;
+                                    let container = textarea.closest('.textarea-container');
+                                    let cindex = this.textareas.indexOf(container);
+                                    this.moveCursor(cindex,0); 
+                                    
+                                } else {
+                                    //カーソル位置は現在のテキストエリア内のカーソル位置になる。
+                                    const cursorPosition = textarea.selectionStart;
+                                    //indexのテキストエリアが真上と入れ替わる
+                                    this.swapWithAbove(index, cursorPosition);
+                                }
+
+                            }
+                            //------------------------------------------------
+                        }
+                    } else if (event.key === 'ArrowDown') {
+                        event.preventDefault();
+                        //カーソルがあるのがハイライトされたテキストエリアの場合
+                        if (textarea.style.backgroundColor === 'yellow') {
+                            //自身のハイライトされているテキストエリアの数を数える
+                            let tcount=this.countGroupMembers(index);
+                            //自分のグループの真下取得
+                            const belowContainer = this.textareas[index + tcount];
+                            const belowTextarea = belowContainer.querySelector('textarea');
+                            //自分のグループの真下がハイライトされている場合
+                            if (belowTextarea.style.backgroundColor === 'yellow') {
+                                //indexを増やしながら、その数だけupを繰り返す
+                                for(let i=0;i<tcount;i++){
+                                    this.moveHighlightedDown(index+i);
+                                }
+                            } else {
+                                //真下がハイライトされていない場合
+                                this.moveHighlightedDown(index);
+                            }
+                        //カーソルがあるのはハイライトされていないテキストエリアの場合    
+                        } else {
+                            //それが一番下のテキストエリアなら何もしない
+                            if (index < this.textareas.length - 1) { 
+                                // ２行使って、真下のテキストエリア取得
+                                const belowContainer = this.textareas[index + 1];
+                                const belowTextarea = belowContainer.querySelector('textarea');
+                                //真下がハイライトされている場合
+                                if (belowTextarea.style.backgroundColor === 'yellow') {
+                                    // カーソルをそのテキストエリアに移して、
+                                    //そのテキストエリアを上にあげる
+                                    //this.moveCursor(index+1,0);  
+                                    this.moveHighlightedUp((index+1));
+                                    
+                                    const textarea = event.target;
+                                    const container = textarea.closest('.textarea-container');
+                                    let cindex = this.textareas.indexOf(container);
+                                    this.moveCursor(cindex,0); 
+                                } else {
+                                    //カーソル位置は現在のテキストエリア内のカーソル位置になる。
+                                    const cursorPosition = textarea.selectionStart;
+                                    //indexのテキストエリアが真下と入れ替わる
+                                    this.swapWithBelow(index, cursorPosition);
+                                }
+                            }
+                        }
+                    }   
+                } else if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    const currentIndent = this.getIndent(container);
+                    
+                    const cursorPosition = textarea.selectionStart;
+                    const currentText = textarea.value;
+                    const newText = currentText.substring(cursorPosition);
+                    textarea.value = currentText.substring(0, cursorPosition);
+
+                    this.addTextarea(index + 1, currentIndent, newText);
+                    
+                    setTimeout(() => {
+                        const newTextarea = this.textareas[index + 1].querySelector('textarea');
+                        newTextarea.focus();
+                        newTextarea.selectionStart = newTextarea.selectionEnd = 0;
+                    }, 0);
+                } else if (event.key === 'Tab') {
+                    event.preventDefault();
+                    const direction = event.shiftKey ? -1 : 1;
+                    const cursorPosition = textarea.selectionStart;
+                    this.shiftIndent(index, direction);
+                    
+                    setTimeout(() => {
+                        const updatedTextarea = this.textareas[index].querySelector('textarea');
+                        updatedTextarea.focus();
+                        updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                    }, 0);
+                } else if (event.key === 'ArrowUp' && textarea.selectionStart === 0) {
+                    this.moveCursor(index, -1);
+                } else if (event.key === 'ArrowDown' && textarea.selectionStart === textarea.value.length) {
+                    this.moveCursor(index, 1);
+                }
+            }
+            
+            //currentIndex: 現在のテキストエリアのインデックス。direction: 移動する方向。1なら次のテキストエリア、-1なら前のテキストエリア。
+            moveCursor(currentIndex, direction) {
+                //現在のインデックスに方向を加算して、移動先のインデックスを計算します。
+                const targetIndex = currentIndex + direction;
+                //ターゲットインデックスが有効な範囲内にあるかを確認します。
+                if (targetIndex >= 0 && targetIndex < this.textareas.length) {
+                    //ターゲットインデックスのテキストエリアを取得し、フォーカスを移動します。
+                    const targetTextarea = this.textareas[targetIndex].querySelector('textarea');
+                    targetTextarea.focus();
+                    //directionが1の場合、カーソルをテキストエリアの先頭に移動します。
+                    //directionが-1の場合、カーソルをテキストエリアの末尾に移動します。
+                    if (direction === 1) {
+                        targetTextarea.selectionStart = targetTextarea.selectionEnd = 0;
+                    } else {
+                        targetTextarea.selectionStart = targetTextarea.selectionEnd = targetTextarea.value.length;
+                    }
+                }
+            }
+
+            addTextarea(index = this.textareas.length, indent = 0, initialText = '') {
+                const newTextarea = this.createTextareaElement(indent);
+                const textarea = newTextarea.querySelector('textarea');
+                textarea.value = initialText;
+                this.textareas.splice(index, 0, newTextarea);
+                this.updateDOM();
+            }
+
+            removeTextarea(index) {
+                if (this.textareas.length > 1) {
+                    this.textareas.splice(index, 1);
+                    this.updateDOM();
+                }
+            }
+
+            updateDOM() {
+                this.app.innerHTML = '';
+                this.addClearButton();
+                this.textareas.forEach(textarea => {
+                    this.app.appendChild(textarea);
+                    const textareaElement = textarea.querySelector('textarea');
+                    this.autoResize({target: textareaElement});
+                });
+                this.updateTextareaNumbers();
+                this.updateCloseButtons();
+
+                // 出力エリアとボタンを再作成
+                this.createOutputArea();
+                }
+
+            getIndent(element) {
+                return parseInt(element.querySelector('textarea').style.marginLeft) / 20;
+            }
+
+            setIndent(element, indent) {
+                element.querySelector('textarea').style.marginLeft = `${indent * 20}px`;
+            }
+
+            handleButtonClick(label, container) {
+                const index = this.textareas.indexOf(container);
+                const textarea = container.querySelector('textarea');
+
+                switch (label) {
+                    case '-':
+                        this.removeTextarea(index);
+                        break;
+                    case '閉':
+                        //0707 this.clearAllHighlights();            
+                        //this.toggleHighlightGroup(index);
+                        this.highlightGroup(index);
+                        this.toggleVisibility(index, false);
+                        break;
+                    case '開':
+                        this.toggleVisibility(index, true);
+                        break;
+                    case 'G':
+                        this.toggleHighlightGroup(index);
+                        break;
+                }
+            }
+
+            toggleHighlightGroup(index) {
+                const highlightedIndexes = this.getHighlightedIndexes();
+                if(highlightedIndexes.includes(index) ){
+                    //this.clearHighlight();
+                    this.highlightGroupOff(index);
+                } else {
+                    //0707 this.clearHighlight();
+                    this.highlightGroup(index);
+                }
+            }
+
+            clearHighlight() {
+                this.textareas.forEach(container => {
+                    container.querySelector('textarea').style.backgroundColor = '';
+                });
+            }
+
+            highlightGroupOff(index) {
+                const startIndent = this.getIndent(this.textareas[index]);
+                
+                for (let i = index; i < this.textareas.length; i++) {
+                    const currentIndent = this.getIndent(this.textareas[i]);
+                    if (i === index || currentIndent > startIndent) {
+                        this.textareas[i].querySelector('textarea').style.backgroundColor = '';
+                        //yas
+                        this.setGroupNumber(this.textareas[i], 0);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+
+            highlightGroup(index) {
+                const startIndent = this.getIndent(this.textareas[index]);
+                let newGroupNumber;
+                
+                // yas グループ化されていない場合、新しいグループ番号を割り当てる
+                if (this.getGroupNumber(this.textareas[index]) === 0) {
+                    this.maxGroupNumber++;
+                    newGroupNumber = this.maxGroupNumber;
+                    this.updateMaxGroupNumberDisplay();
+                } else {
+                    // 既にグループ化されている場合、そのグループ番号を使用
+                    newGroupNumber = this.getGroupNumber(this.textareas[index]);
+                }
+
+                for (let i = index; i < this.textareas.length; i++) {
+                    const currentIndent = this.getIndent(this.textareas[i]);
+                    if (i === index || currentIndent > startIndent) {
+                        this.textareas[i].querySelector('textarea').style.backgroundColor = 'yellow';
+                        // yas
+                        this.setGroupNumber(this.textareas[i], newGroupNumber);                         
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            //yas
+            getGroupNumber(container) {
+                const textarea = container.querySelector('textarea');
+                return parseInt(textarea.dataset.groupNumber || '0');
+            }
+            //yas
+            setGroupNumber(container, number) {
+                const textarea = container.querySelector('textarea');
+                textarea.dataset.groupNumber = number.toString();
+                const groupNumberDisplay = container.querySelector('.group-number-display');
+                if (groupNumberDisplay) {
+                    groupNumberDisplay.textContent = `グループ: ${number}`;
+                }
+            }
+            //yas
+            updateMaxGroupNumberDisplay() {
+                this.groupNumberDisplay.textContent = `最大グループ番号: ${this.maxGroupNumber}`;
+            }
+
+
+            moveTextareas(index, direction, cursorPosition = null) {
+                const newIndex = index + direction;
+
+                if (newIndex < 0 || newIndex >= this.textareas.length) {
+                    return false;
+                }
+
+                const temp = this.textareas[index];
+                this.textareas[index] = this.textareas[newIndex];
+                this.textareas[newIndex] = temp;
+
+                this.updateDOM();
+
+                const movedTextarea = this.textareas[newIndex].querySelector('textarea');
+                movedTextarea.focus();
+                if (cursorPosition !== null) {
+                    movedTextarea.selectionStart = movedTextarea.selectionEnd = Math.min(cursorPosition, movedTextarea.value.length);
+                }
+
+                return true;
+            }
+
+            shiftIndent(startIndex, direction) {
+                const startIndent = this.getIndent(this.textareas[startIndex]);
+                let i = startIndex;
+
+                while (i < this.textareas.length) {
+                    const currentIndent = this.getIndent(this.textareas[i]);
+                    if (i > startIndex && currentIndent <= startIndent) break;
+
+                    const newIndent = Math.max(0, currentIndent + direction);
+                    this.setIndent(this.textareas[i], newIndent);
+                    i++;
+                }
+
+                this.updateDOM();
+            }
+
+            //showがtrueだと２つ目以降が表示、falseだと非表示になる
+            toggleVisibility(startIndex, show) {
+                // デバッグ用：開始インデックスをログ出力
+                console.log(startIndex);
+
+                // 開始要素のインデントレベルを取得
+                const startIndent = this.getIndent(this.textareas[startIndex]);
+                //２つ目以降を処理
+                let i = startIndex + 1;
+                let hasHiddenTextareas = false;
+
+                // 開始要素より深いインデントの要素を処理
+                while (i < this.textareas.length) {
+                    const currentIndent = this.getIndent(this.textareas[i]);
+                    // 開始要素以下のインデントレベルになったら処理を終了
+                    if (currentIndent <= startIndent) break;
+
+                    // ２つ目以降を１つずつ表示（非表示）に
+                    this.textareas[i].style.display = show ? 'flex' : 'none';
+                    //非表示のテキストエリアがあるかを変数に格納
+                    //これは本当は１回だけでいいんだけど、毎回やってる
+                    if (!show) hasHiddenTextareas = true;
+                    i++;
+                }
+
+                // デバッグ用：処理後の開始インデックスをログ出力
+                console.log(startIndex);
+
+                // 表示に切り替える場合、遅延してフォーカスを設定
+                setTimeout(() => {
+                    const nowTextarea = this.textareas[startIndex].querySelector('textarea');
+                    nowTextarea.focus();
+                    this.moveCursor(startIndex, 0);
+                    // カーソルを先頭に移動
+                    nowTextarea.selectionStart = nowTextarea.selectionEnd = 0;
+                }, 100); // 100msの遅延を追加
+
+                // 閉じるボタンのスタイルを更新
+                const closeButton = this.textareas[startIndex].querySelector('.close-button');
+                if (hasHiddenTextareas) {
+                    closeButton.classList.add('bold');
+                } else {
+                    closeButton.classList.remove('bold');
+                }
+
+                // DOM更新処理を呼び出し
+                this.updateDOM();
+            }
+
+            updateCloseButtons() {
+                this.textareas.forEach((container, index) => {
+                    const closeButton = container.querySelector('.close-button');
+                    const startIndent = this.getIndent(container);
+                    let i = index + 1;
+                    let hasHiddenTextareas = false;
+
+                    while (i < this.textareas.length) {
+                        const currentIndent = this.getIndent(this.textareas[i]);
+                        if (currentIndent <= startIndent) break;
+
+                        if (this.textareas[i].style.display === 'none') {
+                            hasHiddenTextareas = true;
+                            break;
+                        }
+                        i++;
+                    }
+
+                    if (hasHiddenTextareas) {
+                        closeButton.classList.add('bold');
+                    } else {
+                        closeButton.classList.remove('bold');
+                    }
+                });
+            }
+
+            countGroupMembers(cindex){
+                let now_index=cindex;
+                let now_gpnum=this.getGroupNumber(this.textareas[cindex]);
+                // ハイライトされたテキストエリアのインデックスを取得する
+                const highlightedIndexes = this.getHighlightedIndexes();
+                //このハイライトグループの最後尾の把握---------------------------------
+                while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
+                    //カレントインデックスを増やしていく
+                    cindex++;
+                }
+                // 最終的なcindexの値を確認
+                return (cindex-now_index);
+            }
+
+
+            moveHighlightedUp(cindex,direction) {
+                //このハイライトされたテキストエリアのグループ番号を取得する
+                let now_gpnum=this.getGroupNumber(this.textareas[cindex]);
+
+                // ハイライトされたテキストエリアのインデックスを取得する
+                const highlightedIndexes = this.getHighlightedIndexes();
+
+                //
+                // cindexの初期値を確認
+                console.log('Initial cindex:', cindex);
+
+                //このハイライトグループの最後尾の把握---------------------------------
+                while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
+                    //カレントインデックスを増やしていく
+                    cindex++;
+                }
+                // 最終的なcindexの値を確認
+                let lastHighlightedIndex=cindex-1;
+                console.log('lastHighlightedIndex:', lastHighlightedIndex);
+
+                //このハイライトグループの先頭の把握---------------------------------
+                cindex=lastHighlightedIndex
+                while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
+                    //カレントインデックスを増やしていく
+                    cindex--;
+                }
+                // 最終的なcindexの値を確認
+                let firstHighlightedIndex=cindex+1;
+                console.log('firstHighlightedIndex:', firstHighlightedIndex);
+
+                // ハイライトされたテキストエリアの中で一番上のテキストエリアが１行目ではないことを確認する
+                if (firstHighlightedIndex != 0) {
+                    //ハイライトされた小集団の真上のハイライトされていないテキストエリアのインデックスを取得
+                    let currentIndex = firstHighlightedIndex-1 ;
+                    console.log('currentIndex:', currentIndex);
+                    
+                    // ハイライトされていないカレントインデックスのテキストエリアを下に移動
+                    for (let i = currentIndex; i < lastHighlightedIndex ; i++) {
+                        // ハイライトされていないテキストエリアを上に(カーソル位置はテキストの先頭に)
+                        console.log('i:', i);
+                        this.swapWithBelow(i, 0); 
+                    }
+                    this.moveCursor(firstHighlightedIndex-1,0)
+                }
+            }
+
+            moveHighlightedDown(cindex) {
+                //const textarea = event.target;
+                //const container = textarea.closest('.textarea-container');
+                //let cindex = this.textareas.indexOf(container);
+                
+                //このハイライトされたテキストエリアのグループ番号を取得する
+                let now_gpnum=this.getGroupNumber(this.textareas[cindex]);
+
+                // ハイライトされたテキストエリアのインデックスを取得する
+                const highlightedIndexes = this.getHighlightedIndexes();
+                
+                // cindexの初期値を確認
+                console.log('Initial cindex:', cindex);
+
+                //このハイライトグループの最後尾の把握---------------------------------
+                while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
+                    //カレントインデックスを増やしていく
+                    cindex++;
+                }
+                // 最終的なcindexの値を確認
+                let lastHighlightedIndex=cindex-1;
+                console.log('lastHighlightedIndex:', lastHighlightedIndex);
+
+                //このハイライトグループの先頭の把握---------------------------------
+                cindex=lastHighlightedIndex
+                while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
+                    //カレントインデックスを増やしていく
+                    cindex--;
+                }
+                // 最終的なcindexの値を確認
+                let firstHighlightedIndex=cindex+1;
+                console.log('firstHighlightedIndex:', firstHighlightedIndex);
+
+                // ハイライトされたテキストエリアの中で一番下のテキストエリアが最終行ではないことを確認する
+                if (lastHighlightedIndex < this.textareas.length - 1) {
+                    //ハイライトされた小集団の真下のハイライトされていないテキストエリアのインデックスを取得
+                    let currentIndex = lastHighlightedIndex + 1;
+                    console.log('currentIndex:', currentIndex);
+
+
+                    // ハイライトされていないカレントインデックスのテキストエリアを上に移動
+                    for (let i = currentIndex; i > firstHighlightedIndex ; i--) {
+                        // ハイライトされていないテキストエリアを上に(カーソル位置はテキストの先頭に)
+                        console.log('i:', i);
+                        this.swapWithAbove(i, 0); 
+                    }
+                    this.moveCursor(firstHighlightedIndex+1,0)
+                }
+            }
+            //indexのテキストエリアをindex-1（１つ上）のテキストエリアと入れ替える
+            //テキストの先頭にカーソルを置きたい場合はcursorPositionは0にする
+            //テキストエリアのどこにカーソルを置くか指定したないときはnullにする
+            swapWithAbove(index, cursorPosition) {
+                // 上に交換するテキストエリアがあることを確認する
+                if (index > 0) {
+                    console.log('下:', index);
+                    console.log('上:', index-1);
+                    const temp = this.textareas[index];
+
+                    this.textareas[index] = this.textareas[index - 1];
+                    this.textareas[index - 1] = temp; // 現在のテキストエリアを上のテキストエリアと交換する
+
+                    this.updateDOM(); // DOM を更新して新しい順序を反映させる
+
+                    const aboveTextarea = this.textareas[index - 1].querySelector('textarea');
+                    aboveTextarea.focus(); // 移動したテキストエリアにフォーカスを設定する
+                    if (cursorPosition !== null) {
+                        //cursorPositionにカーソルを置く
+                        aboveTextarea.selectionStart = aboveTextarea.selectionEnd = cursorPosition; 
+                    }
+                }
+            }
+
+            //indexのテキストエリアをindex+1（１つ下）のテキストエリアと入れ替える
+            //テキストの先頭にカーソルを置きたい場合はcursorPositionは0にする
+            //テキストエリアのどこにカーソルを置くか指定したないときはnullにする
+            swapWithBelow(index, cursorPosition) {
+                if (index < this.textareas.length - 1) { // 最後のテキストエリアではないことを確認する
+                    const temp = this.textareas[index];
+                    this.textareas[index] = this.textareas[index + 1];
+                    this.textareas[index + 1] = temp;// 現在のテキストエリアを下のテキストエリアと交換する
+
+                    this.updateDOM();
+
+                    const belowTextarea = this.textareas[index + 1].querySelector('textarea');
+                    belowTextarea.focus(); // 移動したテキストエリアにフォーカスを設定する
+                    if (cursorPosition !== null) {
+                        belowTextarea.selectionStart = belowTextarea.selectionEnd = cursorPosition;
+                        // カーソル位置を保持する（指定されている場合）
+                    }
+                }
+            }
+
+
+            getHighlightedIndexes() {
+                return this.textareas.map((container, index) => {
+                    const textarea = container.querySelector('textarea');
+                    if (textarea.style.backgroundColor === 'yellow') {
+                        return index;
+                    }
+                    return null;
+                }).filter(index => index !== null);
+            }
+        }
+
+        new TextareaManager();
+    </script>
+    <textarea id="moto"></textarea><br> 
+    <!--<button onclick="myfunction()">ツリー図作成step2：ツリー図作成</button>-->
+    <pre id="yasu">
+    </pre>
+      <script type="module">
+         
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: false,securityLevel: 'loose' });
+        window.myfunction=function make_tree(){
+            document.getElementById("yasu").removeAttribute('data-processed');
+            document.getElementById("yasu").innerHTML="";
+            document.getElementById("yasu").innerHTML=document.getElementById("moto").value;
+            mermaid.run({nodes:[document.getElementById("yasu")]});
+        }
+      </script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
