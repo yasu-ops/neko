@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hierarchize text Application</title>
     <style>
+
         .textarea-container {
             display: flex;
             align-items: flex-start;
@@ -48,134 +49,12 @@
 </head>
 <body>
     ★★テキスト階層化アプリ★★<br>
-    このサイトでは、図の生成に <a href="https://mermaid-js.github.io/mermaid/#/" target="_blank">Mermaid.js</a> を、HTML要素の画像化に <a href="https://html2canvas.hertzen.com/" target="_blank">html2canvas</a> を使用しています。<br><br>
+    このサイトでは、図の生成に <a href="https://mermaid-js.github.io/mermaid/#/" target="_blank">Mermaid.js</a> を、HTML要素の画像化に <a href="https://html2canvas.hertzen.com/" target="_blank">html2canvas</a> を使用しています。<br>
+    使い方は<a href="Hierarchize_text_readme.html" target="_blank">こちら</a><br><br>
 
-    <table>
-        <tr>
-            <td style="vertical-align: top;"　width="60%">
-                <div id="app"></div>
-                <textarea id="moto"></textarea><br> 
-                <!--<button onclick="myfunction()">ツリー図作成step2：ツリー図作成</button>-->
-                <pre id="yasu">
-                </pre>
+    <div id="app"></div>
 
-                <script type="module">
-                    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-                    mermaid.initialize({ startOnLoad: false,securityLevel: 'loose' });
-                    window.myfunction=function make_tree(){
-                        document.getElementById("yasu").removeAttribute('data-processed');
-                        document.getElementById("yasu").innerHTML="";
-                        document.getElementById("yasu").innerHTML=document.getElementById("moto").value;
-                        mermaid.run({nodes:[document.getElementById("yasu")]});
-                    }
-                </script>
-
-                <div id="dst">
-                </div>
-
-                <button onclick="captureHighResImage()">表示されているツリー図やマインドマップを画像としてコピー</button>
-
-                <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-                <script>
-                async function captureHighResImage() {
-                    const src = document.getElementById('yasu');
-                    const svg = src.querySelector('svg');
-                    
-                    if (!svg) {
-                        console.error('SVG element not found');
-                        return;
-                    }
-                    
-                    const bbox = svg.getBBox();
-                    const svgRect = svg.getBoundingClientRect();
-                    
-                    // スケール係数を計算
-                    const scaleX = svgRect.width / bbox.width;
-                    const scaleY = svgRect.height / bbox.height;
-                    
-                    // 基本的なスケールファクター（デバイスのピクセル比）
-                    const baseScale = window.devicePixelRatio || 1;
-                    
-                    // 追加の解像度倍率（必要に応じて調整）
-                    const resolutionMultiplier = 2;
-                    
-                    // 最終的なスケールファクター
-                    const finalScale = baseScale * resolutionMultiplier;
-                    
-                    // キャプチャ範囲を計算（下部に余白を追加）
-                    const captureWidth = Math.ceil(bbox.width * scaleX);
-                    const captureHeight = Math.ceil(bbox.height * scaleY + 20); // 20pxの余白
-                    
-                    const canvas = await html2canvas(src, {
-                        width: captureWidth,
-                        height: captureHeight,
-                        x: bbox.x * scaleX,
-                        y: bbox.y * scaleY,
-                        scale: finalScale,
-                        logging: false,
-                        useCORS: true, // クロスオリジンの画像をサポート
-                        allowTaint: false, // セキュリティのため、デフォルトはfalse
-                        backgroundColor: null // 透明背景
-                    });
-
-                    // 以下、キャンバスの処理（クリップボードへのコピーなど）
-                    canvas.toBlob(function(blob) {
-                        const item = new ClipboardItem({ "image/png": blob });
-                        navigator.clipboard.write([item]).then(() => {
-                            console.log('Image copied to clipboard');
-                        }).catch(err => {
-                            console.error('Failed to copy image: ', err);
-                        });
-                    });
-                    // ここでcanvasを削除します
-                    canvas.remove();
-                }   
-                
-                </script>
-            
-            </td>
-            <td style="vertical-align: top;" width="40%">
-            使い方
-            <ul>
-                <li>テキストボックスの中で
-                    <blockquote>
-                    <li><b>上矢印キーを押す</b>　上のテキストボックスへカーソルが移動する。</li>
-                    <li><b>下矢印キーを押す</b>　下のテキストボックスへカーソルが移動する。</li>
-                    <li><b>Enterキーを押す</b>　下に新たなテキストボックスが生成される。</li>
-                    </blockquote>
-                <li>テキストボックスの上にあるボタン
-                    <blockquote>
-                    <li><b>csv保存ボタン</b>　現在の表示内容を保存。</li>
-                    <li><b>ファイルの選択ボタン</b>　保存した内容を読み込む。</li>
-                    <li><b>全グループ化解除</b>　グループ化されたテキストボックスのグループ化を解除する。</li>
-                    </blockquote>   
-                <li>テキストボックスの左側にあるボタン
-                    <blockquote>
-                    <li><b>消ボタン</b>　その行のテキストボックスを削除。</li>
-                    <li><b>→ボタンまたはタブキー</b>　テキストボックスを右にずらす。</li>
-                    <li><b>←ボタンまたはシフト＋タブキー</b>　テキストボックスを左にずらす。</li>
-                    <li><b>↑ボタンまたはctrl+上矢印キー</b>　テキストボックスを１つ上に移動。</li>
-                    <li><b>↓ボタンまたはctrl+下矢印キー</b>　テキストボックスを１つ下に移動。</li>
-                    <li><b>たたむボタン</b>　そのテキストボックスより下位のテキストボックスが非表示になる。（たたむと、自動的にグループ化される。グループ化についてはGボタンの項を参照。）</li>
-                    <li><b>ひらくボタン</b>　テキストボックスの下の非表示のテキストボックスを再表示する。</li>
-                    <li><b>Gボタン</b>　そのテキストボックスとそれより下位のテキストボックスを１かたまりのグループにする。グループ化されたものは上下移動するとき、まとまって動く。Gボタンをもう一度押すとグループは解除される。</li>
-                    </blockquote>   
-                <li>テキストボックスの下にあるボタン
-                    <blockquote>
-                    <li><b>word文書として保存</b>　現在の表示内容をword文書として保存。</li>
-                    <li><b>左→右のツリーボタン</b>　テキストボックスの階層構造をもとに左右のツリーを生成。</li>
-                    <li><b>上→下のツリーボタン</b>　テキストボックスの階層構造をもとに上下のツリーを生成。</li>
-                    <li><b>ツリー図で分岐した枝を再び１本に戻したい場合</b>　<u>分岐された（並列された状態にある）テキストボックスのうち</u>、先頭のテキストボックス以外の、残りのテキストボックスの行頭に半角の+を入れる。そのあとに下位のテキストボックスを追加すると、並列されたテキストボックスが全部、その下位のテキストボックスにつながり、１本のラインに戻る。</li>
-                    <li><b>マインドマップ</b>　マインドマップを生成　※注意　マインドマップを作るためには（１）最初のテキストボックスは字下げせず、（２）２つ目以降のテキストボックスがすべて字下げされている必要がある。</li>
-                    </blockquote>
-            </ul>
-
-            </td>
-        </tr>
-    </table>
-    
-
-    <script>
+<script>
         class TextareaManager {
             constructor() {
                 this.app = document.getElementById('app');
@@ -612,6 +491,7 @@
                         if (event.preventDefault && typeof event.preventDefault === 'function') {
                            event.preventDefault();
                         }
+
                         //★★★-----------------------------------------------------------------
                         //カーソルがあるのがハイライトされたテキストエリアの場合---
                         if (textarea.style.backgroundColor !== '') {
@@ -645,7 +525,9 @@
                                 //真上がハイライトされていない場合
                                 this.moveHighlightedUp(index);
                             }
-                        //カーソルがあるのはハイライトされていないテキストエリアの場合    
+                        
+                        
+                            //カーソルがあるのはハイライトされていないテキストエリアの場合    
                         } else {
                             //それがてっぺんのテキストエリアなら何もしない
                             if (index > 0) { 
@@ -906,20 +788,140 @@
                         this.toggleHighlightGroup(index);
                         break;
                     case '↑':
+                        let cindex=index;
+                        //カーソルがあるのがハイライトされたテキストエリアの場合---
+                        if (this.textareas[index].style.backgroundColor !== '') {
+                            //そのブロックの一番上のインデックスを取得
+                            let now_gpnum=this.getGroupNumber(this.textareas[index]);
+                            const highlightedIndexes = this.getHighlightedIndexes();
+                            while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
+                                //カレントインデックスを減らしていく
+                                cindex--;
+                            }
+                            // 一番上のindex
+                            let firstHighlightedIndex=cindex+1;
+                            //alert('自分のブロックの先頭'+firstHighlightedIndex);
+
+                            //真上取得
+                            const aboveContainer = this.textareas[firstHighlightedIndex - 1];
+                            const aboveTextarea = aboveContainer.querySelector('textarea');
+                            //alert('真上' +(firstHighlightedIndex - 1));
+
+                            //真上がハイライトされている場合
+                            if (aboveTextarea.style.backgroundColor !== '') {
+                                //真上のハイライトされているテキストエリアの数を数える
+                                let tcount=this.countGroupMembers(firstHighlightedIndex - 1);
+                                //alert('真上のブロックの本数'+tcount);
+                                //indexを減じながら、その数だけupを繰り返し、真上のブロックを超える
+                                for(let i=0;i<tcount;i++){
+                                    //alert((firstHighlightedIndex+i)+'を上げる');
+                                    this.moveHighlightedUp(firstHighlightedIndex-i);
+                                }
+                            } else {
+                                //真上がハイライトされていない場合
+                                this.moveHighlightedUp(index);
+                            }
+                            //カーソルがあるのはハイライトされていないテキストエリアの場合    
+                        } else {
+                            //それがてっぺんのテキストエリアなら何もしない
+                            if (index > 0) { 
+                                // ２行使って、真上のテキストエリア取得
+                                const aboveContainer = this.textareas[index - 1];
+                                const aboveTextarea = aboveContainer.querySelector('textarea');
+                                // 真上のテキストエリアがハイライトされている場合
+                                if (aboveTextarea.style.backgroundColor !== '') {
+                                    this.moveHighlightedDown((index-1)); 
+                                    let textarea = event.target;
+                                    let container = textarea.closest('.textarea-container');
+                                    let cindex = this.textareas.indexOf(container);
+                                    this.moveCursor(cindex,0); 
+                                } else {
+                                    //カーソル位置は現在のテキストエリア内のカーソル位置になる。
+                                    const cursorPosition = textarea.selectionStart;
+                                    //indexのテキストエリアが真上と入れ替わる
+                                    this.swapWithAbove(index, cursorPosition);
+                                }
+
+                            }
+                        }
+                        /*
                         this.handleKeyDown({
                             target: textarea,
                             ctrlKey: true,
                             key: 'ArrowUp',
                             preventDefault: () => {} // ダミーの preventDefault メソッド                            
                         });
+                        */
                         break;
                     case '↓':
+                       //カーソルがあるのがハイライトされたテキストエリアの場合
+                       if (this.textareas[index].style.backgroundColor !== '') {
+                            //自身のハイライトされているテキストエリアの数を数える ２個
+                            let tcount=this.countGroupMembers(index);
+                            //alert('このブロックの本数'+tcount);
+                            //自分のグループの真下取得　自分１＋２
+                            const belowContainer = this.textareas[index + tcount];
+                            const belowTextarea = belowContainer.querySelector('textarea');
+                            //alert('真下' +(index + tcount));
+                            //自分のグループの真下がハイライトされている場合
+                            if (belowTextarea.style.backgroundColor !== '') {
+                                //自分のブロックの一番上のインデックスを取得
+                                let now_gpnum=this.getGroupNumber(this.textareas[index]);
+                                const highlightedIndexes = this.getHighlightedIndexes();
+                                while (highlightedIndexes.includes(cindex) && this.getGroupNumber(this.textareas[cindex])===now_gpnum) {
+                                    //カレントインデックスを減らしていく
+                                    cindex--;
+                                }
+                                // 一番上のindex
+                                let firstHighlightedIndex=cindex+1;
+                                //alert('自分のブロックの先頭'+firstHighlightedIndex);
+
+                                //真下のハイライトされているテキストエリアの数を数える
+                                let tcount2=this.countGroupMembers(index + tcount);
+                                //alert('真下のブロックの本数'+tcount2);
+                                //indexを増やしながら、真下のブロックを超える
+                                for(let i=0;i<tcount2;i++){
+                                    //alert((firstHighlightedIndex+i)+'を下げる');
+                                    this.moveHighlightedDown(firstHighlightedIndex+i);
+                                }
+                            } else {
+                                //真下がハイライトされていない場合
+                                this.moveHighlightedDown(index);
+                            }
+                        //カーソルがあるのはハイライトされていないテキストエリアの場合    
+                        } else {
+                            //それが一番下のテキストエリアなら何もしない
+                            if (index < this.textareas.length - 1) { 
+                                // ２行使って、真下のテキストエリア取得
+                                const belowContainer = this.textareas[index + 1];
+                                const belowTextarea = belowContainer.querySelector('textarea');
+                                //真下がハイライトされている場合
+                                if (belowTextarea.style.backgroundColor !== '') {
+                                    // カーソルをそのテキストエリアに移して、
+                                    //そのテキストエリアを上にあげる
+                                    //this.moveCursor(index+1,0);  
+                                    this.moveHighlightedUp((index+1));
+                                    
+                                    const textarea = event.target;
+                                    const container = textarea.closest('.textarea-container');
+                                    let cindex = this.textareas.indexOf(container);
+                                    this.moveCursor(cindex,0); 
+                                } else {
+                                    //カーソル位置は現在のテキストエリア内のカーソル位置になる。
+                                    const cursorPosition = textarea.selectionStart;
+                                    //indexのテキストエリアが真下と入れ替わる
+                                    this.swapWithBelow(index, cursorPosition);
+                                }
+                            }
+                        }
+                        /*
                         this.handleKeyDown({
                             target: textarea,
                             ctrlKey: true,
                             key: 'ArrowDown',
                             preventDefault: () => {} // ダミーの preventDefault メソッド                            
                         });
+                        */
                         break;
                 }
             }
@@ -1336,7 +1338,8 @@
             }
         
             importCSV() {
-                window.location.reload();
+ 
+                let text_count=this.textareas.length
                 const file = document.getElementById('csvFile').files[0];
                 if (file) {
                     const reader = new FileReader();
@@ -1351,20 +1354,103 @@
                         });
                         this.updateGrouping();
                         this.updateDOM();
-                        // setTimeout を使用して、読み込み後にテキストエリアを削除
                     };
                     reader.readAsText(file);
                     setTimeout(() => {
-                            this.removeTextarea(0);
-                            this.updateDOM(); // 削除後に再度 DOM を更新
+                            for(let i=1;i<=text_count;i++){
+                                alert(i+'/'+text_count);
+                                this.removeTextarea(0);
+                                this.updateDOM();
+                            }
                         }, 100);                    
 
                 }
+
+
             }        
         }
 
         new TextareaManager();
     </script>
+
+<textarea id="moto"></textarea><br> 
+<pre id="yasu">
+</pre>
+
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: false,securityLevel: 'loose' });
+    window.myfunction=function make_tree(){
+        document.getElementById("yasu").removeAttribute('data-processed');
+        document.getElementById("yasu").innerHTML="";
+        document.getElementById("yasu").innerHTML=document.getElementById("moto").value;
+        mermaid.run({nodes:[document.getElementById("yasu")]});
+    }
+</script>
+
+<div id="dst">
+</div>
+
+<button onclick="captureHighResImage()">表示されているツリー図やマインドマップを画像としてコピー</button>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+async function captureHighResImage() {
+    const src = document.getElementById('yasu');
+    const svg = src.querySelector('svg');
+    
+    if (!svg) {
+        console.error('SVG element not found');
+        return;
+    }
+    
+    const bbox = svg.getBBox();
+    const svgRect = svg.getBoundingClientRect();
+    
+    // スケール係数を計算
+    const scaleX = svgRect.width / bbox.width;
+    const scaleY = svgRect.height / bbox.height;
+    
+    // 基本的なスケールファクター（デバイスのピクセル比）
+    const baseScale = window.devicePixelRatio || 1;
+    
+    // 追加の解像度倍率（必要に応じて調整）
+    const resolutionMultiplier = 2;
+    
+    // 最終的なスケールファクター
+    const finalScale = baseScale * resolutionMultiplier;
+    
+    // キャプチャ範囲を計算（下部に余白を追加）
+    const captureWidth = Math.ceil(bbox.width * scaleX);
+    const captureHeight = Math.ceil(bbox.height * scaleY + 20); // 20pxの余白
+    
+    const canvas = await html2canvas(src, {
+        width: captureWidth,
+        height: captureHeight,
+        x: bbox.x * scaleX,
+        y: bbox.y * scaleY,
+        scale: finalScale,
+        logging: false,
+        useCORS: true, // クロスオリジンの画像をサポート
+        allowTaint: false, // セキュリティのため、デフォルトはfalse
+        backgroundColor: null // 透明背景
+    });
+
+    // 以下、キャンバスの処理（クリップボードへのコピーなど）
+    canvas.toBlob(function(blob) {
+        const item = new ClipboardItem({ "image/png": blob });
+        navigator.clipboard.write([item]).then(() => {
+            console.log('Image copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy image: ', err);
+        });
+    });
+    // ここでcanvasを削除します
+    canvas.remove();
+}   
+
+</script>
+
 
 </body>
 </html>
