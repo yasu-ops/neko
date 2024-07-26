@@ -121,7 +121,7 @@
     </script>
 </head>
 <body>
- ★★テキスト階層化アプリ★★ 6     使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
+ ★★テキスト階層化アプリ★★ 7     使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
 
     <span class="upcontrols">
         <b>ソフトウエアキーボード：</b>
@@ -1039,37 +1039,22 @@
                         cursorPosition = textarea.selectionStart;
                         this.shiftIndent(index, direction);
 
-                        updatedTextarea = this.textareas[index].querySelector('textarea');
-                        updatedTextarea.addEventListener('touchend', () => {
-                            updatedTextarea.focus();
-                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                        });
-                        /*
                         setTimeout(() => {
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
                             updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                        }, 0); 
-                        */                   
+                        }, 500); 
                         break;
                     case '←':
                         direction = -1;
                         cursorPosition = textarea.selectionStart;
                         this.shiftIndent(index, direction);
 
-                        updatedTextarea = this.textareas[index].querySelector('textarea');
-                        updatedTextarea.addEventListener('touchend', () => {
-                            updatedTextarea.focus();
-                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                        });
-                        
-                        /*
                         setTimeout(() => {
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
                             updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                        }, 0); 
-                        */                   
+                        }, 500); 
                         break;
                     case '消':
                         this.removeTextarea(index);
