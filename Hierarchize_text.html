@@ -17,6 +17,7 @@
             font-size: 20px;
             justify-content: center;
             align-items: center;
+            box-sizing: border-box; /* ボタンのサイズにパディングとボーダーを含める */
         }        
         .controls {
             margin-right: 10px;
@@ -484,7 +485,7 @@
 
                 const controls_B = document.createElement('div');
                 controls_B.className = 'controls_2';
-                const buttonsB = ['←','↑'];
+                const buttonsB = ['←','→'];
                 buttonsB.forEach(label => {
                     const button = document.createElement('button');
                     button.textContent = label;
@@ -494,7 +495,7 @@
 
                 const controls_C = document.createElement('div');
                 controls_C.className = 'controls_2';
-                const buttonsC = ['↓','→'];
+                const buttonsC = ['↑','↓'];
                 buttonsC.forEach(label => {
                     const button = document.createElement('button');
                     button.textContent = label;
@@ -517,9 +518,9 @@
                 textareaWrapper.appendChild(textarea);
 
                 container.appendChild(controls_A);
-                container.appendChild(controls_B);
                 container.appendChild(textareaWrapper);
                 container.appendChild(textareaNumber);
+                container.appendChild(controls_B);
                 container.appendChild(controls_C);
 
                 return container;
