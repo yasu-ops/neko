@@ -25,7 +25,7 @@
             position: relative;
         }
         .controls_2 button {
-            width: var(--button-width);
+            /*width: var(--button-width);*/
             height: var(--button-height);
             font-size: var(--button-font-size);
             /*justify-content: center;
@@ -850,6 +850,7 @@
                 const textarea = container.querySelector('textarea');
                 let direction;
                 let cursorPosition;
+                let cindex=index;
 
                 switch (label) {
                     case '→':
@@ -907,9 +908,8 @@
                         this.toggleHighlightGroup(index);
                         break;
                     case '↑':
-                        let cindex=index;
                         //カーソルがあるのがハイライトされたテキストエリアの場合---
-                        if (this.textareas[index].style.backgroundColor !== '') {
+                        if (textarea.style.backgroundColor !== '') {
                             //そのブロックの一番上のインデックスを取得
                             let now_gpnum=this.getGroupNumber(this.textareas[index]);
                             const highlightedIndexes = this.getHighlightedIndexes();
@@ -974,7 +974,7 @@
                         break;
                     case '↓':
                        //カーソルがあるのがハイライトされたテキストエリアの場合
-                       if (this.textareas[index].style.backgroundColor !== '') {
+                        if (textarea.style.backgroundColor !== '') {
                             //自身のハイライトされているテキストエリアの数を数える ２個
                             let tcount=this.countGroupMembers(index);
                             //alert('このブロックの本数'+tcount);
