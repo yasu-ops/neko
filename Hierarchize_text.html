@@ -24,7 +24,7 @@
             margin-bottom: 10px;
             position: relative;
         }
-        .controls_2 button {
+        .controls_2_button {
             /*width: var(--button-width);*/
             height: var(--button-height);
             font-size: var(--button-font-size);
@@ -32,9 +32,11 @@
             align-items: center;
             box-sizing: border-box;*/
         }        
-        .controls button,.upcontrols{
+        .controls_button,.upcontrols{
             height: 30px;
             font-size: 20px;
+            flex: 1;
+            margin: 0 2px;
         }
 
         .textarea-wrapper {
@@ -103,18 +105,19 @@
  ★★テキスト階層化アプリ★★      使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
 
     <div class="upcontrols">
+        ソフトウエアキーボード　→
         <label>
             <input type="radio" name="keyboard-toggle" value="show" checked>
-            ソフトウエアキーボードが表示されるようにする
+            表示
         </label>
         <label>
             <input type="radio" name="keyboard-toggle" value="hide">
-            ソフトウエアキーボードが表示されないようにする
+            非表示
         </label>
     </div>
     <div>
-        <button onclick="changeButtonSize(1)"  class="upcontrols">矢印ボタンを大きくする</button>
-        <button onclick="changeButtonSize(-1)"  class="upcontrols">矢印ボタンを小さくする</button>
+        <button onclick="changeButtonSize(1)"  class="upcontrols">矢印ボタンを大きく</button>
+        <button onclick="changeButtonSize(-1)"  class="upcontrols">矢印ボタンを小さく</button>
     </div>
     <br>
     <div id="app"></div>
@@ -522,16 +525,64 @@
                 container.className = 'textarea-container';
 
                 const controls_A = document.createElement('div');
-                controls_A.className = 'controls';
-                const buttonsA = ['消', 'たたむ', 'ひらく', 'G'];
+                //controls_A.className = 'controls';
+                const buttonsA = ['消', '畳む', '開く', 'G','↑','↓','←','→'];
                 buttonsA.forEach(label => {
                     const button = document.createElement('button');
                     button.textContent = label;
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
-                    if (label === 'たたむ') {
+                    
+                    if (label === '畳む') {
                         button.classList.add('close-button');
                     }
-                    if (label === 'ひらく') {
+                    if (label === '開く') {
+                        button.classList.add('open-button');
+                    }
+                    if (buttonsA.indexOf(label) >= 4) {
+                        button.classList.add('controls_2_button');
+                    } else {
+                        button.classList.add('controls_button');
+                    }
+                    controls_A.appendChild(button);
+                });
+
+                const textareaWrapper = document.createElement('div');
+                textareaWrapper.className = 'textarea-wrapper';
+
+                const textarea = document.createElement('textarea');
+                textarea.style.marginLeft = `${indent * 20}px`;
+                textarea.rows = 1;
+                textarea.addEventListener('input', this.handleInput.bind(this));
+                textarea.addEventListener('keydown', this.handleKeyDown.bind(this));
+
+                const textareaNumber = document.createElement('div');
+                textareaNumber.className = 'textarea-number';
+
+                textareaWrapper.appendChild(textarea);
+
+                container.appendChild(textareaWrapper);
+                container.appendChild(textareaNumber);
+                container.appendChild(controls_A);
+
+                return container;
+            }
+
+
+             backup_createTextareaElement(indent = 0) {
+                const container = document.createElement('div');
+                container.className = 'textarea-container';
+
+                const controls_A = document.createElement('div');
+                controls_A.className = 'controls';
+                const buttonsA = ['消', '畳む', '開く', 'G'];
+                buttonsA.forEach(label => {
+                    const button = document.createElement('button');
+                    button.textContent = label;
+                    button.addEventListener('click', () => this.handleButtonClick(label, container));
+                    if (label === '畳む') {
+                        button.classList.add('close-button');
+                    }
+                    if (label === '開く') {
                         button.classList.add('open-button');
                     }
                     controls_A.appendChild(button);
@@ -580,8 +631,60 @@
                 return container;
             }
 
+            bcreateTextareaElement(indent = 0) {
+                const container = document.createElement('div');
+                container.className = 'textarea-container';
+
+                const textareaWrapper = document.createElement('div');
+                textareaWrapper.className = 'textarea-wrapper';
+
+                const textarea = document.createElement('textarea');
+                textarea.style.marginLeft = `${indent * 20}px`;
+                textarea.rows = 1;
+                textarea.addEventListener('input', this.handleInput.bind(this));
+                textarea.addEventListener('keydown', this.handleKeyDown.bind(this));
+
+                textareaWrapper.appendChild(textarea);
+
+                const controlsWrapper = document.createElement('div');
+                controlsWrapper.className = 'controls-wrapper';
+                controlsWrapper.style.marginLeft = `${indent * 20}px`;
+
+                const textareaNumber = document.createElement('div');
+                textareaNumber.className = 'textarea-number';
+                textareaNumber.textContent = '1'; // 仮の番号
+
+                const controls = this.createControls(['消', '畳む', '開く', 'G', '↑', '↓', '←', '→'], 'controls');
+
+                controlsWrapper.appendChild(textareaNumber);
+                controlsWrapper.appendChild(controls);
+
+                container.appendChild(textareaWrapper);
+                container.appendChild(controlsWrapper);
+
+                return container;
+            }
+
+            bcreateControls(buttons, className) {
+                const controls = document.createElement('div');
+                controls.className = className;
+                buttons.forEach(label => {
+                    const button = document.createElement('button');
+                    button.textContent = label;
+                    button.addEventListener('click', () => this.handleButtonClick(label, controls.parentElement.parentElement));
+                    if (label === '畳む') {
+                        button.classList.add('close-button');
+                    }
+                    if (label === '開く') {
+                        button.classList.add('open-button');
+                    }
+                    controls.appendChild(button);
+                });
+                return controls;
+            }
+
             handleInput(event) {
-                this.autoResize(event);
+                    this.autoResize(event);
             }
 
             autoResize(event) {
@@ -879,7 +982,7 @@
                     case '消':
                         this.removeTextarea(index);
                         break;
-                    case 'たたむ':
+                    case '畳む':
                         //真上がないか、真上と異なるグループ番号の時だけ閉じられる
                         if( index === 0 ){
                             this.highlightGroup(index);
@@ -900,7 +1003,7 @@
                             }
                         }
                         break;
-                    case 'ひらく':
+                    case '開く':
                         
                         this.toggleVisibility(index, true);
                         break;
