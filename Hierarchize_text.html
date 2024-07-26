@@ -5,16 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hierarchize text Application</title>
     <style>
-
         .textarea-container {
             display: flex;
             align-items: flex-start;
             margin-bottom: 10px;
             position: relative;
         }
+        .controls_2 button {
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            justify-content: center;
+            align-items: center;
+        }        
         .controls {
             margin-right: 10px;
         }
+
         .textarea-wrapper {
             position: relative;
         }
@@ -29,8 +36,9 @@
             font-family: monospace;
         }
         .textarea-number {
+            /*display:none;
             position: absolute;
-            right: -30px;
+            right: -30px;*/
             top: 0;
             width: 30px;
             text-align: center;
@@ -46,12 +54,46 @@
             display: none;
         }
     </style>
+    <script>
+        function openInNewWindow() {
+            // 現在のファイルのURLを取得
+            const currentUrl = window.location.href;
+            // 現在のファイルのディレクトリを取得
+            const directory = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
+            // 新しいウィンドウで開くファイルのURLを生成
+            const newUrl = directory + '/Hierarchize_text_readme.html';
+            // 新しいウィンドウでファイルを開く
+            window.open(newUrl, '_blank', 'width=800,height=600');
+        }
+        function changeButtonSize(increment) {
+            const buttons = document.querySelectorAll('.controls_2 button');
+            buttons.forEach(button => {
+                // 現在のサイズを取得
+                let width = parseInt(window.getComputedStyle(button).width);
+                let height = parseInt(window.getComputedStyle(button).height);
+                let fontSize = parseInt(window.getComputedStyle(button).fontSize);
+
+                // サイズを変更
+                width += increment;
+                height += increment;
+                fontSize += increment;
+
+                // 新しいサイズを設定
+                button.style.width = width + 'px';
+                button.style.height = height + 'px';
+                button.style.fontSize = fontSize + 'px';
+            });
+        }
+    </script>
 </head>
 <body>
     ★★テキスト階層化アプリ★★<br>
     このサイトでは、図の生成に <a href="https://mermaid-js.github.io/mermaid/#/" target="_blank">Mermaid.js</a> を、HTML要素の画像化に <a href="https://html2canvas.hertzen.com/" target="_blank">html2canvas</a> を使用しています。<br>
-    使い方は<a href="Hierarchize_text_readme.html" target="_blank">こちら</a><br><br>
-
+    使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br><br>
+    <div class="controls_3">
+        <button onclick="changeButtonSize(1)">大</button>
+        <button onclick="changeButtonSize(-1)">小</button>
+    </div>
     <div id="app"></div>
 
 <script>
@@ -424,11 +466,10 @@
                 const container = document.createElement('div');
                 container.className = 'textarea-container';
 
-                const controls = document.createElement('div');
-                controls.className = 'controls';
-
-                const buttons = ['消', '←','→','↑','↓','たたむ', 'ひらく', 'G'];
-                buttons.forEach(label => {
+                const controls_A = document.createElement('div');
+                controls_A.className = 'controls';
+                const buttonsA = ['消', 'たたむ', 'ひらく', 'G'];
+                buttonsA.forEach(label => {
                     const button = document.createElement('button');
                     button.textContent = label;
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
@@ -438,7 +479,27 @@
                     if (label === 'ひらく') {
                         button.classList.add('open-button');
                     }
-                    controls.appendChild(button);
+                    controls_A.appendChild(button);
+                });
+
+                const controls_B = document.createElement('div');
+                controls_B.className = 'controls_2';
+                const buttonsB = ['←','↑'];
+                buttonsB.forEach(label => {
+                    const button = document.createElement('button');
+                    button.textContent = label;
+                    button.addEventListener('click', () => this.handleButtonClick(label, container));
+                    controls_B.appendChild(button);
+                });
+
+                const controls_C = document.createElement('div');
+                controls_C.className = 'controls_2';
+                const buttonsC = ['↓','→'];
+                buttonsC.forEach(label => {
+                    const button = document.createElement('button');
+                    button.textContent = label;
+                    button.addEventListener('click', () => this.handleButtonClick(label, container));
+                    controls_C.appendChild(button);
                 });
 
                 const textareaWrapper = document.createElement('div');
@@ -454,10 +515,12 @@
                 textareaNumber.className = 'textarea-number';
 
                 textareaWrapper.appendChild(textarea);
-                textareaWrapper.appendChild(textareaNumber);
 
-                container.appendChild(controls);
+                container.appendChild(controls_A);
+                container.appendChild(controls_B);
                 container.appendChild(textareaWrapper);
+                container.appendChild(textareaNumber);
+                container.appendChild(controls_C);
 
                 return container;
             }
@@ -1358,7 +1421,6 @@
                     reader.readAsText(file);
                     setTimeout(() => {
                             for(let i=1;i<=text_count;i++){
-                                alert(i+'/'+text_count);
                                 this.removeTextarea(0);
                                 this.updateDOM();
                             }
@@ -1377,8 +1439,16 @@
 <pre id="yasu">
 </pre>
 
+<!--ローカルの場合は以下の一文を入れる
+<script src="./mermaid.min.js"></script>-->
+
 <script type="module">
+    //ローカルの場合は以下の一文を削除
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+    //ローカルの場合は以下の一文を入れる
+    //mermaid.initialize({ startOnLoad: true});
+    //ローカルの場合は以下の一文をコメントアウト
     mermaid.initialize({ startOnLoad: false,securityLevel: 'loose' });
     window.myfunction=function make_tree(){
         document.getElementById("yasu").removeAttribute('data-processed');
@@ -1392,9 +1462,16 @@
 </div>
 
 <button onclick="captureHighResImage()">表示されているツリー図やマインドマップを画像としてコピー</button>
+<button onclick="hideImage()">表示されているツリー図やマインドマップを消す</button>
 
+<!--ローカルの場合は以下の一文を入れる
+<script src="./html2canvas.min.js"></script>-->
+<!--ローカルの場合は以下の一文をコメントアウト-->
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
+function hideImage() {
+    document.getElementById("yasu").innerHTML='';
+}    
 async function captureHighResImage() {
     const src = document.getElementById('yasu');
     const svg = src.querySelector('svg');
