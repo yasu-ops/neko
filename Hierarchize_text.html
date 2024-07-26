@@ -121,7 +121,7 @@
     </script>
 </head>
 <body>
- ★★テキスト階層化アプリ★★ 4     使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
+ ★★テキスト階層化アプリ★★ 5     使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
 
     <span class="upcontrols">
         <b>ソフトウエアキーボード：</b>
@@ -1042,6 +1042,7 @@
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
                             setTimeout(() => {
+                                const cursorPosition = updatedTextarea.value.length; // 最後に移動する場合
                                 updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
                             },100);
                         }, 100);                    
@@ -1056,6 +1057,7 @@
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
                             setTimeout(() => {
+                                const cursorPosition = updatedTextarea.value.length; // 最後に移動する場合
                                 updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
                             },100);
                         }, 100);                    
