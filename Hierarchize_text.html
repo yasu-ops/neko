@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hierarchize text Application</title>
     <style>
+        :root {
+            --button-width: 30px;
+            --button-height: 30px;
+            --button-font-size: 20px;
+        }
         .textarea-container {
             display: flex;
             align-items: flex-start;
@@ -12,15 +17,17 @@
             position: relative;
         }
         .controls_2 button {
-            width: 30px;
-            height: 30px;
-            font-size: 20px;
+            width: var(--button-width);
+            height: var(--button-height);
+            font-size: var(--button-font-size);
             justify-content: center;
             align-items: center;
             box-sizing: border-box; /* ボタンのサイズにパディングとボーダーを含める */
         }        
-        .controls {
-            margin-right: 10px;
+        .controls button{
+            height: var(--button-height);
+            font-size: var(--button-font-size);
+            box-sizing: border-box; /* ボタンのサイズにパディングとボーダーを含める */
         }
 
         .textarea-wrapper {
@@ -28,12 +35,13 @@
         }
         textarea {
             width: 300px;
+            font-size: var(--button-font-size);
             min-height: 24px;
             resize: none;
             overflow-y: hidden;
             box-sizing: border-box;
             padding: 4px;
-            line-height: 16px;
+            line-height: 40px;
             font-family: monospace;
         }
         .textarea-number {
@@ -67,23 +75,20 @@
             window.open(newUrl, '_blank', 'width=800,height=600');
         }
         function changeButtonSize(increment) {
-            const buttons = document.querySelectorAll('.controls_2 button');
-            buttons.forEach(button => {
-                // 現在のサイズを取得
-                let width = parseInt(window.getComputedStyle(button).width);
-                let height = parseInt(window.getComputedStyle(button).height);
-                let fontSize = parseInt(window.getComputedStyle(button).fontSize);
+            const root = document.documentElement;
+            const currentWidth = parseInt(getComputedStyle(root).getPropertyValue('--button-width'));
+            const currentHeight = parseInt(getComputedStyle(root).getPropertyValue('--button-height'));
+            const currentFontSize = parseInt(getComputedStyle(root).getPropertyValue('--button-font-size'));
+            
 
-                // サイズを変更
-                width += increment;
-                height += increment;
-                fontSize += increment;
+            const newWidth = currentWidth + increment;
+            const newHeight = currentHeight + increment;
+            const newFontSize = currentFontSize + increment;
 
-                // 新しいサイズを設定
-                button.style.width = width + 'px';
-                button.style.height = height + 'px';
-                button.style.fontSize = fontSize + 'px';
-            });
+            root.style.setProperty('--button-width', newWidth + 'px');
+            root.style.setProperty('--button-height', newHeight + 'px');
+            root.style.setProperty('--button-font-size', newFontSize + 'px');
+
         }
     </script>
 </head>
@@ -520,8 +525,8 @@
                 container.appendChild(controls_A);
                 container.appendChild(textareaWrapper);
                 container.appendChild(textareaNumber);
-                container.appendChild(controls_B);
                 container.appendChild(controls_C);
+                container.appendChild(controls_B);
 
                 return container;
             }
