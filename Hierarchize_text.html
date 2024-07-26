@@ -121,7 +121,7 @@
     </script>
 </head>
 <body>
- ★★テキスト階層化アプリ★★ 5     使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
+ ★★テキスト階層化アプリ★★ 6     使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
 
     <span class="upcontrols">
         <b>ソフトウエアキーボード：</b>
@@ -1031,36 +1031,45 @@
                 let direction;
                 let cursorPosition;
                 let cindex=index;
+                let updatedTextarea;
 
                 switch (label) {
                     case '→':
                         direction = 1;
                         cursorPosition = textarea.selectionStart;
                         this.shiftIndent(index, direction);
-                        
+
+                        updatedTextarea = this.textareas[index].querySelector('textarea');
+                        updatedTextarea.addEventListener('touchend', () => {
+                            updatedTextarea.focus();
+                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                        });
+                        /*
                         setTimeout(() => {
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
-                            setTimeout(() => {
-                                const cursorPosition = updatedTextarea.value.length; // 最後に移動する場合
-                                updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                            },100);
-                        }, 100);                    
+                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                        }, 0); 
+                        */                   
                         break;
                     case '←':
                         direction = -1;
                         cursorPosition = textarea.selectionStart;
                         this.shiftIndent(index, direction);
-                        
 
+                        updatedTextarea = this.textareas[index].querySelector('textarea');
+                        updatedTextarea.addEventListener('touchend', () => {
+                            updatedTextarea.focus();
+                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                        });
+                        
+                        /*
                         setTimeout(() => {
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
-                            setTimeout(() => {
-                                const cursorPosition = updatedTextarea.value.length; // 最後に移動する場合
-                                updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                            },100);
-                        }, 100);                    
+                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                        }, 0); 
+                        */                   
                         break;
                     case '消':
                         this.removeTextarea(index);
