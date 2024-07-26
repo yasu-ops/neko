@@ -10,6 +10,14 @@
             --button-height: 30px;
             --button-font-size: 20px;
         }
+        .file-input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .file-input-label {
+            margin-right: 10px;
+        }        
         .textarea-container {
             display: flex;
             align-items: flex-start;
@@ -20,14 +28,13 @@
             width: var(--button-width);
             height: var(--button-height);
             font-size: var(--button-font-size);
-            justify-content: center;
+            /*justify-content: center;
             align-items: center;
-            box-sizing: border-box; /* ボタンのサイズにパディングとボーダーを含める */
+            box-sizing: border-box;*/
         }        
-        .controls button{
-            height: var(--button-height);
-            font-size: var(--button-font-size);
-            box-sizing: border-box; /* ボタンのサイズにパディングとボーダーを含める */
+        .controls button,.upcontrols{
+            height: 30px;
+            font-size: 20px;
         }
 
         .textarea-wrapper {
@@ -35,13 +42,13 @@
         }
         textarea {
             width: 300px;
-            font-size: var(--button-font-size);
-            min-height: 24px;
+            font-size: 20px;
+            /*min-height: 24px;*/
             resize: none;
             overflow-y: hidden;
             box-sizing: border-box;
             padding: 4px;
-            line-height: 40px;
+            line-height: 20px;
             font-family: monospace;
         }
         .textarea-number {
@@ -93,13 +100,23 @@
     </script>
 </head>
 <body>
-    ★★テキスト階層化アプリ★★<br>
-    このサイトでは、図の生成に <a href="https://mermaid-js.github.io/mermaid/#/" target="_blank">Mermaid.js</a> を、HTML要素の画像化に <a href="https://html2canvas.hertzen.com/" target="_blank">html2canvas</a> を使用しています。<br>
-    使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br><br>
-    <div class="controls_3">
-        <button onclick="changeButtonSize(1)">大</button>
-        <button onclick="changeButtonSize(-1)">小</button>
+ ★★テキスト階層化アプリ★★      使い方は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
+
+    <div class="upcontrols">
+        <label>
+            <input type="radio" name="keyboard-toggle" value="show" checked>
+            ソフトウエアキーボードが表示されるようにする
+        </label>
+        <label>
+            <input type="radio" name="keyboard-toggle" value="hide">
+            ソフトウエアキーボードが表示されないようにする
+        </label>
     </div>
+    <div>
+        <button onclick="changeButtonSize(1)"  class="upcontrols">矢印ボタンを大きくする</button>
+        <button onclick="changeButtonSize(-1)"  class="upcontrols">矢印ボタンを小さくする</button>
+    </div>
+    <br>
     <div id="app"></div>
 
 <script>
@@ -126,8 +143,29 @@
                 // 新しい出力エリアの追加
                 //this.createOutputArea();
                 
+                this.radioButtons = document.querySelectorAll('input[name="keyboard-toggle"]');
+                this.radioButtons.forEach(radio => {
+                    radio.addEventListener('change', () => this.toggleReadonly());
+                });
+                // 初期状態を設定
+                this.toggleReadonly();
+
             }
 
+            toggleReadonly() {
+                const selectedValue = document.querySelector('input[name="keyboard-toggle"]:checked').value;
+                const isReadonly = selectedValue === 'hide';
+
+                this.textareas.forEach(textareaDiv => {
+                    const textarea = textareaDiv.querySelector('textarea');
+                    if (isReadonly) {
+                        textarea.setAttribute('readonly', 'readonly');
+                    } else {
+                        textarea.removeAttribute('readonly');
+                    }
+                });
+            }
+       
             // 新しいメソッド: 出力エリアの作成
             createOutputArea() {
 
@@ -143,18 +181,22 @@
                 
 
                 const outputButton = document.createElement('button');
+                outputButton.className = 'upcontrols';
                 outputButton.textContent = 'word文書として保存';
                 outputButton.onclick = () => this.writeOutput();
                 
                 const outputButton2 = document.createElement('button');
+                outputButton2.className = 'upcontrols';
                 outputButton2.textContent = '左→右のツリー';
                 outputButton2.onclick = () => this.writeOutput4(1);
 
                 const outputButton2_2 = document.createElement('button');
+                outputButton2_2.className = 'upcontrols';
                 outputButton2_2.textContent = '上→下のツリー';
                 outputButton2_2.onclick = () => this.writeOutput4(2);
 
                 const outputButton3 = document.createElement('button');
+                outputButton3.className = 'upcontrols';
                 outputButton3.textContent = 'マインドマップにする';
                 outputButton3.onclick = () => this.writeOutput3();
 
@@ -386,15 +428,17 @@
             addClearButton() {
                 const clearButton = document.createElement('button');
                 clearButton.textContent = '全グループ化解除';
+                clearButton.className = 'upcontrols';
                 clearButton.addEventListener('click', () => this.clearAllHighlights());
-                this.app.insertBefore(clearButton, this.app.firstChild);
+                this.app.appendChild(clearButton);
             }
 
             addexportButton() {
                 const exportButton = document.createElement('button');
                 exportButton.textContent = 'csv保存';
+                exportButton.className = 'upcontrols';
                 exportButton.addEventListener('click', () => this.exportCSV());
-                this.app.insertBefore(exportButton, this.app.firstChild);
+                this.app.appendChild(exportButton);
             }
 
             exportCSV() {
@@ -448,17 +492,22 @@
                 URL.revokeObjectURL(url); // メモリを解放
             }
 
+            createCSVlabel() {
+                const csvfileinputlabel = document.createElement('label');
+                csvfileinputlabel.textContent = '保存したファイルを読み込む→';
+                csvfileinputlabel.className = 'upcontrols'; // スタイリング用のクラスを追加（オプション）
+                this.app.appendChild(csvfileinputlabel);
+            }
 
             createCSVFileInput() {
                 const csvFileInput = document.createElement('input');
+                csvFileInput.className = 'upcontrols';
                 csvFileInput.type = 'file';
                 csvFileInput.id = 'csvFile';
                 csvFileInput.accept = '.csv';
                 csvFileInput.onchange = () => this.importCSV();
-                
-                // CSV ファイル入力要素を Clear ボタンの後に挿入
-            //    this.app.insertBefore(csvFileInput, this.app.firstChild.nextSibling);
-                this.app.insertBefore(csvFileInput, this.app.firstChild.nextSibling);
+
+                this.app.appendChild(csvFileInput);
             }
 
             clearAllHighlights() {
@@ -772,6 +821,9 @@
 
             updateDOM() {
                 this.app.innerHTML = '';
+                this.createCSVlabel();
+                this.createCSVFileInput();
+                this.addexportButton();
                 this.addClearButton();
                 this.textareas.forEach(textarea => {
                     this.app.appendChild(textarea);
@@ -782,8 +834,6 @@
                 this.updateCloseButtons();
 
                 // 出力エリアとボタンを再作成
-                this.addexportButton();
-                this.createCSVFileInput();
                 this.createOutputArea();
             }
 
@@ -1467,8 +1517,8 @@
 <div id="dst">
 </div>
 
-<button onclick="captureHighResImage()">表示されているツリー図やマインドマップを画像としてコピー</button>
-<button onclick="hideImage()">表示されているツリー図やマインドマップを消す</button>
+<button onclick="captureHighResImage()" class="upcontrols">表示されているツリー図やマインドマップを画像としてコピー</button><br>
+<button onclick="hideImage()" class="upcontrols">表示されているツリー図やマインドマップを消す</button>
 
 <!--ローカルの場合は以下の一文を入れる
 <script src="./html2canvas.min.js"></script>-->
