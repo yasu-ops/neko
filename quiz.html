@@ -3,119 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>quiz</title>
+    <title>Quiz Management System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        button { margin: 5px; }
-        #questionList { margin-top: 20px; }
-        .question { margin-bottom: 10px; }
+        table {
+            border-collapse: collapse;
+            width: auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
+
+ <h3><label for="fileInput">最初に問題を読み込む→</label><input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"></h3>
+
+<table><tr><td>
+<b><span id="fn"></span> 学習計画（スペーシング効果に基づく計画）★</b><br>
+<div id="learningPlan">
+    <input type="checkbox" id="check1"><label for="check1">1回目：<span id="date1"></span></label>
+    <input type="checkbox" id="check2"><label for="check2">2回目：<span id="date2"></span></label>
+    <input type="checkbox" id="check3"><label for="check3">3回目：<span id="date3"></span></label>
+    <input type="checkbox" id="check4"><label for="check4">4回目：<span id="date4"></span></label>
+    <input type="checkbox" id="check5"><label for="check5">5回目：<span id="date5"></span></label>
+    <input type="checkbox" id="check6"><label for="check6">6回目：<span id="date6"></span></label>
+</div>
+</td></tr></table>
+<ol>
+    <li>最初の学習から、２０～３０分後、１日後、２～３日後、１週間後、１ヶ月後のタイミングで再度学習すると記憶が定着しやすくなると言われています。</li>
+    <li>学習が完了したら、上の欄の完了した回にレをつけて保存してください。</li>
+    <li>学習計画を修正したい場合は下記のあてはまるものを選んで「みなす」ボタンを押し、今日やる回までの□にはレを入れておいてください。</li>
+    今日の学習を
+    <input type="radio" name="learningSession" value="1" id="session1"><label for="session1">1回目</label>
+    <input type="radio" name="learningSession" value="2" id="session2"><label for="session2">2回目</label>
+    <input type="radio" name="learningSession" value="3" id="session3"><label for="session3">3回目</label>
+    <input type="radio" name="learningSession" value="4" id="session4"><label for="session4">4回目</label>
+    <input type="radio" name="learningSession" value="5" id="session5"><label for="session5">5回目</label>
+    <input type="radio" name="learningSession" value="6" id="session6"><label for="session6">6回目</label>
+    の学習と<button onclick="updateLearningPlan()">みなす</button>
+</ol>
+<b>操作ボタン</b>
     <div>
-        <label for="fileInput">問題を選ぶ→</label>
-        <input type="file" id="fileInput" accept=".csv">
-        <button id="showWrongOnly">誤答のみ表示</button>
-        <button id="showAll">全部表示</button>
-        <button id="clearAllChecks">誤答チェックをすべて消す</button>
-        <button id="saveFile">自分の解答結果を保存する</button>
+        □<button onclick="showAllAnswers()">正解を全部表示する</button>
+        <button onclick="hideAllAnswers()">正解を全部隠す</button><br>
+        □<button onclick="showWrong()">誤答のみ表示</button>
+        （注意：このボタンを押すと正答欄にレが入っていない問題は誤答回数が＋１されます）
+        <button onclick="showAllQuestions()">誤答以外も表示</button>
+        <button onclick="sortByMistakeCount()">誤答回数の多い順に表示</button>
+        （<button onclick="sortByQuestionNumber()">問題番号順にソート</button>）<br>
+        □<button onclick="clearAllMistakes()">正答チェックをすべて消す</button><br>
+        □<button style="font-size: 20px; font-weight: bold;" onclick="saveAnswers()">今回の学習結果を保存する</button>(次の学習日が最初に付いたファイル名で保存されます。)
+        
     </div>
-    <div id="questionList"></div>
+    
+
+    <table id="questionList">
+        <thead>
+            <tr>
+                <th>問題番号</th>
+                <th>問題</th>
+                <th>正解・解説</th>
+                <th>レ＝正答</th>
+                <th>誤答数（修正ボタン）</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
     <script>
         let questions = [];
 
-        document.getElementById('fileInput').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const content = e.target.result;
-                questions = parseCSV(content);
-                displayQuestions();
-            };
-            reader.readAsText(file);
-        });
+        function initializeDates(startDate = new Date()) {
+            const dates = [startDate];
+            for (let i = 1; i < 6; i++) {
+                const nextDate = new Date(dates[i-1]);
+                if (i === 1) nextDate.setMinutes(nextDate.getMinutes() + 30);
+                else if (i === 2) nextDate.setHours(nextDate.getHours() + 23, nextDate.getMinutes() + 30);
+                else if (i === 3) nextDate.setHours(nextDate.getHours() + 48);
+                else if (i === 4) nextDate.setDate(nextDate.getDate() + 4);
+                else if (i === 5) nextDate.setDate(nextDate.getDate() + 21);
+                dates.push(nextDate);
+            }
+            return dates;
+        }
 
-        document.getElementById('saveFile').addEventListener('click', () => {
-            const csv = questionsToCSV();
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        function formatDate(date) {
+            return date.toLocaleString('ja-JP', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}).replace(/\//g, '/').replace(',', '/');
+        }
+
+        function updateDateDisplay() {
+            const dates = initializeDates();
+            for (let i = 0; i < 6; i++) {
+                document.getElementById(`date${i+1}`).textContent = formatDate(dates[i]);
+            }
+        }
+
+        // 学習計画を更新する関数
+        function updateLearningPlan() {
+            // 選択された学習セッションを取得
+            const selectedSession = document.querySelector('input[name="learningSession"]:checked');
+            // セッションが選択されていない場合は何もしない
+            if (!selectedSession) return;
+
+            // 選択されたセッションのインデックスを取得（0から始まる）
+            const sessionIndex = parseInt(selectedSession.value)-1 ;
+            
+            // 日付の配列を初期化
+            const dates = initializeDates();
+            // 現在の日時を取得
+            const now = new Date();
+
+            // 選択されたセッションから6回目のセッションまでの日付を設定
+            for (let i = sessionIndex; i < 6; i++) {
+                if (i === sessionIndex) {
+                    // 選択されたセッションの日付は現在の日時
+                    dates[i] = now;
+                } else {
+                    const prevDate = new Date(dates[i-1]);
+                    if (i  === 1) prevDate.setMinutes(prevDate.getMinutes() + 30);
+                    else if (i  === 2) prevDate.setHours(prevDate.getHours() + 23, prevDate.getMinutes() + 30);
+                    else if (i  === 3) prevDate.setHours(prevDate.getHours() + 48);
+                    else if (i  === 4) prevDate.setDate(prevDate.getDate() + 4);
+                    else if (i  === 5) prevDate.setDate(prevDate.getDate() + 21);
+                    dates[i] = prevDate;
+                }
+            }
+
+            // 各セッションの日付を画面に表示
+            for (let i = 0; i < 6; i++) {
+                document.getElementById(`date${i+1}`).textContent = formatDate(dates[i]);
+            }
+        }
+
+        function loadQuestions() {
+            let file_name;
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            //0番目から2番目の文字の直前までを抽出
+            if(file.name.substring(0,2)==="20"){
+                //2024_00_00_00_00  17文字目以降を抽出 ０から始めて１６番目以降を抽出
+                file_name=file.name.substring(16);
+            } else {
+                file_name=file.name;        
+            }           
+            document.getElementById("fn").innerHTML=file_name;
+            if (file) {
+                Papa.parse(file, {
+                    complete: function(results) {
+                        // 最初の2行を取得
+                        dates = results.data[0];
+                        if (dates[0].trim() === '') {
+                            // If the first date is empty, initialize dates from current time
+                            dates = initializeDates().map(formatDate);
+                        }
+                        checks = results.data[1];
+                        for (let i = 0; i < 6; i++) {
+                            document.getElementById(`date${i+1}`).textContent = dates[i];
+                            document.getElementById(`check${i+1}`).checked = checks[i] === '1';
+                        }
+
+                        // 残りの行をquestions配列に格納
+                        questions = results.data.slice(2).map((row, index) => ({
+                            id: index + 1,
+                            question: row[0],
+                            answer: row[1],
+                            isWrong: row[2] === '1',
+                            mistakeCount: parseInt(row[3] || 0)
+                        }));
+                        displayQuestions();
+                    }
+                });
+            }
+        }
+
+        function displayQuestions(wrongOnly = false) {
+            const tbody = document.querySelector('#questionList tbody');
+            tbody.innerHTML = '';
+            questions.forEach(q => {
+                if (!wrongOnly || !q.isWrong) {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${q.id}</td>
+                        <td>${q.question}</td>
+                        <td>
+                            <button onclick="showAnswer(${q.id})">正解表示</button>
+                            <span id="answer-${q.id}" style="display:none;">
+                                ${q.answer}
+                                <button onclick="hideAnswer(${q.id})">正解を隠す</button>
+                            </span>
+                        </td>
+                        <td>
+                            <input type="checkbox" ${q.isWrong ? 'checked' : ''} onchange="updateWrong(${q.id}, this.checked)">
+                            <span id="seitou-${q.id}">${q.isWrong ? '○' : ''}</span>
+                        </td>    
+                        <td>
+                            <span id="mistakeCount-${q.id}">${q.mistakeCount}</span>
+                            （<button onclick="incrementMistake(${q.id})">増</button>
+                            <button onclick="decrementMistake(${q.id})">減</button>）
+                        </td>
+                    `;
+                    }
+            });
+        }
+
+        function showWrong(){
+            questions.forEach(q => {
+                if(!q.isWrong){
+                    q.mistakeCount++;
+                }
+            });
+            displayQuestions(true)
+        }
+        
+        function updateWrong(number, isWrong) {
+            const question = questions.find(q => q.id == number);
+            if (question) {
+                question.isWrong = isWrong;
+                if(isWrong){
+                    document.getElementById(`seitou-${number}`).innerHTML="○"
+                }else(
+                    document.getElementById(`seitou-${number}`).innerHTML=""
+                )
+            }
+        }
+
+        function showAnswer(id) {
+            const answerSpan = document.getElementById(`answer-${id}`);
+            const answerButton = answerSpan.previousElementSibling;
+            answerSpan.style.display = 'inline';
+            answerButton.style.display = 'none';
+        }
+
+        function hideAnswer(id) {
+            const answerSpan = document.getElementById(`answer-${id}`);
+            const answerButton = answerSpan.previousElementSibling;
+            answerSpan.style.display = 'none';
+            answerButton.style.display = 'inline';
+        }
+
+        function incrementMistake(id) {
+            const question = questions.find(q => q.id === id);
+            question.mistakeCount++;
+            updateMistakeCount(id);
+        }
+
+        function decrementMistake(id) {
+            const question = questions.find(q => q.id === id);
+            if (question.mistakeCount > 0) {
+                question.mistakeCount--;
+                updateMistakeCount(id);
+            }
+        }
+
+        function updateMistakeCount(id) {
+            const mistakeCountSpan = document.getElementById(`mistakeCount-${id}`);
+            mistakeCountSpan.textContent = questions.find(q => q.id === id).mistakeCount;
+        }
+
+        function sortByMistakeCount() {
+            questions.sort((a, b) => b.mistakeCount - a.mistakeCount);
+            displayQuestions();
+        }
+
+        function sortByQuestionNumber() {
+            questions.sort((a, b) => a.id - b.id);
+            displayQuestions();
+        }
+
+        function showAllQuestions() {
+            displayQuestions();
+        }
+
+        function clearAllMistakes() {
+            questions.forEach(q => q.isWrong = false);
+            displayQuestions();
+        }
+
+        function saveAnswers() {
+
+            let file_name;
+            let flag=0;
+
+            for (let i = 1; i <= 6; i++) {
+                if(document.getElementById(`check${i}`).checked===false) {
+                    file_name=document.getElementById(`date${i}`).textContent.replace(/[/: ]/g, "_");
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag=0){
+                file_name="済";
+            }
+            file_name=file_name+document.getElementById("fn").innerHTML;
+
+            const dates = [];
+            const checks = [];
+            for (let i = 1; i <= 6; i++) {
+                dates.push(document.getElementById(`date${i}`).textContent);
+                checks.push(document.getElementById(`check${i}`).checked ? '1' : '0');
+            }
+            let content = dates.join(',') + '\n' + checks.join(',') + '\n';
+
+            questions.sort((a, b) => a.id - b.id);  // Sort by question number before saving
+            const csvContent = questions.map(q => [q.question, q.answer, `${q.isWrong ? '1' : '0'}`,q.mistakeCount].join(',')).join('\n');
+
+            const lastcontent =content + csvContent;
+           
+            const blob = new Blob([lastcontent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             if (link.download !== undefined) {
                 const url = URL.createObjectURL(blob);
                 link.setAttribute("href", url);
-                link.setAttribute("download", "questions.csv");
+                link.setAttribute("download", file_name);
                 link.style.visibility = 'hidden';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             }
-        });
-
-        document.getElementById('showWrongOnly').addEventListener('click', () => {
-            displayQuestions(true);
-        });
-
-        document.getElementById('showAll').addEventListener('click', () => {
-            displayQuestions();
-        });
-
-        document.getElementById('clearAllChecks').addEventListener('click', () => {
-            questions.forEach(q => q.isWrong = false);
-            displayQuestions();
-        });
-
-        function parseCSV(content) {
-            const lines = content.split('\n');
-            return lines.map(line => {
-                const [number, question, answer, isWrong, explanation] = line.split(',');
-                return { number, question, answer, isWrong: isWrong === '1', explanation: explanation.trim() };
-            });
         }
 
-        function questionsToCSV() {
-            return questions.map(q => 
-                `${q.number},${q.question},${q.answer},${q.isWrong ? '1' : '0'},${q.explanation || ''}`
-            ).join('\n');
+        function showAllAnswers() {
+            questions.forEach(q => showAnswer(q.id));
         }
 
-        function displayQuestions(wrongOnly = false) {
-            const list = document.getElementById('questionList');
-            list.innerHTML = '';
-            questions.forEach(q => {
-                if (!wrongOnly || q.isWrong) {
-                    const div = document.createElement('div');
-                    div.className = 'question';
-                    div.innerHTML = `
-                        ${q.number}. ${q.question}
-                        <button onclick="toggleAnswer(${q.number}, this)">正解表示</button>
-                        <input type="checkbox" ${q.isWrong ? 'checked' : ''} onchange="updateWrong(${q.number}, this.checked)">
-                        <div id="answer${q.number}" style="display:none;">
-                            正解: ${q.answer}
-                            ${q.explanation ? `<br>解説: ${q.explanation}` : ''}
-                        </div>
-                    `;
-                    list.appendChild(div);
-                }
-            });
+        function hideAllAnswers() {
+            questions.forEach(q => hideAnswer(q.id));
         }
 
-        function toggleAnswer(number, button) {
-            const answerDiv = document.getElementById(`answer${number}`);
-            if (answerDiv.style.display === 'none') {
-                answerDiv.style.display = 'block';
-                button.textContent = '正解を隠す';
-            } else {
-                answerDiv.style.display = 'none';
-                button.textContent = '正解表示';
-            }
-        }
-
-        function updateWrong(number, isWrong) {
-            const question = questions.find(q => q.number == number);
-            if (question) {
-                question.isWrong = isWrong;
-            }
-        }
+        updateDateDisplay();
     </script>
 </body>
 </html>
