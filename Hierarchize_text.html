@@ -10,10 +10,10 @@
             --button-height: 30px;
             --button-font-size: 20px;
             --controls-text-align: right;
-            --controls-display: inline-block;
-            --controls-display1: inline-block;
+            --controls-display: none;
+            --controls-display1: none;
             --controls-display2: inline-block;
-            --controls-visibility: visible:
+            --controls-visibility: hidden;
         }
         table {
             border-collapse: collapse; /* セルの間に隙間をなくす */
@@ -93,6 +93,12 @@
             display: block;
             text-align: right;      
         }
+        
+        .controls{
+            display: var(--controls-display);
+            text-align: var(--controls-text-align);
+        }
+
         .controls button{
             font-size:20px;
         }
@@ -166,25 +172,36 @@
             root.style.setProperty('--button-width', newWidth + 'px');
             root.style.setProperty('--button-height', newHeight + 'px');
             root.style.setProperty('--button-font-size', newFontSize + 'px');
-
+        }
+        function setumei_kakusu(){
+            if(document.getElementById("setumei").style.display===""){
+                document.getElementById("setumei").style.display="none";
+                document.getElementById("setumei_hyouji").textContent="「授業での使い方」を表示する";
+            } else {
+                document.getElementById("setumei").style.display="";
+                document.getElementById("setumei_hyouji").textContent="「授業での使い方」を隠す";
+            }
         }
     </script>
 </head>
 <body>
- ★★テキスト階層化アプリ★★ 8     ショートカット・各ボタンの説明は <a href="#" onclick="openInNewWindow(); return false;">こちら</a><br>
+ ★★テキスト階層化アプリ★★ <button id="setumei_hyouji" onclick="setumei_kakusu()">「授業での使い方」を隠す</button><br>
 
+ <div id="setumei">
 <table border="1"><tr><td>
 <ol>
 <u>授業での使い方</u><br>
 <li>teamsの投稿にある本文をコピーして、最初のテキストボックスに貼り付ける。<br>
 <li>最初の意味のまとまりで改行する。→新しいテキストボックスができて、残りの部分が入る。<br>
 <li>新しくできたテキストボックスで２を繰り返す。<br>
-<li>本文がすべてテキストボックスに割り振られたら、→ボタンを押して、字下げして階層構造を作る。（←ボタンで字下げを戻せる）<br>
-※字下げはtabやshift+↓でも可能。（字下げを戻す時はshift+tabやshift+↑でも可能）
-※分岐させたものを再び１つの枝にしたいときは、１番目の分岐以外に+を入れる。<br>
-※上下を入れ替える時は↑ボタンや↓ボタンを押す。（command＋↑やcommand＋↓でも可能。）
+<li>本文がすべてテキストボックスに割り振られたら、→ボタンを押して、字下げして階層構造を作る。（[←ボタン]で字下げを戻せる）<br>
+※外付けキーボードがない人は右下のメニューでソフトウェアキーボードを非表示にしてから作業する。<br>
+※字下げはtabでも可能。（字下げを戻す時はshift+tab）
+※分岐させたものを再び１つの枝にしたいときは、１番目の分岐以外の先頭に半角の+を入れる。<br>
+※上下を入れ替える時は↑ボタンや↓ボタンを押す。（ctrl＋↑やctrl＋↓でも可能。）
 <li>「左→右のツリーを作成」ボタンを押して、図を見て、違うところがあれば修正する。
 </ol></td></tr></table> 
+</div>
 <br><br>
 <table class="right-align-table">
     <tr>
@@ -198,17 +215,17 @@
         <td><b>←・→・↑・↓ボタン</b></td>
         <td>
             <input type="radio" name="button_display1" value="left" >左端　
-            <input type="radio" name="button_display1" value="right">右端
-            <input type="radio" name="button_display1" value="both"　checked>両方
+            <input type="radio" name="button_display1" value="right" checked>右端　
+            <input type="radio" name="button_display1" value="both">両方　
             <input type="radio" name="button_display1" value="none">非表示
         </td>
     </tr>
     <tr>
         <td><b>消・畳む・Gボタン</b></td>
         <td>
-            <input type="radio" name="button_display" value="left" >左寄せ
-            <input type="radio" name="button_display" value="right" checked>右寄せ
-            <input type="radio" name="button_display" value="none">非表示
+            <input type="radio" name="button_display" value="left" >左寄せ　
+            <input type="radio" name="button_display" value="right" >右寄せ　
+            <input type="radio" name="button_display" value="none" checked>非表示
         </td>
     </tr>
     <tr>
@@ -543,7 +560,9 @@
                 // テキストエリアの内容とインデントを取得
                 this.textareas.forEach((textareaDiv) => {
                     const textarea = textareaDiv.querySelector('textarea');
-                    const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
+                    const btn = textareaDiv.querySelector('.controls_3_button');
+                    //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
+                    const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
                     const content = textarea.value.replace(/\n/g, '\\n').trim(); // 改行をエスケープしてトリム
                     textareasData.push({ content, indent });
                 });
@@ -811,7 +830,7 @@
                 const index = this.textareas.indexOf(container);
                 let cindex=index;
  
-                if (event.ctrlKey || event.metakey) {
+                if (event.ctrlKey) {
                     if (event.key === 'ArrowUp') {
                         if (event.preventDefault && typeof event.preventDefault === 'function') {
                            event.preventDefault();
@@ -970,6 +989,7 @@
                         updatedTextarea.focus();
                         updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
                     }, 0);
+                /*
                 } else  if (event.shiftKey) {
                     let m=0;
                     let direction = 0;
@@ -994,6 +1014,7 @@
                             updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
                         }, 0);
                     }
+                */
                 } else if (event.key === 'ArrowUp' && textarea.selectionStart === 0) {
                     this.moveCursor(index, -1);
                 } else if (event.key === 'ArrowDown' && textarea.selectionStart === textarea.value.length) {
@@ -1076,7 +1097,6 @@
                                 this.addTextarea2(parseInt(indent),text);
                             }
                         });
-                        this.updateGrouping();
                         this.updateDOM();
                     };
                     reader.readAsText(file);
