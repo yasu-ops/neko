@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Management System</title>
+    <!--ローカルの場合は以下の一文を入れる
+    <script src="./papaparse.min.js"></script>-->
+    <!--ローカルの場合は以下の一文をコメントアウト-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
         table {
@@ -14,13 +17,16 @@
             border: 1px solid black;
             padding: 8px;
             text-align: left;
-            white-space: nowrap;
+            /* white-space: nowrap; */
+            white-space: wrap;
         }
         th {
             background-color: #f2f2f2;
         }
         button {
             margin: 5px;
+            font-size: 20px; 
+            font-weight: bold;
         }
     </style>
 </head>
@@ -53,28 +59,34 @@
     の学習と<button onclick="updateLearningPlan()">みなす</button>
 </ol>
 <b>操作ボタン</b>
-    <div>
-        □<button onclick="showAllAnswers()">正解を全部表示する</button>
+    <oli>
+<!--
+        <button onclick="showAllAnswers()">正解を全部表示する</button>
         <button onclick="hideAllAnswers()">正解を全部隠す</button><br>
-        □<button onclick="showWrong()">誤答のみ表示</button>
-        （注意：このボタンを押すと正答欄にレが入っていない問題は誤答回数が＋１されます）
-        <button onclick="showAllQuestions()">誤答以外も表示</button>
-        <button onclick="sortByMistakeCount()">誤答回数の多い順に表示</button>
-        （<button onclick="sortByQuestionNumber()">問題番号順にソート</button>）<br>
-        □<button onclick="clearAllMistakes()">正答チェックをすべて消す</button><br>
-        □<button style="font-size: 20px; font-weight: bold;" onclick="saveAnswers()">今回の学習結果を保存する</button>(次の学習日が最初に付いたファイル名で保存されます。)
+        <button onclick="showWrong()">誤答のみ表示</button>（注意：このボタンを押すと正答欄にレが入っていない問題は誤答回数が＋１されます）<br>
+        <button onclick="showAllQuestions()">誤答以外も表示</button><button onclick="sortByMistakeCount()">誤答回数の多い順に表示</button>（<button onclick="sortByQuestionNumber()">問題番号順にソート</button>）<br>
+        <button onclick="clearAllMistakes()">正答チェックをすべて消す</button><br>
+        <button onclick="saveAnswers()">今回の学習結果を保存する</button>(次の学習日が最初に付いたファイル名で保存されます。)<br>
+-->
+        <li><button onclick="showAllAnswers()">正解を全部表示する</button>←→<button onclick="hideAllAnswers()">正解を全部隠す</button></li>
+        <li><button onclick="showWrong()">誤答のみ表示</button>←→<button onclick="showAllQuestions()">誤答以外も表示</button>（注意：「誤答のみ表示」を押すとその時点で誤答だった問題は、誤答数が＋１されます）</li>
+        <li><button onclick="sortByMistakeCount()">誤答数の多い順に表示</button>←→<button onclick="sortByQuestionNumber()">問題番号順にソート</button></li>
+        <li><button onclick="clearAllMistakes()">正答チェックをすべて消す</button></li>
+        <li><button onclick="saveAnswers()">今回の学習結果を保存する</button>(ファイル名の先頭に次の学習日時を表す文字列が付加されます。)</li>
+    
         
+
     </div>
     
 
     <table id="questionList">
         <thead>
             <tr>
-                <th>問題番号</th>
-                <th>問題</th>
-                <th>正解・解説</th>
-                <th>レ＝正答</th>
-                <th>誤答数（修正ボタン）</th>
+                <th width="5%">問題番号</th>
+                <th width="25%">問題</th>
+                <th width="55%">正解・解説 ※この欄の内容(正解・解説両方）を見ないで言える（表現の仕方は変えてよい）ようになったら正答欄にレをつける</th>
+                <th width="5%">レ＝正答</th>
+                <th width="10%">誤答数（修正ボタン）</th>
             </tr>
         </thead>
         <tbody>
@@ -218,11 +230,15 @@
         }
 
         function showWrong(){
-            questions.forEach(q => {
-                if(!q.isWrong){
-                    q.mistakeCount++;
-                }
-            });
+            if(confirm("現在、誤答のものについて、誤答数を＋１してよいですか？")){
+                questions.forEach(q => {
+                    if(!q.isWrong){
+                        q.mistakeCount++;
+                    }
+                }); 
+            } else {
+                alert("誤答数は増やさずに誤答のみ表示します。現在、誤答になっているものの誤答数を増やしたい場合は、一度「誤答以外も表示」を押してから再度「誤答のみ表示」ボタンを押してください。");
+            }    
             displayQuestions(true)
         }
         
