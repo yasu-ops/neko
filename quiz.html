@@ -31,6 +31,8 @@
     </style>
 </head>
 <body>
+<div style="text-align: right;">※CSVファイルの処理に PapaParse ライブラリを使用しています。<br></div>
+
 
  <h3><label for="fileInput">最初に問題を読み込む→</label><input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"></h3>
 
@@ -85,8 +87,8 @@
                 <th width="5%">問題番号</th>
                 <th width="25%">問題</th>
                 <th width="55%">正解・解説 ※この欄の内容(正解・解説両方）を見ないで言える（表現の仕方は変えてよい）ようになったら正答欄にレをつける</th>
-                <th width="5%">レ＝正答</th>
-                <th width="10%">誤答数（修正ボタン）</th>
+                <th width="5%">レ＝正解</th>
+                <th width="10%">誤答カウント</th>
             </tr>
         </thead>
         <tbody>
@@ -217,12 +219,12 @@
                         </td>
                         <td>
                             <input type="checkbox" ${q.isWrong ? 'checked' : ''} onchange="updateWrong(${q.id}, this.checked)">
-                            <span id="seitou-${q.id}">${q.isWrong ? '○' : ''}</span>
+                            <span id="seitou-${q.id}">${q.isWrong ? '正解' : ''}</span>
                         </td>    
                         <td>
                             <span id="mistakeCount-${q.id}">${q.mistakeCount}</span>
-                            （<button onclick="incrementMistake(${q.id})">増</button>
-                            <button onclick="decrementMistake(${q.id})">減</button>）
+                            <button onclick="incrementMistake(${q.id})">増</button>
+                            <button onclick="decrementMistake(${q.id})">減</button>
                         </td>
                     `;
                     }
@@ -247,7 +249,7 @@
             if (question) {
                 question.isWrong = isWrong;
                 if(isWrong){
-                    document.getElementById(`seitou-${number}`).innerHTML="○"
+                    document.getElementById(`seitou-${number}`).innerHTML="正解"
                 }else(
                     document.getElementById(`seitou-${number}`).innerHTML=""
                 )
