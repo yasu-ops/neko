@@ -62,8 +62,10 @@
             height: 2em;  /* フォントサイズの2倍の高さ */
             font-size: 20px; 
             font-weight: bold;
-        }        
-
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 <script>
     let c;
@@ -82,7 +84,7 @@
         // canvasの2Dコンテキストを取得する
         ctx = c.getContext('2d');
         // 線の色を青にする
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = 'blue';
         // 線の太さを1にする
         ctx.lineWidth = 9;
         //背景を白にする
@@ -307,14 +309,16 @@
 </head>
 <body>
 <div style="text-align: right;">※CSVファイルの処理に PapaParse ライブラリを使用しています。<br></div>
-<H1>ひらがなのれんしゅう</H1>
+<span style="font-size: 50px">ひらがなのれんしゅう </span><button id="otona_hyouji" onclick="toggleRow('otona')">大人メニューを表示する</button>
+
+
 
 <table style="font-size: 20px;font-weight: bold;">
-    <tr>
-        <td width="15%">
-            ママのメニュー
+    <tr id="otona" class="hidden">
+        <td ">
+            大人メニュー
         </td>
-        <td width="85%">
+        <td >
             <label for="fileInput">ファイル（これからやる問題・やりかけや解き終わった問題）を読み込む→</label><input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()">　        
             <button onclick="saveAnswers(1)">やりかけや解き終わった問題を保存</button>
             <br>（<button onclick="createQuestionForm(true,false)">問題新規作成</button>
@@ -322,9 +326,12 @@
             <button onclick="saveAnswers(2)">できた問題を保存</button>）
         </td>
     </tr>
-    <tr>
+</table>
+<p></p>
+<table style="font-size: 20px;font-weight: bold;">
+        <tr>
         <td>
-            まゆこさんのメニュー
+            こどもメニュー
         </td>
         <td>
             <button onclick="showWrong()">できていないものだけ、みる</button>
@@ -339,7 +346,7 @@
                 <th style="text-align: center;" wdith="8%">ばんごう</th>
                 <th style="text-align: center;" width="7%">ひらがな</th>
                 <th style="text-align: center;" width="13%">～おてほん～<br>（まねてかこう！）</th>
-                <th width="57%">ここにかく</th>
+                <th width="57%">ここでれんしゅう</th>
                 <th style="text-align: center;" width="15%">うまくかけたら<br>□をタッチ！</th>
             </tr>
         </thead>
@@ -351,6 +358,17 @@
         let questions = [];
         let file_yomikomi_tyokugo = false; 
         let file_name;
+        
+        function toggleRow(rowId) {
+            var row = document.getElementById(rowId);
+            if (row.classList.contains('hidden')) {
+                row.classList.remove('hidden');
+                document.getElementById("otona_hyouji").textContent="大人メニューを隠す";
+            } else {
+                row.classList.add('hidden');
+                document.getElementById("otona_hyouji").textContent="大人メニューを表示する";
+            }
+        }
 
         function openInNewWindow() {
             // 現在のファイルのURLを取得
