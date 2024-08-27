@@ -203,6 +203,14 @@
     １　pos(e)で、そのイベントの開始位置の座標を取得し、
     ２　move(e)で、記録されたlastposから現在の位置までの線を引く
     ３　ドラッグフラッグをfalseにする
+    addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ポインタ
+            move(pos(e.changedTouches[0]))
+        }
+    }, { passive: false })
     */
     addEventListener('touchmove', (e) => {
         e.preventDefault();
@@ -212,6 +220,21 @@
             move(pos(e.changedTouches[0]))
         }
     }, { passive: false })
+
+    // A: スクロールを無効にする
+    function preventScroll(e) {
+        e.preventDefault();
+        if (e.changedTouches.length === 1) {
+            move(pos(e.changedTouches[0]));
+        }
+    }
+    addEventListener('touchmove', preventScroll, { passive: false });
+
+    // B: スクロールを有効にする
+    function Scroll_on(){
+        window.removeEventListener('touchmove', preventScroll);
+    }
+
     /*
     preventDefault() メソッドを呼び出そうとしたときに、イベントリスナーが「パッシブ（受動的）」として扱われているとpreventDefault() が機能しません。
     パッシブイベントリスナーは、ブラウザがスクロールやズームなどのデフォルトの動作を最適化するために導入されたもので、これによりパフォーマンスが向上します。
@@ -310,15 +333,16 @@
 <body>
 <div style="text-align: right;">※CSVファイルの処理に PapaParse ライブラリを使用しています。<br></div>
 <span style="font-size: 50px">ひらがなのれんしゅう </span><button id="otona_hyouji" onclick="toggleRow('otona')">大人メニューを表示する</button>
-
+<h1>画面サイズを表示する</h1>
+<p id="size"></p>
 
 
 <table style="font-size: 20px;font-weight: bold;">
     <tr id="otona" class="hidden">
-        <td ">
+        <td width="140px">
             大人メニュー
         </td>
-        <td >
+        <td>
             <label for="fileInput">ファイル（これからやる問題・やりかけや解き終わった問題）を読み込む→</label><input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()">　        
             <button onclick="saveAnswers(1)">やりかけや解き終わった問題を保存</button>
             <br>（<button onclick="createQuestionForm(true,false)">問題新規作成</button>
@@ -330,7 +354,7 @@
 <p></p>
 <table style="font-size: 20px;font-weight: bold;">
         <tr>
-        <td>
+        <td width="140px">
             こどもメニュー
         </td>
         <td>
@@ -358,6 +382,17 @@
         let questions = [];
         let file_yomikomi_tyokugo = false; 
         let file_name;
+        let winWidth;
+        function displayWindowSize() {
+            winWidth = window.innerWidth;
+            document.getElementById('size').innerText = `幅: ${winWidth}px`;
+        }
+
+        // 初回表示
+        displayWindowSize();
+
+        // ウィンドウサイズが変更されたときに更新
+        window.onresize = displayWindowSize        
         
         function toggleRow(rowId) {
             var row = document.getElementById(rowId);
@@ -663,19 +698,26 @@ function completeQuestionCreation() {
                             </span>
                         </td>
                         <td>
-                                <!--<iframe id="frame0" src="" width="200" height="400" style="transform: scale(0.5);"></iframe>-->
-                                <div  style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-                                <div style="width:200px;height:400px;overflow:hidden;background-color:white;">
-                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+                                <!--<div  style="width:200px;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+                                <div style="width:200px;height:400px;overflow:hidden;background-color:white;">-->
+                                
+                                <div  style="width:100%;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+                                <div style="width:100%;height:400px;overflow:hidden;background-color:white;">
+
+                                    <!--<iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>-->
+
+                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="200%" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+
                                 </div>
                             </div>
                         </td>
                         <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
-                            <!--${q.id===1 ? '<canvas id="canvas" frameborder="1" width="200" height="200"></canvas>':''} -->
-                            <button onclick="kaku(${q.id});openURL(${q.id},0)">かくまえにおす！</button><br>
-                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="950" height="200"></canvas>
+                            <button onclick="kaku(${q.id});openURL(${q.id},0)">かくまえにおす！</button><button onclick="scroll_on()">がめんをうごかす</button><br>
+                            <!--<canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="950" height="200"></canvas>-->
+                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.57)}" height="200"></canvas>
                             
-                            <div style="white-space: nowrap;font-size: 20px;font-weight: bold;">
+                            <!--<div style="white-space: nowrap;font-size: 20px;font-weight: bold;">-->
+                            <div style="font-size: 20px;font-weight: bold;">
                                 <!-- <input id="inputColor" type="color" value="#ff0000"> -->
                                 <button onclick="buttonclear(${q.id})">ぜんぶ、けす</button>
                                 　いろがえらべるよ→
