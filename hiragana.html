@@ -338,7 +338,8 @@
             大人メニュー
         </td>
         <td>
-            <label for="fileInput">ファイル（これからやる問題・やりかけや解き終わった問題）を読み込む→</label><input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()">　        
+            <label for="fileInput">ファイル（これからやる問題・やりかけや解き終わった問題）を読み込む</label><br>
+            <input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>        
             <button onclick="saveAnswers(1)">やりかけや解き終わった問題を保存</button>
             <br>（<button onclick="createQuestionForm(true,false)">問題新規作成</button>
             <button onclick="handleQuestionCreation()">読み込んだ問題の編集（修正・追加・削除）</button>
