@@ -15,17 +15,6 @@
     <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        @media screen and (max-width: 1080px) { /* iPadのSafari用 */
-            iframe {
-            transform: scale(1);
-            }
-        }
-
-        @media screen and (min-width: 1081px) { /* WindowsのEdge用 */
-            iframe{
-            transform: scale(0.5);
-            }
-        }
         label {
             font-size: 20px; /* ラベルのフォントサイズを設定 */
             font-weight: bold;
@@ -373,8 +362,8 @@
 <table id="questionList" width="100%">
         <thead>
             <tr>
-                <th style="text-align: center;" wdith="8%">ばんごう</th>
-                <th style="text-align: center;" width="7%">ひらがな</th>
+                <th style="text-align: center;" wdith="8%">ば<br>ん<br>ご<br>う</th>
+                <th style="text-align: center;" width="7%">ひ<br>ら<br>が<br>な</th>
                 <th style="text-align: center;" width="13%">おてほん<br></th>
                 <th width="57%">ここでれんしゅう（おてほんをまねて、かこう）
                 </th>
@@ -714,7 +703,7 @@ function completeQuestionCreation() {
 
                                     <!--<iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="400" height="400" style="transform:scale(0.5);transform-origin:0 0;"></iframe>-->
 
-                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="200%" height="400" style="transform-origin:0 0;"></iframe>
+                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="200%" height="400" style="transform:scale(1);transform-origin:0 0;"></iframe>
 
                                 </div>
                             </div>
