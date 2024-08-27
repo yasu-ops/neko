@@ -328,9 +328,6 @@
 <body>
 <div style="text-align: right;">※CSVファイルの処理に PapaParse ライブラリを使用しています。<br></div>
 <span style="font-size: 50px">ひらがなのれんしゅう </span><button id="otona_hyouji" onclick="toggleRow('otona')">大人メニューを表示する</button>
-<h1>画面サイズを表示する</h1>
-<p id="size"></p>
-
 
 <table style="font-size: 20px;font-weight: bold;">
     <tr id="otona" class="hidden">
@@ -379,14 +376,6 @@
         let questions = [];
         let file_yomikomi_tyokugo = false; 
         let file_name;
-        let winWidth;
-        function displayWindowSize() {
-            winWidth = window.innerWidth;
-            document.getElementById('size').innerText = `幅: ${winWidth}px`;
-        }
-
-        // 初回表示
-        displayWindowSize();
 
         // ウィンドウサイズが変更されたときに更新
         window.onresize = displayWindowSize        
