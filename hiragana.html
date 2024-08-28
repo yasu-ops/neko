@@ -15,6 +15,12 @@
     <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
+        .left-align {
+            float: left;
+        }
+        .right-align {
+            float: right;
+        }        
         label {
             font-size: 20px; /* ラベルのフォントサイズを設定 */
             font-weight: bold;
@@ -68,6 +74,13 @@
         }
     </style>
 <script>
+    /*
+    preventDefault() メソッドを呼び出そうとしたときに、イベントリスナーが「パッシブ（受動的）」として扱われているとpreventDefault() が機能しません。
+    パッシブイベントリスナーは、ブラウザがスクロールやズームなどのデフォルトの動作を最適化するために導入されたもので、これによりパフォーマンスが向上します。
+    しかし、パッシブイベントリスナーでは preventDefault() を使用してデフォルトの動作を防ぐことができません。
+　　この問題を解決するには、イベントリスナーを設定する際に { passive: false } オプションを指定する必要があります。
+    */
+ 
     let c;
     let ctx;
     // ドラッグ中かどうかを表すフラグ
@@ -75,20 +88,30 @@
     // 前回のポインタの位置を記録する変数
     let lastPos
 
-    /*
-    preventDefault() メソッドを呼び出そうとしたときに、イベントリスナーが「パッシブ（受動的）」として扱われているとpreventDefault() が機能しません。
-    パッシブイベントリスナーは、ブラウザがスクロールやズームなどのデフォルトの動作を最適化するために導入されたもので、これによりパフォーマンスが向上します。
-    しかし、パッシブイベントリスナーでは preventDefault() を使用してデフォルトの動作を防ぐことができません。
-　　この問題を解決するには、イベントリスナーを設定する際に { passive: false } オプションを指定する必要があります。
-    */
-    const preventScrollHandler = (e) => {
-        e.preventDefault();
+    function touchStartHandler(e){
+        // タッチされたポインタが1つだけなら
         if (e.changedTouches.length === 1) {
+            // ドラッグを終了する
+            down(pos(e.changedTouches[0]))
+        }
+    }
+    function touchEndHandler(e){
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ドラッグを終了する
+            up(pos(e.changedTouches[0]))
+        }
+    }
+    function touchMoveHandler(e) {
+        e.preventDefault();
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ポインタ
             move(pos(e.changedTouches[0]));
         }
-    };
+    }
 
-    function kaku(num) {
+    function kaku(num,gyou) {
         // 変数の宣言
         let i
 
@@ -99,21 +122,27 @@
         // 線の色を青にする
         ctx.strokeStyle = 'blue';
         // 線の太さを1にする
-        ctx.lineWidth = 9;
+        ctx.lineWidth = document.getElementById("hutosa"+num).innerHTML;
         //背景を白にする
         //ctx.fillStyle = 'white';
         //ctx.fillRect(0, 0, c.width, c.height);    
         
-        highlightCell("questionList",2,num);  
-        window.addEventListener('touchmove', preventScrollHandler, { passive: false });
+        highlightCell("questionList",3,gyou);  
+        c.addEventListener('touchstart',touchStartHandler);
+        c.addEventListener('touchend',touchEndHandler);
+        c.addEventListener('touchmove',touchMoveHandler, { passive: false });
+        window.addEventListener('touchmove',touchMoveHandler, { passive: false });
     }
 
-        //addEventListener('touchmove', preventScrollHandler, { passive: false });
 
     // B: スクロールを有効にする
-    function scroll_on(){
+    function scroll_on(num){
+        c = document.getElementById('canvas'+num);
         highlightCell("questionList",0,0);  
-        window.removeEventListener('touchmove', preventScrollHandler, { passive: false });
+        c.removeEventListener('touchstart', touchStartHandler);
+        c.removeEventListener('touchend', touchEndHandler);
+        c.removeEventListener('touchmove', touchMoveHandler, { passive: false });
+        window.removeEventListener('touchmove', touchMoveHandler, { passive: false });
     }
 
 
@@ -199,7 +228,6 @@
     １　pos(e.changedTouches[0])で、そのイベントの1本目の指を開始位置の座標を取得し、
     ２　ドラッグフラッグをtrueにして、
     ３　その座標をlastposに格納する
-    */
     addEventListener('touchstart', (e) => {
         // タッチされたポインタが1つだけなら
         if (e.changedTouches.length === 1) {
@@ -207,12 +235,12 @@
             down(pos(e.changedTouches[0]))
         }
     })
+    */
     /* 
     タッチエンドイベントeが発生したら、
     １　pos(e.changedTouches[0])で、そのイベントの1本目の指を開始位置の座標を取得し、
     ２　move(e)で、記録されたlastposから現在の位置までの線を引く
     ３　ドラッグフラッグをfalseにする
-    */
     addEventListener('touchend', (e) => {
         // タッチされたポインタが1つだけなら
         if (e.changedTouches.length === 1) {
@@ -220,6 +248,7 @@
             up(pos(e.changedTouches[0]))
         }
     })
+    */
     /* 
     タッチ移動イベントeが発生したら、
     １　pos(e)で、そのイベントの開始位置の座標を取得し、
@@ -236,10 +265,11 @@
     */
 
 
+
         
         
-    function buttonclear(num){
-        kaku(num);
+    function buttonclear(num,gyou){
+        kaku(num,gyou);
         ctx.clearRect(0, 0, c.width, c.height);
         // canvasに再描画する
         ctx.beginPath();
@@ -270,8 +300,8 @@
 
 
     // 今書いた画像をquestions配列とlocalStorageへ保存
-    function buttonSave(num){
-        kaku(num);
+    function buttonSave(num,gyou){
+        kaku(num,gyou);
         var png = c.toDataURL("image/png");
         if (png && png.startsWith('data:image/png;base64,')) {
             questions[num-1].gazou = png;
@@ -281,6 +311,7 @@
             console.warn('無効な画像データが生成されました');
             // エラー処理をここに追加
         }
+        scroll_on(num);
     } 
     //　localStrage画像読み込み
     function yomikomi(num){
@@ -340,7 +371,9 @@
             <button onclick="saveAnswers(1)">やりかけや解き終わった問題を保存</button>
             <br>（<button onclick="createQuestionForm(true,false)">問題新規作成</button>
             <button onclick="handleQuestionCreation()">読み込んだ問題の編集（修正・追加・削除）</button>
-            <button onclick="saveAnswers(2)">できた問題を保存</button>）
+            <button onclick="saveAnswers(2)">できた問題を保存</button>）<br>
+            ※ＰＣでお手本がはみでたら→<button onclick="for_pc()">お手本を枠内におさめる</button>
+            
         </td>
     </tr>
 </table>
@@ -363,9 +396,9 @@
                 <th style="text-align: center;" wdith="8%">ば<br>ん<br>ご<br>う</th>
                 <th style="text-align: center;" width="7%">ひ<br>ら<br>が<br>な</th>
                 <th style="text-align: center;" width="13%">おてほん<br></th>
-                <th width="57%">ここでれんしゅう（おてほんをまねて、かこう）
+                <th width="62%">ここでれんしゅう（おてほんをまねて、かこう）
                 </th>
-                <th style="text-align: center;" width="15%">うまくかけたら<br>□をタッチ！</th>
+                <th style="text-align: center;" width="10%">で<br>き<br>た</th>
             </tr>
         </thead>
         <tbody>
@@ -377,8 +410,6 @@
         let file_yomikomi_tyokugo = false; 
         let file_name;
 
-        // ウィンドウサイズが変更されたときに更新
-        window.onresize = displayWindowSize        
         
         function toggleRow(rowId) {
             var row = document.getElementById(rowId);
@@ -667,7 +698,15 @@ function completeQuestionCreation() {
             }
         }
 
+        function for_pc(){
+            questions.forEach(q => {
+                const iframe = document.getElementById(`frame${q.id}`);
+                iframe.style.transform = "scale(0.5)";
+            });
+        }
+
         function displayQuestions(wrongOnly = false) {
+            let i=0;
             const tbody = document.querySelector('#questionList tbody');
             tbody.innerHTML = '';
             questions.forEach(q => {
@@ -675,6 +714,7 @@ function completeQuestionCreation() {
                     　!wrongonlyであれば!q.isRingtでなくても（全表示なら、誤も正も）表示される　
                     　!wrongonlyでない場合は!q.isRingtでないと（誤表示なら、誤でないと）表示されない＝誤表示のときは誤のみが表示される*/
                 if (!wrongOnly || !q.isRight) {
+                    i++;
                     const row = tbody.insertRow();
                     row.innerHTML = `
                         <td style="font-size: 50px;padding: 0px; text-align: center;">${q.id}</td>
@@ -699,16 +739,21 @@ function completeQuestionCreation() {
                             </div>
                         </td>
                         <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
-                            <button onclick="kaku(${q.id});openURL(${q.id},0)">かくまえにおす！</button><button onclick="scroll_on()">がめんをうごかす</button><br>
+                            <object class="left-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object>
+                            <button class="left-align" onclick="kaku(${q.id},${i});openURL(${q.id},0)">ここにはいって、かく</button>
+                            <object class="left-align" type="image/svg+xml" data="search.svg" width="50" height="50"></object>
+                            <button class="left-align" onclick="openURL(${q.id},0)">おてほん</button>
+                            <button class="right-align" onclick="scroll_on(${q.id})">ここから、でる</button>
+                            <object class="right-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object><br>
                             <!--<canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="950" height="200"></canvas>-->
-                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.57)}" height="200"></canvas>
+                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.62)}" height="200"></canvas>
                             
                             <!--<div style="white-space: nowrap;font-size: 20px;font-weight: bold;">-->
                             <div style="font-size: 20px;font-weight: bold;">
                                 <!-- <input id="inputColor" type="color" value="#ff0000"> -->
-                                <button onclick="buttonclear(${q.id})">ぜんぶ、けす</button>
-                                　いろがえらべるよ→
-                                <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#0000FF" onchange="kaku(${q.id});Colorbutton(${q.id})">
+                                <button onclick="buttonclear(${q.id},${i})">ぜんぶ、けす</button>
+                                いろがえらべるよ→
+                                <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#0000FF" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
                                 <datalist id="color-picker${q.id}">
                                 <option value="blue">
                                 <option value="green">
@@ -719,20 +764,24 @@ function completeQuestionCreation() {
                                 </datalist>
                                 <!--<button onclick="Colorbutton(${q.id})">色変更</button>　　
                                 <button onclick="buttonSave(${q.id})">かけた！</button><br>-->
-                                <button onclick="hosoku(${q.id})">ほそく</button>
-                                <button onclick="hutoku(${q.id})">ふとく</button>
+                                <button onclick="kaku(${q.id},${i});hosoku(${q.id},${i})">ほそく</button>
+                                <button onclick="kaku(${q.id},${i});hutoku(${q.id},${i})">ふとく</button>
                                 ふとさ：<span id="hutosa${q.id}">9</span>
                                 
                             </div>
                         </td>
-                        <td bgcolor="#FEE3D7" style="font-size: 35px;padding: 0px; text-align: center;">
-                            <input type="checkbox" ${q.isRight ? 'checked' : ''} onchange="updateRight(${q.id}, this.checked)">
-                            <span id="seitou-${q.id}">${q.isRight ? 'できた' : ''}</span>
+                        <td bgcolor="#FEE3D7" style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">
+                            <span id="dekitara_guide${q.id}">できたら<br>おす<br>↓<br></span>
+                            <!--<button id="dekita${q.id}" onclick="updateRight(${q.id},${i})">できた</button><br>-->
+                            <input type="checkbox" ${q.isRight ? 'checked' : ''} onchange="updateRight(${q.id}, this.checked,${i})"><br>
+                            <!--<input id="check${q.id}" type="checkbox" ${q.isRight ? 'checked' : ''} "><br>-->
+                            <span id="seitou-${q.id}">${q.isRight ? '<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>' : ''}</span>
                             
                         </td>    
                     `;
                 }
             });
+
 
             //ファイル読み込み直後の場合
             if(file_yomikomi_tyokugo){
@@ -762,19 +811,40 @@ function completeQuestionCreation() {
         function showWrong(){
             displayQuestions(true)
         }
-        
-        function updateRight(number, isRight) {
+        /*
+        function updateRight(number,gyou) {
+            const question = questions.find(q => q.id == number);
+            if (question) {
+                if(document.getElementById(`dekita${number}`).textContent==="できた"){
+                    document.getElementById(`seitou-${number}`).innerHTML='<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>';
+                    document.getElementById(`check${number}`).checked=true;
+                    document.getElementById(`dekita${number}`).textContent="とりけし";
+                    buttonSave(number,gyou);
+                } else {
+                    document.getElementById(`seitou-${number}`).innerHTML='';
+                    document.getElementById(`check${number}`).checked=false;
+                    document.getElementById(`dekita${number}`).textContent="できた";
+
+                }
+            }
+        }
+        */                
+        function updateRight(number, isRight,gyou) {
             const question = questions.find(q => q.id == number);
             if (question) {
                 question.isRight = isRight;
                 if(isRight){
-                    document.getElementById(`seitou-${number}`).innerHTML="できた"
-                    buttonSave(number);
-                } else (
-                    document.getElementById(`seitou-${number}`).innerHTML=""
-                )
+                    document.getElementById(`seitou-${number}`).innerHTML='<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>';
+                    document.getElementById(`dekitara_guide${number}`).innerHTML="";
+                    buttonSave(number,gyou);
+                } else {
+                    document.getElementById(`seitou-${number}`).innerHTML='';
+                    document.getElementById(`dekitara_guide${number}`).innerHTML="できたら<br>おす<br>↓<br>";
+                }
             }
+            
         }
+        
 
         // お手本表示
         function openURL(num,moji_num) {
@@ -815,7 +885,7 @@ function completeQuestionCreation() {
 
         function saveAnswers(num) {
 
-            let flag=0;
+            let input;
 
 
             questions.sort((a, b) => a.id - b.id);  // Sort by question number before saving
@@ -827,10 +897,11 @@ function completeQuestionCreation() {
                 const url = URL.createObjectURL(blob);
                 link.setAttribute("href", url);
                 if(num===1){
-                    link.setAttribute("download", getFormattedDate()+"にやった"+file_name);
+                    input = prompt("ファイル名を付けてください。",getFormattedDate()+"にやった"+file_name);
                 } else {
-                    link.setAttribute("download", "○○の問題");
+                    input = prompt("ファイル名を付けてください。","の問題.csv");
                 }
+                link.setAttribute("download", input);
                 link.style.visibility = 'hidden';
                 document.body.appendChild(link);
                 link.click();
