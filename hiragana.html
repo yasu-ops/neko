@@ -716,7 +716,7 @@ function completeQuestionCreation() {
                     i++;
                     const row = tbody.insertRow();
                     row.innerHTML = `
-                        <td style="font-size: 50px;padding: 0px; text-align: center;">${q.id}</td>
+                        <td style="font-size: 20px;padding: 0px; text-align: center;">${q.id}</td>
                         <td style="font-size: 50px;padding: 0px; text-align: center;">
                             <span id="answer-${q.id}">
                                 <span id="ans_str${q.id}">${q.answer}</span><br>
@@ -724,9 +724,9 @@ function completeQuestionCreation() {
                             </span>
                         </td>
                         <td>
-                            <div width="${Math.floor(window.innerWidth * 0.1)}" height="${Math.floor(window.innerWidth * 0.1)}"  style="overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
-                                <div width="${Math.floor(window.innerWidth * 0.1)}" height="${Math.floor(window.innerWidth * 0.1)}" style="overflow:hidden;background-color:white;">
-                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * 0.1)}" height="${Math.floor(window.innerWidth * 0.1)}" style="transform:scale(1);transform-origin:0 0;"></iframe>
+                            <div width="${Math.floor(window.innerWidth * 0.08)}" height="${Math.floor(window.innerWidth * 0.08)}"  style="overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+                                <div width="${Math.floor(window.innerWidth * 0.08)}" height="${Math.floor(window.innerWidth * 0.08)}" style="overflow:hidden;background-color:white;">
+                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * 0.08)}" height="${Math.floor(window.innerWidth * 0.08)}" style="transform:scale(1);transform-origin:0 0;"></iframe>
                                 </div>
                             </div>
                         </td>
@@ -738,7 +738,7 @@ function completeQuestionCreation() {
                             <button class="right-align" onclick="scroll_on(${q.id})">ここから、でる</button>
                             <object class="right-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object><br>
                             <!--<canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="950" height="200"></canvas>-->
-                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.75)}" height="200"></canvas>
+                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.7)}" height="${Math.floor(window.innerWidth * 0.08)}"></canvas>
                             
                             <!--<div style="white-space: nowrap;font-size: 20px;font-weight: bold;">-->
                             <div style="font-size: 20px;font-weight: bold;">
