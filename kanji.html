@@ -384,8 +384,8 @@
             こどもメニュー
         </td>
         <td>
-            <button onclick="showWrong()">できていないものだけ、みる</button>
-            <button onclick="showAllQuestions()">ぜんぶ、みる</button>
+            <button onclick="showWrong()">間違ったものだけ、見る</button>
+            <button onclick="showAllQuestions()">全部、見る</button>
         </td>
     </tr>
 </table>
@@ -397,8 +397,8 @@
                 <th style="text-align: center;" width="25%">問題</th>
                 <th width="35%">解答欄</th>
                 <th style="text-align: center;" width="15%">正解</th>
-                <th style="text-align: center;" width="15%">書き順</th>
-                <th style="text-align: center;" width="5%">で<br>き<br>た</th>
+                <th style="text-align: center;" width="5%">合<br>っ<br>て<br>た<br>！</th>
+                <th style="text-align: center;" width="15%">書き順を見る</th>
             </tr>
         </thead>
         <tbody>
@@ -721,14 +721,14 @@ function completeQuestionCreation() {
                         <td style="font-size: 30px;padding: 0px; text-align: left;">${q.question}</td>
                         <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
                             <object class="left-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object>
-                            <button class="left-align" onclick="kaku(${q.id},${i})">ここでかく</button>
-                            <button class="right-align" onclick="scroll_on(${q.id})">ここからでる</button>
+                            <button class="left-align" onclick="kaku(${q.id},${i})">ここで書く</button>
+                            <button class="right-align" onclick="scroll_on(${q.id})">ここから出る</button>
                             <object class="right-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object><br>
                             <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.35)}" height="200"></canvas>
                             
                             <div style="font-size: 20px;font-weight: bold;">
-                                <button onclick="buttonclear(${q.id},${i})">ぜんぶ、けす</button>
-                                いろをえらぶ→
+                                <button onclick="buttonclear(${q.id},${i})">全部、消す</button>
+                                色を選ぶ→
                                 <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#0000FF" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
                                 <datalist id="color-picker${q.id}">
                                 <option value="blue">
@@ -738,9 +738,9 @@ function completeQuestionCreation() {
                                 <option value="red">
                                 <option value="pink">
                                 </datalist>
-                                <button onclick="kaku(${q.id},${i});hosoku(${q.id},${i})">ほそく</button>
-                                <button onclick="kaku(${q.id},${i});hutoku(${q.id},${i})">ふとく</button>
-                                ふとさ：<span id="hutosa${q.id}">9</span>
+                                <button onclick="kaku(${q.id},${i});hosoku(${q.id},${i})">細く</button>
+                                <button onclick="kaku(${q.id},${i});hutoku(${q.id},${i})">太く</button>
+                                太さ：<span id="hutosa${q.id}">9</span>
                             </div>
                         </td>
                         <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: center;">
@@ -753,6 +753,11 @@ function completeQuestionCreation() {
                                 <br><button onclick="hideAnswer(${q.id})">正解隠す</button>
                             </span>
                         </td>
+                        <td bgcolor="#FEE3D7" style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">
+                            <span id="dekitara_guide${q.id}">${q.isRight ? "" : "合<br>っ<br>て<br>た<br>ら<br>押<br>す<br>↓<br>"}</span>
+                            <input type="checkbox" ${q.isRight ? 'checked' : ''} onchange="updateRight(${q.id}, this.checked,${i})"><br>
+                            <span id="seitou-${q.id}">${q.isRight ? '<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>' : ''}</span>
+                        </td>    
                         <td>
                             <div  style="width:100%;height:200px;overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
                                 <div style="width:100%;height:400px;overflow:hidden;background-color:white;">
@@ -760,11 +765,6 @@ function completeQuestionCreation() {
                                 </div>
                             </div>
                         </td>
-                        <td bgcolor="#FEE3D7" style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">
-                            <span id="dekitara_guide${q.id}">${q.isRight ? "" : "で<br>き<br>た<br>ら<br>お<br>す<br>↓<br>"}</span>
-                            <input type="checkbox" ${q.isRight ? 'checked' : ''} onchange="updateRight(${q.id}, this.checked,${i})"><br>
-                            <span id="seitou-${q.id}">${q.isRight ? '<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>' : ''}</span>
-                        </td>    
                     `;
                 }
             });
@@ -840,7 +840,7 @@ function completeQuestionCreation() {
                     buttonSave(number,gyou);
                 } else {
                     document.getElementById(`seitou-${number}`).innerHTML='';
-                    document.getElementById(`dekitara_guide${number}`).innerHTML="で<br>き<br>た<br>ら<br>お<br>す<br>↓<br>";
+                    document.getElementById(`dekitara_guide${number}`).innerHTML="合<br>っ<br>て<br>た<br>ら<br>押<br>す<br>↓<br>";
                 }
             }
             
