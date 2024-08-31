@@ -15,6 +15,27 @@
     <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
+        .vertical-table {
+            border-collapse: collapse;
+        }
+        .vertical-table td {
+            border: 1px solid #000;
+            padding: 10px;
+            height: 200px;
+            width: 50px; /* セルの幅を指定 */
+            text-align: center; /* 水平方向の中央揃え */
+        }
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            height: 100%;
+            margin: 0 auto; /* 水平方向の中央揃え */
+            display: flex;
+            align-items: center; /* 垂直方向の中央揃え */
+            justify-content: center; /* 複数行の場合の中央揃え */
+            overflow-x: auto; /* 横方向のスクロールを可能にする */
+            white-space: normal; /* テキストの折り返しを許可 */
+        }
         .left-align {
             float: left;
         }
@@ -390,12 +411,12 @@
     </tr>
 </table>
 <p></p>
-<table id="questionList" width="100%">
+<table id="questionList" class="vertical-table" width="100%">
         <thead>
             <tr>
                 <th style="text-align: center;" width="5%">番<br>号</th>
-                <th style="text-align: center;" width="15%">問題</th>
-                <th width="54%">解答欄</th>
+                <th style="text-align: center;" width="9%">問題</th>
+                <th width="60%">解答欄</th>
                 <th style="text-align: center;" width="9%">正解</th>
                 <th style="text-align: center;" width="5%">合<br>っ<br>て<br>た<br>！</th>
                 <th style="text-align: center;" width="12%">書き順</th>
@@ -738,13 +759,14 @@ function completeQuestionCreation() {
                     }
                     row.innerHTML = `
                         <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">${q.id}</td>
-                        <td style="font-size: 20px;padding: 0px; text-align: left;">${q.question}</td>
+                        <!--<td style="font-size: 20px;padding: 0px; text-align: left;">${q.question}</td>-->
+                        <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: mid;"><div class="vertical-text">${q.question}</td></td>
                         <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
                             <object class="left-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object>
                             <button class="left-align" onclick="kaku(${q.id},${i})">書く</button>
-                            <button class="right-align" onclick="scroll_on(${q.id})">出る</button>
+                            <button class="right-align" onclick="scroll_on(${q.id})">画面スクロール</button>
                             <object class="right-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object><br>
-                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.52)}" height="300"></canvas>
+                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
                             
                             <div style="font-size: 20px;font-weight: bold;">
                                 <button onclick="buttonclear(${q.id},${i})">消す</button>
@@ -781,7 +803,7 @@ function completeQuestionCreation() {
                         <td>
                             <div width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}"  style="overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
                                 <div width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="overflow:hidden;background-color:white;">
-                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="transform:scale(1);transform-origin:0 0;"></iframe>
+                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
                                 </div>
                             </div>
                         </td>
