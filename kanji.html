@@ -395,8 +395,8 @@
             <tr>
                 <th style="text-align: center;" width="5%">番<br>号</th>
                 <th style="text-align: center;" width="15%">問題</th>
-                <th width="43%">解答欄</th>
-                <th style="text-align: center;" width="15%">正解</th>
+                <th width="52%">解答欄</th>
+                <th style="text-align: center;" width="6%">正解</th>
                 <th style="text-align: center;" width="5%">合<br>っ<br>て<br>た<br>！</th>
                 <th style="text-align: center;" width="17%">書き順を見る</th>
             </tr>
@@ -518,17 +518,15 @@ function addQuestionRow(container, questionText = '', answerText = '') {
     const row = document.createElement('div');
     row.className = 'question-row';
 
-    const questionInput = document.createElement('input');
-    questionInput.type = 'text';
-    questionInput.placeholder = '問題';
-    questionInput.value = questionText;
-    questionInput.className = 'question-input';
+    const questionTextarea = document.createElement('textarea');
+    questionTextarea.placeholder = '問題';
+    questionTextarea.value = questionText;
+    questionTextarea.className = 'question-input';
     
-    const answerInput = document.createElement('input');
-    answerInput.type = 'text';
-    answerInput.placeholder = '正解';
-    answerInput.value = answerText;
-    answerInput.className = 'answer-input';
+    const answerTextarea = document.createElement('textarea');
+    answerTextarea.placeholder = '正解';
+    answerTextarea.value = answerText;
+    answerTextarea.className = 'answer-input';
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '削除';
@@ -536,12 +534,29 @@ function addQuestionRow(container, questionText = '', answerText = '') {
         container.removeChild(row);
     };
 
-    row.appendChild(questionInput);
-    row.appendChild(answerInput);
+    row.appendChild(questionTextarea);
+    row.appendChild(answerTextarea);
     row.appendChild(deleteButton);
     container.appendChild(row);
-}
 
+    // テキストエリアの高さを自動調整する関数
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // 入力時に高さを自動調整
+    questionTextarea.addEventListener('input', function() {
+        autoResize(this);
+    });
+    answerTextarea.addEventListener('input', function() {
+        autoResize(this);
+    });
+
+    // 初期表示時にも高さを調整
+    autoResize(questionTextarea);
+    autoResize(answerTextarea);
+}
 function addControlButtons(container) {
     const buttonContainer = document.createElement('div');
     buttonContainer.id = 'controlButtons';
@@ -579,7 +594,7 @@ function addControlButtons(container) {
 }
 
 function setupKeyboardNavigation(container) {
-    const inputs = container.querySelectorAll('input');
+    const inputs = container.querySelectorAll('textarea');
     inputs.forEach((input, index) => {
         input.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' || event.key === 'ArrowDown') {
@@ -717,6 +732,10 @@ function completeQuestionCreation() {
                 if (!wrongOnly || !q.isRight) {
                     i++;
                     const row = tbody.insertRow();
+                    let after_ans="";
+                    for(i=1;i<=q.answer.length;i++){
+                        after_ans=after_ans+q.answer.charAt(i-1)+"<br>"
+                    }
                     row.innerHTML = `
                         <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">${q.id}</td>
                         <td style="font-size: 30px;padding: 0px; text-align: left;">${q.question}</td>
@@ -725,7 +744,7 @@ function completeQuestionCreation() {
                             <button class="left-align" onclick="kaku(${q.id},${i})">書く</button>
                             <button class="right-align" onclick="scroll_on(${q.id})">出る</button>
                             <object class="right-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object><br>
-                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.38)}" height="300"></canvas>
+                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.5)}" height="300"></canvas>
                             
                             <div style="font-size: 20px;font-weight: bold;">
                                 <button onclick="buttonclear(${q.id},${i})">全部、消す</button>
@@ -745,13 +764,13 @@ function completeQuestionCreation() {
                             </div>
                         </td>
                         <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: center;">
-                            <button onclick="showAnswer(${q.id})">正解表示</button>
+                            <button onclick="showAnswer(${q.id})">正解<br>表示</button>
                             <span id="answer-${q.id}" style="display:none;">
-                                <span style="font-size:40px;" id="ans_str${q.id}">${q.answer}</span><br>
+                                <span style="font-size:40px;" id="ans_str${q.id}">${after_ans}</span><br>
                                 ${q.answer.length===1 ? `<button onclick="openURL(${q.id},0)">書き順</button>`:''}
-                                ${q.answer.length>=2 ? `<button onclick="openURL(${q.id},0)">1文字目の書き順</button><button onclick="openURL(${q.id},1)">2文字目の書き順</button>`:''}
-                                ${q.answer.length>=3 ? `<button onclick="openURL(${q.id},2)">3文字目の書き順</button>`:''}
-                                <br><button onclick="hideAnswer(${q.id})">正解隠す</button>
+                                ${q.answer.length>=2 ? `書き順<br><button onclick="openURL(${q.id},0)">1文字目</button><br><button onclick="openURL(${q.id},1)">2文字目</button><br>`:''}
+                                ${q.answer.length>=3 ? `<button onclick="openURL(${q.id},2)">3文字目</button>`:''}
+                                <br><button onclick="hideAnswer(${q.id})">正解<br>隠す</button>
                             </span>
                         </td>
                         <td bgcolor="#FEE3D7" style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">
@@ -849,18 +868,21 @@ function completeQuestionCreation() {
         
 
         // お手本表示
-        function openURL(num,moji_num) {
-            if(document.getElementById("ans_str"+num).innerHTML!=""){
+        function openURL(id,moji_num) {
+            //if(ans!=""){
+            if(questions[id].answer!=""){
                 // テキストボックスの値を取得
-                var u = document.getElementById("ans_str"+num).innerHTML;
+                var u = questions[id-1].answer;
+                alert(u);
+                //var u = ans;
                 var unicodeValue = u.charCodeAt(moji_num);
                 // Replace 'u' with '00' in the Unicode value
                 const unicodeValueStr = "0" + unicodeValue.toString(16).substr(0);
                 // iframeのsrc属性にURLを代入
                 // document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/?svg=" + u;
-                document.getElementById("frame"+num).src =  "https://www.miraisoft.de/anikanjivgx/svg/" + unicodeValueStr+".svg";
+                document.getElementById("frame"+id).src =  "https://www.miraisoft.de/anikanjivgx/svg/" + unicodeValueStr+".svg";
                 
-                var iframe = document.getElementById("frame"+num).getElementsByTagName('iframe');
+                var iframe = document.getElementById("frame"+id).getElementsByTagName('iframe');
 
             }
         }
