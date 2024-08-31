@@ -20,19 +20,18 @@
         }
         .vertical-table td {
             border: 1px solid #000;
-            padding: 10px;
+            /*padding: 10px;*/
             height: 200px;
             width: 50px; /* セルの幅を指定 */
-            text-align: center; /* 水平方向の中央揃え */
         }
         .vertical-text {
             writing-mode: vertical-rl;
             text-orientation: mixed;
             height: 100%;
-            margin: 0 auto; /* 水平方向の中央揃え */
+            width: 100%; /* 幅を100%に設定 */
             display: flex;
-            align-items: center; /* 垂直方向の中央揃え */
-            justify-content: center; /* 複数行の場合の中央揃え */
+            align-items: flex-start; /* 垂直方向の上端揃え（見た目上は右揃え） */
+            justify-content: flex-start; /* 複数行の場合の上端揃え */
             overflow-x: auto; /* 横方向のスクロールを可能にする */
             white-space: normal; /* テキストの折り返しを許可 */
         }
@@ -803,7 +802,7 @@ function completeQuestionCreation() {
                         <td>
                             <div width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}"  style="overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
                                 <div width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="overflow:hidden;background-color:white;">
-                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="transform:scale(0.5);transform-origin:0 0;"></iframe>
+                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="transform:scale(1);transform-origin:0 0;"></iframe>
                                 </div>
                             </div>
                         </td>
@@ -892,7 +891,7 @@ function completeQuestionCreation() {
         // お手本表示
         function openURL(id,moji_num) {
             //if(ans!=""){
-            if(questions[id].answer!=""){
+            if(questions[id-1].answer!=""){
                 // テキストボックスの値を取得
                 var u = questions[id-1].answer;
                 //var u = ans;
