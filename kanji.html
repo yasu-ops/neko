@@ -396,9 +396,9 @@
                 <th style="text-align: center;" width="5%">番<br>号</th>
                 <th style="text-align: center;" width="15%">問題</th>
                 <th width="52%">解答欄</th>
-                <th style="text-align: center;" width="6%">正解</th>
+                <th style="text-align: center;" width="11%">正解</th>
                 <th style="text-align: center;" width="5%">合<br>っ<br>て<br>た<br>！</th>
-                <th style="text-align: center;" width="17%">書き順を見る</th>
+                <th style="text-align: center;" width="12%">書き順を見る</th>
             </tr>
         </thead>
         <tbody>
@@ -722,7 +722,7 @@ function completeQuestionCreation() {
 
         function displayQuestions(wrongOnly = false) {
             let i=0;
-            let haba=0.15;
+            let haba=0.1;
             const tbody = document.querySelector('#questionList tbody');
             tbody.innerHTML = '';
             questions.forEach(q => {
@@ -738,7 +738,7 @@ function completeQuestionCreation() {
                     }
                     row.innerHTML = `
                         <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">${q.id}</td>
-                        <td style="font-size: 30px;padding: 0px; text-align: left;">${q.question}</td>
+                        <td style="font-size: 20px;padding: 0px; text-align: left;">${q.question}</td>
                         <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
                             <object class="left-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object>
                             <button class="left-align" onclick="kaku(${q.id},${i})">書く</button>
@@ -873,7 +873,6 @@ function completeQuestionCreation() {
             if(questions[id].answer!=""){
                 // テキストボックスの値を取得
                 var u = questions[id-1].answer;
-                alert(u);
                 //var u = ans;
                 var unicodeValue = u.charCodeAt(moji_num);
                 // Replace 'u' with '00' in the Unicode value
