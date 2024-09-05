@@ -15,6 +15,26 @@
     <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
+        .vertical-table {
+            border-collapse: collapse;
+        }
+        .vertical-table td {
+            border: 1px solid #000;
+            /*padding: 10px;*/
+            height: 200px;
+            width: 50px; /* セルの幅を指定 */
+        }
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            height: 100%;
+            width: 100%; /* 幅を100%に設定 */
+            display: flex;
+            align-items: flex-start; /* 垂直方向の上端揃え（見た目上は右揃え） */
+            justify-content: flex-start; /* 複数行の場合の上端揃え */
+            overflow-x: auto; /* 横方向のスクロールを可能にする */
+            white-space: normal; /* テキストの折り返しを許可 */
+        }
         .left-align {
             float: left;
         }
@@ -300,7 +320,28 @@
 
 
     // 今書いた画像をquestions配列とlocalStorageへ保存
+    // 簡易表示でも画像を保存しないと詳細表示にしたときにエラーになるから、一瞬詳細表示にする
     function buttonSave(num,gyou){
+
+        if(display_mode===2){
+            questions.forEach(q =>{
+                if(wrong_mode){
+                    if(!q.isRight){
+                        const answerSpan = document.getElementById(`answer-${q.id}`);
+                        const answerButton = answerSpan.previousElementSibling;
+                        q.ans=answerSpan.style.display;
+                        q.ans_btn=answerButton.style.display;
+                    } 
+                } else {
+                    const answerSpan = document.getElementById(`answer-${q.id}`);
+                    const answerButton = answerSpan.previousElementSibling;
+                    q.ans=answerSpan.style.display;
+                    q.ans_btn=answerButton.style.display;
+                }
+            });
+            display_mode=3;
+            displayQuestions(wrong_mode,display_mode);
+        }
         kaku(num,gyou);
         var png = c.toDataURL("image/png");
         if (png && png.startsWith('data:image/png;base64,')) {
@@ -312,48 +353,54 @@
             // エラー処理をここに追加
         }
         scroll_on(num);
-    } 
+
+        if(display_mode===3){
+            display_mode=2;
+            displayQuestions(wrong_mode,display_mode);
+        }
+    }
     //　localStrage画像読み込み
     function yomikomi(num){
-        // canvasとコンテキストを取得
-        const c2 = document.getElementById('canvas'+num);
-        const ctx2 = c2.getContext('2d');
+        if(display_mode===1){
+            // canvasとコンテキストを取得
+            const c2 = document.getElementById('canvas'+num);
+            const ctx2 = c2.getContext('2d');
 
-        // localStorageから画像データを取得
-        var v = localStorage.getItem("gazou" + num);
+            // localStorageから画像データを取得
+            var v = localStorage.getItem("gazou" + num);
 
-        // 画像を読み込む
-        const img = new Image();
-        img.onload = function() {
-            // 画像をcanvasに描画
-            ctx2.drawImage(img, 0, 0, c2.width, c2.height);
-        };
-        img.src = v;
-
+            // 画像を読み込む
+            const img = new Image();
+            img.onload = function() {
+                // 画像をcanvasに描画
+                ctx2.drawImage(img, 0, 0, c2.width, c2.height);
+            };
+            img.src = v;
+        }
     }
     //　questions配列画像読み込み->localStorageへの保存とcanvasへの読み込み
     function q_yomikomi(num,data){
-        const c2 = document.getElementById('canvas'+num);
-        const ctx2 = c2.getContext('2d');
-        
-        if (data && data.startsWith('data:image/png;base64,')) {
-            localStorage.setItem("gazou"+num, data);
-            const img = new Image();
-            img.onload = function() {
-                ctx2.drawImage(img, 0, 0, c2.width, c2.height);
-            };
-            img.onerror = function() {
-                console.error('画像の読み込みに失敗しました');
+        if(display_mode===1){
+            const c2 = document.getElementById('canvas'+num);
+            const ctx2 = c2.getContext('2d');
+            
+            if (data && data.startsWith('data:image/png;base64,')) {
+                localStorage.setItem("gazou"+num, data);
+                const img = new Image();
+                img.onload = function() {
+                    ctx2.drawImage(img, 0, 0, c2.width, c2.height);
+                };
+                img.onerror = function() {
+                    console.error('画像の読み込みに失敗しました');
+                    // エラー処理をここに追加
+                };
+                img.src = data;
+            } else {
+                console.warn('無効な画像データ');
                 // エラー処理をここに追加
-            };
-            img.src = data;
-        } else {
-            console.warn('無効な画像データ');
-            // エラー処理をここに追加
+            }
         }
     }
-
-
 </script>
 </head>
 <body>
@@ -366,12 +413,13 @@
             大人メニュー
         </td>
         <td>
-            <label for="fileInput">ファイル（これからやる問題・やりかけや解き終わった問題）を読み込む</label><br>
-            <input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>        
-            <button onclick="saveAnswers(1)">やりかけや解き終わった問題を保存</button>
-            <br>（<button onclick="createQuestionForm(true,false)">問題新規作成</button>
-            <button onclick="handleQuestionCreation()">読み込んだ問題の編集（修正・追加・削除）</button>
-            <button onclick="saveAnswers(2)">できた問題を保存</button>）<br>
+            ★<label for="fileInput">問題読み込み　※やりかけの問題も読み込めます</label><br>
+            　<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
+            ★表示切替：<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
+            ★解答結果を保存：<button onclick="saveAnswers(1)">保存</button>　※やりかけの問題も保存できます<br>
+            ★問題作成：<button onclick="createQuestionForm(true,false)">新規</button>
+            <button onclick="handleQuestionCreation()">修正・追加・削除</button>
+            <button onclick="saveAnswers(2)">作成した問題の保存</button><br>
             ※ＰＣでお手本がはみでたら→<button onclick="for_pc()">お手本を枠内におさめる</button>
             
         </td>
@@ -384,31 +432,53 @@
             こどもメニュー ver.2
         </td>
         <td>
-            <button onclick="showWrong()">間違ったものだけ、見る</button>
-            <button onclick="showAllQuestions()">全部、見る</button>
+            表示：<button onclick="showWrong()">間違った問題だけ</button>
+            <button onclick="showAllQuestions()">全部の問題</button>
+            　正解：<button onclick="showAllAnswers()">表示</button>
+            <button onclick="hideAllAnswers()">隠す</button>
         </td>
     </tr>
 </table>
 <p></p>
-<table id="questionList" width="100%">
-        <thead>
-            <tr>
-                <th style="text-align: center;" width="5%">番<br>号</th>
-                <th style="text-align: center;" width="15%">問題</th>
-                <th width="43%">解答欄</th>
-                <th style="text-align: center;" width="15%">正解</th>
-                <th style="text-align: center;" width="5%">合<br>っ<br>て<br>た<br>！</th>
-                <th style="text-align: center;" width="17%">書き順を見る</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+<span id="mondai_su" style="color:red;font-size: 20px;font-weight: bold;"></span>
+<table id="questionList" class="vertical-table" width="100%">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 
     <script>
         let questions = [];
         let file_yomikomi_tyokugo = false; 
         let file_name;
+        let display_mode = 1;
+        let wrong_mode=false;
+
+        function toggledisplay(){
+            questions.forEach(q =>{
+                if(wrong_mode){
+                    if(!q.isRight){
+                        const answerSpan = document.getElementById(`answer-${q.id}`);
+                        const answerButton = answerSpan.previousElementSibling;
+                        q.ans=answerSpan.style.display;
+                        q.ans_btn=answerButton.style.display;
+                    } 
+                } else {
+                    const answerSpan = document.getElementById(`answer-${q.id}`);
+                    const answerButton = answerSpan.previousElementSibling;
+                    q.ans=answerSpan.style.display;
+                    q.ans_btn=answerButton.style.display;
+                }
+            });
+            if(display_mode === 1){
+                display_mode = 2;
+                displayQuestions(wrong_mode,2);
+            } else {
+                display_mode = 1;
+                displayQuestions(wrong_mode,1);
+            }
+        }
 
         
         function toggleRow(rowId) {
@@ -482,15 +552,15 @@ function createQuestionForm(numNewQuestions, addToExisting) {
             return;
         }
     }
-    const tbody = document.querySelector('#questionList tbody');
-    tbody.innerHTML = '';
+    const table = document.querySelector('#questionList');
+    table.innerHTML = '';
 
     const formContainer = document.createElement('div');
     formContainer.id = 'questionFormContainer';
 
     // 新しいテキストノードを作成
     const noticeText = document.createElement('p');
-    noticeText.textContent = '☆問題は入力しなくてもよい';
+    noticeText.textContent = '※Enterで下の行に移ります。';
     noticeText.style.fontSize = '20px'; // ここでフォントサイズを指定します
     noticeText.style.fontWeight = 'bold'; // ここでフォントサイズを指定します
 
@@ -518,17 +588,15 @@ function addQuestionRow(container, questionText = '', answerText = '') {
     const row = document.createElement('div');
     row.className = 'question-row';
 
-    const questionInput = document.createElement('input');
-    questionInput.type = 'text';
-    questionInput.placeholder = '問題';
-    questionInput.value = questionText;
-    questionInput.className = 'question-input';
+    const questionTextarea = document.createElement('textarea');
+    questionTextarea.placeholder = '問題';
+    questionTextarea.value = questionText;
+    questionTextarea.className = 'question-input';
     
-    const answerInput = document.createElement('input');
-    answerInput.type = 'text';
-    answerInput.placeholder = '正解';
-    answerInput.value = answerText;
-    answerInput.className = 'answer-input';
+    const answerTextarea = document.createElement('textarea');
+    answerTextarea.placeholder = '正解';
+    answerTextarea.value = answerText;
+    answerTextarea.className = 'answer-input';
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '削除';
@@ -536,12 +604,29 @@ function addQuestionRow(container, questionText = '', answerText = '') {
         container.removeChild(row);
     };
 
-    row.appendChild(questionInput);
-    row.appendChild(answerInput);
+    row.appendChild(questionTextarea);
+    row.appendChild(answerTextarea);
     row.appendChild(deleteButton);
     container.appendChild(row);
-}
 
+    // テキストエリアの高さを自動調整する関数
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // 入力時に高さを自動調整
+    questionTextarea.addEventListener('input', function() {
+        autoResize(this);
+    });
+    answerTextarea.addEventListener('input', function() {
+        autoResize(this);
+    });
+
+    // 初期表示時にも高さを調整
+    autoResize(questionTextarea);
+    autoResize(answerTextarea);
+}
 function addControlButtons(container) {
     const buttonContainer = document.createElement('div');
     buttonContainer.id = 'controlButtons';
@@ -568,7 +653,7 @@ function addControlButtons(container) {
     cancelButton.onclick = function() {
         document.body.removeChild(container);
         if(questions.length > 0){
-            displayQuestions();
+            displayQuestions(wrong_mode,display_mode);
         }
     };
 
@@ -579,7 +664,7 @@ function addControlButtons(container) {
 }
 
 function setupKeyboardNavigation(container) {
-    const inputs = container.querySelectorAll('input');
+    const inputs = container.querySelectorAll('textarea');
     inputs.forEach((input, index) => {
         input.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' || event.key === 'ArrowDown') {
@@ -622,12 +707,14 @@ function completeQuestionCreation() {
             answer: answerText,
             isRight: false,
             mistakeCount: 0,
-            gazou: ''
+            gazou: '',
+            ans:'none',
+            ans_btn:'inline'
         };
     });
 
     document.body.removeChild(document.getElementById('questionFormContainer'));
-    displayQuestions();
+    displayQuestions(wrong_mode,display_mode);
 }
 
 //-----------------------------------------------------------------
@@ -661,11 +748,13 @@ function completeQuestionCreation() {
                                 answer: row[1],
                                 isRight: row[2] === '1',
                                 mistakeCount: parseInt(row[3] || 0),
-                                gazou: gazou
+                                gazou: gazou,
+                                ans:'none',
+                                ans_btn:'inline'
                             };
                         }); 
 
-                        displayQuestions();
+                        displayQuestions(wrong_mode,display_mode);
                     }
                 });
                 file_yomikomi_tyokugo = true; 
@@ -705,10 +794,48 @@ function completeQuestionCreation() {
             });
         }
 
-        function displayQuestions(wrongOnly = false) {
+        function displayQuestions(wrongOnly = false,m) {
             let i=0;
-            let haba=0.15;
-            const tbody = document.querySelector('#questionList tbody');
+            let haba=0.1;
+
+            const table = document.querySelector('#questionList');
+            table.innerHTML='';
+            if(m!==2){
+                table.style.width = '100%';
+            } else {
+                table.style.width = '53%';
+            }
+
+            // <thead>を生成
+            const thead = table.createTHead();
+            const headerRow = thead.insertRow();
+            const headerRow1 = `
+                <th style="text-align: center;" width="5%">番<br>号</th>
+                <th style="text-align: center;" width="7%">問題</th>
+                <th width="60%">解答欄</th>
+                <th style="text-align: center;" width="11%">正解</th>
+                <th style="text-align: center;" width="5%">
+                <object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>
+                </th>
+                <th style="text-align: center;" width="12%">書き順</th>
+            `;
+            const headerRow2 = `
+                <th style="text-align: center;" width="5%">番号</th>
+                <th style="text-align: center;" width="15%">問題</th>
+                <th style="text-align: center;" width="25%">正解</th>
+                <th style="text-align: center;" width="5%">
+                <object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>
+                </th>
+                <th style="text-align: center;" width="3%">書き順</th>
+            `;
+            if(m!=2){
+                headerRow.innerHTML = headerRow1;
+            } else{
+                headerRow.innerHTML = headerRow2;
+            }
+
+            // <tbody>を生成
+            const tbody = table.createTBody();
             tbody.innerHTML = '';
             questions.forEach(q => {
                 /*!wrongOnly または　!q.isRightのとき表示
@@ -717,19 +844,26 @@ function completeQuestionCreation() {
                 if (!wrongOnly || !q.isRight) {
                     i++;
                     const row = tbody.insertRow();
-                    row.innerHTML = `
+                    let after_ans="";
+                    for(let moji_ban=1;moji_ban<=q.answer.length;moji_ban++){
+                        after_ans=after_ans+q.answer.charAt(moji_ban-1)+"<br>";
+                    }
+                    //after_ans=after_ans.slice(0,-1);
+
+                    row1 = `
                         <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">${q.id}</td>
-                        <td style="font-size: 30px;padding: 0px; text-align: left;">${q.question}</td>
+                        <!--<td style="font-size: 20px;padding: 0px; text-align: left;">${q.question}</td>-->
+                        <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: mid;"><div class="vertical-text">${q.question}</td>
                         <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
-                            <object class="left-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object>
+                            <object class="left-align" type="image/svg+xml" data="edit.svg" width="50" height="50"></object>
                             <button class="left-align" onclick="kaku(${q.id},${i})">書く</button>
-                            <button class="right-align" onclick="scroll_on(${q.id})">出る</button>
-                            <object class="right-align" type="image/svg+xml" data="walking.svg" width="50" height="50"></object><br>
-                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.38)}" height="300"></canvas>
+                            <button class="right-align" onclick="scroll_on(${q.id})">画面スクロール</button>
+                            <object class="right-align" type="image/svg+xml" data="pan.svg" width="50" height="50"></object><br>
+                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
                             
                             <div style="font-size: 20px;font-weight: bold;">
-                                <button onclick="buttonclear(${q.id},${i})">全部、消す</button>
-                                色を選ぶ→
+                                <button onclick="buttonclear(${q.id},${i})">消す</button>
+                                色を選ぶ
                                 <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#0000FF" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
                                 <datalist id="color-picker${q.id}">
                                 <option value="blue">
@@ -738,20 +872,20 @@ function completeQuestionCreation() {
                                 <option value="white">
                                 <option value="red">
                                 <option value="pink">
-                                </datalist><br>
+                                </datalist>
                                 <button onclick="kaku(${q.id},${i});hosoku(${q.id},${i})">細く</button>
                                 <button onclick="kaku(${q.id},${i});hutoku(${q.id},${i})">太く</button>
                                 太さ：<span id="hutosa${q.id}">9</span>
                             </div>
                         </td>
                         <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: center;">
-                            <button onclick="showAnswer(${q.id})">正解表示</button>
-                            <span id="answer-${q.id}" style="display:none;">
-                                <span style="font-size:40px;" id="ans_str${q.id}">${q.answer}</span><br>
+                            <span style="display:${q.ans_btn};"><button onclick="showAnswer(${q.id})">正解<br>表示</button></span>
+                            <span id="answer-${q.id}" style="display:${q.ans};">
+                                <span style="font-size:40px;" id="ans_str${q.id}">${after_ans}</span>
                                 ${q.answer.length===1 ? `<button onclick="openURL(${q.id},0)">書き順</button>`:''}
-                                ${q.answer.length>=2 ? `<button onclick="openURL(${q.id},0)">1文字目の書き順</button><button onclick="openURL(${q.id},1)">2文字目の書き順</button>`:''}
-                                ${q.answer.length>=3 ? `<button onclick="openURL(${q.id},2)">3文字目の書き順</button>`:''}
-                                <br><button onclick="hideAnswer(${q.id})">正解隠す</button>
+                                ${q.answer.length>=2 ? `書き順<br><button onclick="openURL(${q.id},0)">字1</button><br><button onclick="openURL(${q.id},1)">字2</button><br>`:''}
+                                ${q.answer.length>=3 ? `<button onclick="openURL(${q.id},2)">字3</button>`:''}
+                                <br><button onclick="hideAnswer(${q.id})">正解<br>隠す</button>
                             </span>
                         </td>
                         <td bgcolor="#FEE3D7" style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">
@@ -762,36 +896,69 @@ function completeQuestionCreation() {
                         <td>
                             <div width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}"  style="overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
                                 <div width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="overflow:hidden;background-color:white;">
-                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="transform:scale(2);transform-origin:0 0;"></iframe>
+                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="transform:scale(1);transform-origin:0 0;"></iframe>
                                 </div>
                             </div>
                         </td>
                     `;
+                    row2 = `
+                        <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">${q.id}</td>
+                        <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: left;">${q.question}</td>
+                        <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: center;">
+                            <span style="display:${q.ans_btn};"><button onclick="showAnswer(${q.id})">正解表示</button></span>
+                            <span id="answer-${q.id}" style="display:${q.ans};">
+                                <span style="font-size:40px;" id="ans_str${q.id}">${q.answer}</span><br>
+                                ${q.answer.length===1 ? `<button onclick="openURL(${q.id},0)">書き順</button>`:''}
+                                ${q.answer.length>=2 ? `書き順<br><button onclick="openURL(${q.id},0)">字1</button><button onclick="openURL(${q.id},1)">字2</button>`:''}
+                                ${q.answer.length>=3 ? `<button onclick="openURL(${q.id},2)">字3</button>`:''}
+                                <br><button onclick="hideAnswer(${q.id})">正解隠す</button>
+                            </span>
+                        </td>
+                        <td bgcolor="#FEE3D7" style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">
+                            <span id="dekitara_guide${q.id}">${q.isRight ? "" : "○なら<br>押す<br>↓<br>"}</span>
+                            <input type="checkbox" ${q.isRight ? 'checked' : ''} onchange="updateRight(${q.id}, this.checked,${i})"><br>
+                            <span id="seitou-${q.id}">${q.isRight ? '<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>' : ''}</span>
+                        </td>    
+                        <td>
+                            <div width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}"  style="overflow-x:hidden;overflow-y:hidden;border:1px solid #999">
+                                <div width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="overflow:hidden;background-color:white;">
+                                    <iframe  id="frame${q.id}" src="" frameborder="1" scrolling="no" width="${Math.floor(window.innerWidth * haba)}" height="${Math.floor(window.innerWidth * haba)}" style="transform:scale(1);transform-origin:0 0;"></iframe>
+                                </div>
+                            </div>
+                        </td>
+                    `;
+                    if(m!=2){
+                        row.innerHTML = row1;
+                    } else {
+                        row.innerHTML = row2;
+                    }
                 }
             });
 
-            //ファイル読み込み直後の場合
-            if(file_yomikomi_tyokugo){
-                //ファイルの画像を読み込んで、localstrageに保存し、canvasに描画
-                questions.forEach(q => {
-                    //ただし、正答だけのものだけ　
-                    if (q.isRight) {
-                        q_yomikomi(q.id,q.gazou);
-                    }
-                });
-                file_yomikomi_tyokugo=false;
-            //ファイル読み込み直後でない場合
-            } else {
-                //localstrageから読み込みcanvasに描画
-                questions.forEach(q => {
-                    //全問表示で
-                    if (!wrongOnly) {
-                        //正解のときだけ
-                        if(q.isRight) {
-                            yomikomi(q.id);
-                         }
-                    }
-                });
+            if(display_mode===1){
+                //ファイル読み込み直後の場合
+                if(file_yomikomi_tyokugo){
+                    //ファイルの画像を読み込んで、localstrageに保存し、canvasに描画
+                    questions.forEach(q => {
+                        //ただし、正答だけのものだけ　
+                        if (q.isRight) {
+                            q_yomikomi(q.id,q.gazou);
+                        }
+                    });
+                    file_yomikomi_tyokugo=false;
+                //ファイル読み込み直後でない場合
+                } else {
+                    //localstrageから読み込みcanvasに描画
+                    questions.forEach(q => {
+                        //全問表示で
+                        if (!wrongOnly) {
+                            //正解のときだけ
+                            if(q.isRight) {
+                                yomikomi(q.id);
+                            }
+                        }
+                    });
+                }
             }
         }
 
@@ -809,9 +976,34 @@ function completeQuestionCreation() {
             answerButton.style.display = 'inline';
         }
 
+        function showAllAnswers() {
+            questions.forEach(q =>{
+                if(wrong_mode){
+                    if(!q.isRight){
+                        showAnswer(q.id);
+                    }
+                } else {
+                    showAnswer(q.id);
+                }
+            });
+        }
+
+        function hideAllAnswers() {
+            questions.forEach(q =>{
+                if(wrong_mode){
+                    if(!q.isRight){
+                        hideAnswer(q.id);
+                    }
+                } else {
+                    hideAnswer(q.id);
+                }
+            });
+        }
 
         function showWrong(){
-            displayQuestions(true)
+            wrong_mode=true;
+            document.getElementById('mondai_su').innerHTML = "～間違った問題のみ表示～";
+            displayQuestions(wrong_mode,display_mode)
         }
         /*
         function updateRight(number,gyou) {
@@ -832,46 +1024,52 @@ function completeQuestionCreation() {
         }
         */                
         function updateRight(number, isRight,gyou) {
-            const question = questions.find(q => q.id == number);
+            const question = questions.find(q => q.id === number);
             if (question) {
-                question.isRight = isRight;
                 if(isRight){
                     document.getElementById(`seitou-${number}`).innerHTML='<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>';
                     document.getElementById(`dekitara_guide${number}`).innerHTML="";
                     buttonSave(number,gyou);
+                    question.isRight = isRight;
                 } else {
                     document.getElementById(`seitou-${number}`).innerHTML='';
-                    document.getElementById(`dekitara_guide${number}`).innerHTML="合<br>っ<br>て<br>た<br>ら<br>押<br>す<br>↓<br>";
+                    document.getElementById(`dekitara_guide${number}`).innerHTML="○なら<br>押す<br>↓<br>";
+                    question.isRight = isRight;
                 }
             }
-            
+            displayQuestions(wrong_mode,display_mode);
         }
         
 
         // お手本表示
-        function openURL(num,moji_num) {
-            if(document.getElementById("ans_str"+num).innerHTML!=""){
+        function openURL(id,moji_num) {
+            //if(ans!=""){
+            if(questions[id-1].answer!=""){
                 // テキストボックスの値を取得
-                var u = document.getElementById("ans_str"+num).innerHTML;
+                var u = questions[id-1].answer;
+                //var u = ans;
                 var unicodeValue = u.charCodeAt(moji_num);
                 // Replace 'u' with '00' in the Unicode value
                 const unicodeValueStr = "0" + unicodeValue.toString(16).substr(0);
                 // iframeのsrc属性にURLを代入
                 // document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/?svg=" + u;
-                document.getElementById("frame"+num).src =  "https://www.miraisoft.de/anikanjivgx/svg/" + unicodeValueStr+".svg";
+                document.getElementById("frame"+id).src =  "https://www.miraisoft.de/anikanjivgx/svg/" + unicodeValueStr+".svg";
                 
-                var iframe = document.getElementById("frame"+num).getElementsByTagName('iframe');
+                var iframe = document.getElementById("frame"+id).getElementsByTagName('iframe');
 
             }
         }
 
         function showAllQuestions() {
-            displayQuestions();
+            wrong_mode=false;
+            document.getElementById("mondai_su").innerHTML="";
+            displayQuestions(wrong_mode,display_mode);
         }
 
         function clearAllMistakes() {
             questions.forEach(q => q.isRight = false);
-            displayQuestions();
+            wrong_mode=false;
+            displayQuestions(wrong_mode,display_mode);
         }
 
         function getFormattedDate() {
