@@ -15,8 +15,11 @@
     <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
+        .canvas_dummy {
+            display: none;
+        }
         .vertical-table {
-            border-collapse: collapse;
+            border-collapse: collapse;            
         }
         .vertical-table td {
             border: 1px solid #000;
@@ -133,25 +136,33 @@
 
     function kaku(num,gyou) {
         // 変数の宣言
-        let i
+        let i;
+        if(display_mode===2){
 
-        // canvas要素を取得する
-        c = document.getElementById('canvas'+num);
-        // canvasの2Dコンテキストを取得する
-        ctx = c.getContext('2d');
-        // 線の色を青にする
-        ctx.strokeStyle = 'blue';
-        // 線の太さを1にする
-        ctx.lineWidth = document.getElementById("hutosa"+num).innerHTML;
-        //背景を白にする
-        //ctx.fillStyle = 'white';
-        //ctx.fillRect(0, 0, c.width, c.height);    
-        
-        highlightCell("questionList",2,gyou);  
-        c.addEventListener('touchstart',touchStartHandler);
-        c.addEventListener('touchend',touchEndHandler);
-        c.addEventListener('touchmove',touchMoveHandler, { passive: false });
-        window.addEventListener('touchmove',touchMoveHandler, { passive: false });
+            // canvas要素を取得する
+            c = document.getElementById('canvas_dummy');
+            // canvasの2Dコンテキストを取得する
+            ctx = c.getContext('2d');
+
+        } else {
+            // canvas要素を取得する
+            c = document.getElementById('canvas'+num);
+            // canvasの2Dコンテキストを取得する
+            ctx = c.getContext('2d');
+            // 線の色を青にする
+            ctx.strokeStyle = 'blue';
+            // 線の太さを1にする
+            ctx.lineWidth = document.getElementById("hutosa"+num).innerHTML;
+            //背景を白にする
+            //ctx.fillStyle = 'white';
+            //ctx.fillRect(0, 0, c.width, c.height);    
+            
+            highlightCell("questionList",2,gyou);  
+            c.addEventListener('touchstart',touchStartHandler);
+            c.addEventListener('touchend',touchEndHandler);
+            c.addEventListener('touchmove',touchMoveHandler, { passive: false });
+            window.addEventListener('touchmove',touchMoveHandler, { passive: false });
+        }
     }
 
 
@@ -323,25 +334,6 @@
     // 簡易表示でも画像を保存しないと詳細表示にしたときにエラーになるから、一瞬詳細表示にする
     function buttonSave(num,gyou){
 
-        if(display_mode===2){
-            questions.forEach(q =>{
-                if(wrong_mode){
-                    if(!q.isRight){
-                        const answerSpan = document.getElementById(`answer-${q.id}`);
-                        const answerButton = answerSpan.previousElementSibling;
-                        q.ans=answerSpan.style.display;
-                        q.ans_btn=answerButton.style.display;
-                    } 
-                } else {
-                    const answerSpan = document.getElementById(`answer-${q.id}`);
-                    const answerButton = answerSpan.previousElementSibling;
-                    q.ans=answerSpan.style.display;
-                    q.ans_btn=answerButton.style.display;
-                }
-            });
-            display_mode=3;
-            displayQuestions(wrong_mode,display_mode);
-        }
         kaku(num,gyou);
         var png = c.toDataURL("image/png");
         if (png && png.startsWith('data:image/png;base64,')) {
@@ -352,11 +344,8 @@
             console.warn('無効な画像データが生成されました');
             // エラー処理をここに追加
         }
-        scroll_on(num);
-
-        if(display_mode===3){
-            display_mode=2;
-            displayQuestions(wrong_mode,display_mode);
+        if(display_mode===1){
+            scroll_on(num);
         }
     }
     //　localStrage画像読み込み
@@ -436,9 +425,13 @@
             <button onclick="showAllQuestions()">全部の問題</button>
             　正解：<button onclick="showAllAnswers()">表示</button>
             <button onclick="hideAllAnswers()">隠す</button>
+            <button style="background-color:aqua;" onclick="mae_basho()">直前の場所に戻る</button>
         </td>
     </tr>
 </table>
+
+<canvas class="canvas_dummy" id="canvas_dummy" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
+
 <p></p>
 <span id="mondai_su" style="color:red;font-size: 20px;font-weight: bold;"></span>
 <table id="questionList" class="vertical-table" width="100%">
@@ -454,6 +447,7 @@
         let file_name;
         let display_mode = 1;
         let wrong_mode=false;
+        let lastScrollPosition=0;
 
         function toggledisplay(){
             questions.forEach(q =>{
@@ -797,7 +791,7 @@ function completeQuestionCreation() {
         function displayQuestions(wrongOnly = false,m) {
             let i=0;
             let haba=0.1;
-
+            
             const table = document.querySelector('#questionList');
             table.innerHTML='';
             if(m!==2){
@@ -853,7 +847,8 @@ function completeQuestionCreation() {
                     row1 = `
                         <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">${q.id}</td>
                         <!--<td style="font-size: 20px;padding: 0px; text-align: left;">${q.question}</td>-->
-                        <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: mid;"><div class="vertical-text">${q.question}</td>
+                        <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: mid;"><div class="vertical-text">${q.question}
+                        </td>
                         <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
                             <object class="left-align" type="image/svg+xml" data="edit.svg" width="50" height="50"></object>
                             <button class="left-align" onclick="kaku(${q.id},${i})">書く</button>
@@ -875,7 +870,7 @@ function completeQuestionCreation() {
                                 </datalist>
                                 <button onclick="kaku(${q.id},${i});hosoku(${q.id},${i})">細く</button>
                                 <button onclick="kaku(${q.id},${i});hutoku(${q.id},${i})">太く</button>
-                                太さ：<span id="hutosa${q.id}">9</span>
+                                太さ：<span id="hutosa${q.id}">9</span><button style="background-color:aqua;" class="right-align" onclick="go_top()">メニューに戻る</button>
                             </div>
                         </td>
                         <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: center;">
@@ -903,15 +898,16 @@ function completeQuestionCreation() {
                     `;
                     row2 = `
                         <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">${q.id}</td>
-                        <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: left;">${q.question}</td>
+                        <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: left;">${q.question}
+                        </td>
                         <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: center;">
-                            <span style="display:${q.ans_btn};"><button onclick="showAnswer(${q.id})">正解表示</button></span>
+                            <span style="display:${q.ans_btn};"><button onclick="showAnswer(${q.id})">正解表示</button><button style="background-color:aqua;" onclick="go_top()">↑</button></span>
                             <span id="answer-${q.id}" style="display:${q.ans};">
                                 <span style="font-size:40px;" id="ans_str${q.id}">${q.answer}</span><br>
                                 ${q.answer.length===1 ? `<button onclick="openURL(${q.id},0)">書き順</button>`:''}
                                 ${q.answer.length>=2 ? `書き順<br><button onclick="openURL(${q.id},0)">字1</button><button onclick="openURL(${q.id},1)">字2</button>`:''}
                                 ${q.answer.length>=3 ? `<button onclick="openURL(${q.id},2)">字3</button>`:''}
-                                <br><button onclick="hideAnswer(${q.id})">正解隠す</button>
+                                <br><button onclick="hideAnswer(${q.id})">正解隠す</button><button style="background-color:aqua;" onclick="go_top()">↑</button>
                             </span>
                         </td>
                         <td bgcolor="#FEE3D7" style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">
@@ -960,6 +956,15 @@ function completeQuestionCreation() {
                     });
                 }
             }
+        }
+
+        function go_top(){
+            lastScrollPosition=window.pageYOffset;
+            window.scroll(0,0);
+        }
+
+        function mae_basho(){
+            window.scroll(0,lastScrollPosition);
         }
 
         function showAnswer(id) {
@@ -1037,7 +1042,7 @@ function completeQuestionCreation() {
                     question.isRight = isRight;
                 }
             }
-            displayQuestions(wrong_mode,display_mode);
+            //displayQuestions(wrong_mode,display_mode);
         }
         
 
