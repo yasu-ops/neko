@@ -423,9 +423,9 @@
         <td>
             表示：<button onclick="showWrong()">間違った問題だけ</button>
             <button onclick="showAllQuestions()">全部の問題</button>
-            　正解：<button onclick="showAllAnswers()">表示</button>
-            <button onclick="hideAllAnswers()">隠す</button>
-            <button style="background-color:aqua;" onclick="mae_basho()">直前の場所に戻る</button>
+            <br>正解：<button onclick="showAllAnswers()">表示</button>
+            <button onclick="hideAllAnswers()">隠す</button>　　
+            <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">↑を押した場所に戻る</button>
         </td>
     </tr>
 </table>
@@ -870,7 +870,7 @@ function completeQuestionCreation() {
                                 </datalist>
                                 <button onclick="kaku(${q.id},${i});hosoku(${q.id},${i})">細く</button>
                                 <button onclick="kaku(${q.id},${i});hutoku(${q.id},${i})">太く</button>
-                                太さ：<span id="hutosa${q.id}">9</span><button style="background-color:aqua;" class="right-align" onclick="go_top()">メニューに戻る</button>
+                                太さ：<span id="hutosa${q.id}">9</span><button style="background-color:aqua;" class="right-align" onclick="go_top()">↑</button>
                             </div>
                         </td>
                         <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: center;">
