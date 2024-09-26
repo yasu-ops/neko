@@ -514,7 +514,7 @@
                 buttonB.addEventListener('click', () => this.handleButtonClick('←', container));
                 textareaAndNumberWrapper.appendChild(buttonB); 
                 
-                const buttonLabels1 = ['→', '↑', '↓'];
+                const buttonLabels1 = ['→'];
                 buttonLabels1.forEach(label => {
                     const button = document.createElement('button');
                     button.className = 'controls_4_button';
@@ -523,7 +523,7 @@
                     textareaAndNumberWrapper.appendChild(button);
                 });
 
-                const buttonsLabels2 = ['消', '畳む', '開く', 'G'];
+                const buttonsLabels2 = ['畳む', '開く'];
                 buttonsLabels2.forEach(label => {
                     const button = document.createElement('button');
                     button.className = 'controls_4_B_button';
@@ -554,7 +554,7 @@
 
                 //textareaの後に追加しているから、行の末尾
                 //controls_5_button
-                const buttonLabels2 = ['←','→', '↑', '↓'];
+                const buttonLabels2 = ['←','→'];
                 buttonLabels2.forEach(label => {
                     const button = document.createElement('button');
                     button.className = 'controls_5_button';
@@ -563,7 +563,7 @@
                     textareaAndNumberWrapper.appendChild(button);
                 });
 
-                const buttonsA = ['消', '畳む', '開く', 'G'];
+                const buttonsA = ['畳む', '開く'];
                 buttonsA.forEach(label => {
                     const button = document.createElement('button');
                     button.className = 'controls_6_button';
