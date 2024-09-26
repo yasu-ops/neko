@@ -656,16 +656,16 @@
                         direction = 1;
                         cursorPosition = textarea.selectionStart;
                         this.shiftIndent(index, direction);
+                        this.textareas[index].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center',
+                                inline: 'center'
+                            });
 
                         setTimeout(() => {
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
                             updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                            updatedTextarea.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'center',
-                                inline: 'center'
-                            });
                         }, 500); 
 
                         break;
@@ -673,16 +673,16 @@
                         direction = -1;
                         cursorPosition = textarea.selectionStart;
                         this.shiftIndent(index, direction);
+                        this.textareas[index].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center',
+                                inline: 'center'
+                            });
 
                         setTimeout(() => {
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
                             updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                            updatedTextarea.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'center',
-                                inline: 'center'
-                            });
                         }, 500); 
                         break;
                     case '消':
