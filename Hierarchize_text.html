@@ -22,7 +22,7 @@
         }
         
         table, th, td {
-            border: 0; /* セル自体の境界線はなし */
+            border: 1; /* セル自体の境界線はなし */
         }
         
         table {
@@ -179,74 +179,48 @@
                 document.getElementById("setumei_hyouji").textContent="「使い方」を隠す";
             }
         }
-        function button_setting_kakusu(){
-            if(document.getElementById("button_setting").style.display===""){
-                document.getElementById("button_setting").style.display="none";
-                document.getElementById("button_hyouji").textContent="「ボタン表示設定」を表示する";
-            } else {
-                document.getElementById("button_setting").style.display="";
-                document.getElementById("button_hyouji").textContent="「ボタン表示設定」を隠す";
-            }
-        }
     </script>
 </head>
 <body>
- ★★テキスト階層化アプリ★★ <button id="setumei_hyouji" onclick="setumei_kakusu()">「授業での使い方」を隠す</button><button id="button_hyouji" onclick="button_setting_kakusu()">「ボタン表示設定」を隠す</button><br>
-
- <div id="setumei">
-<table border="1"><tr><td>
-<ol>
-<u>授業での使い方</u><br>
-<li>teamsの投稿にある本文をコピーして、最初のテキストボックスに貼り付ける。<br>
-<li>最初の意味のまとまりで改行する。→新しいテキストボックスができて、残りの部分が入る。<br>
-<li>新しくできたテキストボックスで２を繰り返す。<br>
-<li>本文がすべてテキストボックスに割り振られたら、→ボタンを押して、字下げして階層構造を作る。（[←ボタン]で字下げを戻せる）<br>
-※外付けキーボードがない人は右下のメニューでソフトウェアキーボードを非表示にしてから作業する。<br>
-※字下げはtabでも可能。（字下げを戻す時はshift+tab）
-※分岐させたものを再び１つの枝にしたいときは、１番目の分岐以外の先頭に半角の+を入れる。<br>
-※上下を入れ替える時は↑ボタンや↓ボタンを押す。（ctrl＋↑やctrl＋↓でも可能。）
-<li>「左→右のツリーを作成」ボタンを押して、図を見て、違うところがあれば修正する。
-</ol></td></tr></table> 
-</div>
-<br><br>
-<div id="button_setting">
-<table class="right-align-table">
+ ★★テキスト階層化アプリ★★ <button id="setumei_hyouji" onclick="setumei_kakusu()">説明・表示設定ボタンを隠す</button><br>
+<div id="setumei">
+<table border="1">
     <tr>
-        <td><b>ソフトウエアキーボード</b></td>
         <td>
-            <input type="radio" name="keyboard-toggle" value="show" checked>表示　
-            <input type="radio" name="keyboard-toggle" value="hide">非表示
+            <ol>
+            <u>授業での使い方</u><br>
+            <li>teamsの投稿にある本文をコピーして、最初のテキストボックスに貼り付ける。<br>
+            <li>最初の意味のまとまりで改行する。→新しいテキストボックスができて、残りの部分が入る。<br>
+            <li>新しくできたテキストボックスで２を繰り返す。<br>
+            <li>本文がすべてテキストボックスに割り振られたら、→ボタンを押して、字下げして階層構造を作る。（[←ボタン]で字下げを戻せる）<br>
+            ※外付けキーボードがない人は右下のメニューでソフトウェアキーボードを非表示にしてから作業する。<br>
+            ※字下げはtabでも可能。（字下げを戻す時はshift+tab）
+            ※分岐させたものを再び１つの枝にしたいときは、１番目の分岐以外の先頭に半角の+を入れる。<br>
+            ※上下を入れ替える時は↑ボタンや↓ボタンを押す。（ctrl＋↑やctrl＋↓でも可能。）
+            <li>「左→右のツリーを作成」ボタンを押して、図を見て、違うところがあれば修正する。
+            </ol>
         </td>
-    </tr>
-    <tr>
-        <td><b>←・→・↑・↓ボタン</b></td>
         <td>
+            <b>ソフトウエアキーボード</b><br>
+            <input type="radio" name="keyboard-toggle" value="show" checked>表示　
+            <input type="radio" name="keyboard-toggle" value="hide">非表示<br>
+            <b>←・→・↑・↓ボタン</b><br>
             <input type="radio" name="button_display1" value="left" >左端　
             <input type="radio" name="button_display1" value="right">右端　
             <input type="radio" name="button_display1" value="both">両方　
-            <input type="radio" name="button_display1" value="none" checked>非表示
-        </td>
-    </tr>
-    <tr>
-        <td><b>消・畳む・Gボタン</b></td>
-        <td>
+            <input type="radio" name="button_display1" value="none" checked>非表示<br>
+            <b>消・畳む・Gボタン</b><br>
             <input type="radio" name="button_display" value="left" >左寄せ　
             <input type="radio" name="button_display" value="right" >右寄せ　
-            <input type="radio" name="button_display" value="none" checked>非表示
-        </td>
-    </tr>
-    <tr>
-        <td><b>矢印ボタンの大きさ</b></td>
-        <td>
+            <input type="radio" name="button_display" value="none" checked>非表示<br>
+            <b>矢印ボタンの大きさ</b></br>
             <button onclick="changeButtonSize(-1)"  style="font-size:20px">小さく</button>
-            <button onclick="changeButtonSize(1)"    style="font-size:20px">大きく</button>
+            <button onclick="changeButtonSize(1)"    style="font-size:20px">大きく</button><br>
         </td>
     </tr>
-</table>
+</table> 
 </div>
-
-    <br>
-    <div id="app"></div>
+<div id="app"></div>
 
 <script>
         class TextareaManager {
