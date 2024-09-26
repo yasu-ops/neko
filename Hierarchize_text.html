@@ -182,7 +182,7 @@
     </script>
 </head>
 <body>
- ★★テキスト階層化アプリ★★ <button id="setumei_hyouji" onclick="setumei_kakusu()">説明・表示設定ボタンを隠す</button><br>
+ ★★テキスト階層化アプリ★★ 操作したら中央<button id="setumei_hyouji" onclick="setumei_kakusu()">説明・表示設定ボタンを隠す</button><br>
 <div id="setumei">
 <table border="1">
     <tr>
@@ -661,7 +661,13 @@
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
                             updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                            updatedTextarea.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center',
+                                inline: 'center'
+                            });
                         }, 500); 
+
                         break;
                     case '←':
                         direction = -1;
@@ -672,6 +678,11 @@
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
                             updatedTextarea.focus();
                             updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                            updatedTextarea.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center',
+                                inline: 'center'
+                            });
                         }, 500); 
                         break;
                     case '消':
