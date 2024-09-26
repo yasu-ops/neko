@@ -12,7 +12,9 @@
             --controls-text-align: right;
             --controls-display: none;
             --controls-display1: none;
-            --controls-display2: inline-block;
+            --controls-display1B: none;
+            --controls-display2: none;
+            --controls-display2B: none;
             --controls-visibility: hidden;
         }
         table {
@@ -97,13 +99,14 @@
         .controls{
             display: var(--controls-display);
             text-align: var(--controls-text-align);
-        }
-
-        .controls button{
             font-size:20px;
         }
 
-        /*行の先頭の←ボタン*/
+        .controls button{
+            font-size:50px;
+        }
+
+        /*行の先頭の←ボタン　１つだけ*/
         .controls_3_button {
             visibility: var(--controls-visibility);
             height: var(--button-height);
@@ -116,33 +119,27 @@
             font-size: var(--button-font-size);
             
         }        
-        /*行の末尾←以外の矢印ボタン*/
+
+        /*行の先頭の消・G・畳むボタン*/
+        .controls_4_B_button {
+            display: var(--controls-display1B);  /* ボタンをインラインブロックにする */
+            height: var(--button-height);
+            font-size: var(--button-font-size);
+            
+        }        
+
+        /*行の末尾の矢印ボタン 4つ*/
         .controls_5_button {
             display: var(--controls-display2);  /* ボタンをインラインブロックにする */
             height: var(--button-height);
             font-size: var(--button-font-size);
         }        
-        /*消*/
-        .controls6 {
-            font-size: 50px;
-            display: inline-block;  /* ボタンをインラインブロックにする */
-            margin-right: 10px;    /* ボタン間のマージンを設定 */
-            text-align: var(--controls-text-align);
-            /*display: flex;*/
-            /*flex-wrap: wrap;*/
-            /*gap: 5px;*/
+        /*畳む・開く・G 消*/
+        .controls_6_button {
+            display: var(--controls-display2B);  /* ボタンをインラインブロックにする */
+            height: var(--button-height);
+            font-size: var(--button-font-size);
         }
-        /*畳む・開く・G*/
-        .controls7 {
-            font-size: 50px;
-            display: inline-block;  /* ボタンをインラインブロックにする */
-            margin-right: 10px;    /* ボタン間のマージンを設定 */
-            text-align: var(--controls-text-align);
-            /*display: flex;*/
-            /*flex-wrap: wrap;*/
-            /*gap: 5px;*/
-        }
-
         #moto {
             display: none;
         }
@@ -176,16 +173,25 @@
         function setumei_kakusu(){
             if(document.getElementById("setumei").style.display===""){
                 document.getElementById("setumei").style.display="none";
-                document.getElementById("setumei_hyouji").textContent="「授業での使い方」を表示する";
+                document.getElementById("setumei_hyouji").textContent="「使い方」を表示する";
             } else {
                 document.getElementById("setumei").style.display="";
-                document.getElementById("setumei_hyouji").textContent="「授業での使い方」を隠す";
+                document.getElementById("setumei_hyouji").textContent="「使い方」を隠す";
+            }
+        }
+        function button_setting_kakusu(){
+            if(document.getElementById("button_setting").style.display===""){
+                document.getElementById("button_setting").style.display="none";
+                document.getElementById("button_hyouji").textContent="「ボタン表示設定」を表示する";
+            } else {
+                document.getElementById("button_setting").style.display="";
+                document.getElementById("button_hyouji").textContent="「ボタン表示設定」を隠す";
             }
         }
     </script>
 </head>
 <body>
- ★★テキスト階層化アプリ★★ <button id="setumei_hyouji" onclick="setumei_kakusu()">「授業での使い方」を隠す</button><br>
+ ★★テキスト階層化アプリ★★ <button id="setumei_hyouji" onclick="setumei_kakusu()">「授業での使い方」を隠す</button><button id="button_hyouji" onclick="button_setting_kakusu()">「ボタン表示設定」を隠す</button><br>
 
  <div id="setumei">
 <table border="1"><tr><td>
@@ -203,6 +209,7 @@
 </ol></td></tr></table> 
 </div>
 <br><br>
+<div id="button_setting">
 <table class="right-align-table">
     <tr>
         <td><b>ソフトウエアキーボード</b></td>
@@ -215,9 +222,9 @@
         <td><b>←・→・↑・↓ボタン</b></td>
         <td>
             <input type="radio" name="button_display1" value="left" >左端　
-            <input type="radio" name="button_display1" value="right" checked>右端　
+            <input type="radio" name="button_display1" value="right">右端　
             <input type="radio" name="button_display1" value="both">両方　
-            <input type="radio" name="button_display1" value="none">非表示
+            <input type="radio" name="button_display1" value="none" checked>非表示
         </td>
     </tr>
     <tr>
@@ -236,6 +243,8 @@
         </td>
     </tr>
 </table>
+</div>
+
     <br>
     <div id="app"></div>
 
@@ -270,28 +279,36 @@
                 // 初期状態を設定
                 this.toggleReadonly();
 
+                //消・畳む・Gボタン
                 this.radioButtons = document.querySelectorAll('input[name="button_display"]');
                 this.radioButtons.forEach(radio => {
                     radio.addEventListener('change', () => {
                         const selectedValue = document.querySelector('input[name="button_display"]:checked').value;
                         if (selectedValue === 'right') {
-                            document.documentElement.style.setProperty('--controls-text-align', 'right');
-                            document.documentElement.style.setProperty('--controls-display', 'inline-block');
+                             //行の先頭以外の←ボタン 表示 controls_4B_button
+                            document.documentElement.style.setProperty('--controls-display1B', 'none');
+                            //行の末尾の矢印ボタン　conrols_5B_button*
+                            document.documentElement.style.setProperty('--controls-display2B', 'inline-block');
                         } else if (selectedValue === 'left') {
-                            document.documentElement.style.setProperty('--controls-text-align', 'left');
-                            document.documentElement.style.setProperty('--controls-display', 'inline-block');
+                            document.documentElement.style.setProperty('--controls-display1B', 'inline-block');
+                            document.documentElement.style.setProperty('--controls-display2B', 'none');
                         } else if (selectedValue === 'none') {
-                            document.documentElement.style.setProperty('--controls-display', 'none');
+                            document.documentElement.style.setProperty('--controls-display1B', 'none');
+                            document.documentElement.style.setProperty('--controls-display2B', 'none');
                         }
                     });                
-                });        
+                }); 
+                //矢印ボタン       
                 this.radioButtons = document.querySelectorAll('input[name="button_display1"]');
                 this.radioButtons.forEach(radio => {
                     radio.addEventListener('change', () => {
                         const selectedValue = document.querySelector('input[name="button_display1"]:checked').value;
                         if (selectedValue === 'right') {
+                            //行の先頭の←ボタン 隠す controls_3_button
                             document.documentElement.style.setProperty('--controls-visibility', 'hidden');
+                             //行の先頭以外の←ボタン 表示 controls_4_button
                             document.documentElement.style.setProperty('--controls-display1', 'none');
+                            //行の末尾の矢印ボタン　conrols_5_button*
                             document.documentElement.style.setProperty('--controls-display2', 'inline-block');
                         } else if (selectedValue === 'left') {
                             document.documentElement.style.setProperty('--controls-visibility', 'visible');
@@ -331,6 +348,9 @@
                 textarea.value = initialText;
                 this.textareas.splice(index, 0, newTextarea);
                 openButton.style.display = 'none';
+                const indentNumber = newTextarea.querySelector('.indent-number');
+                indentNumber.textContent = indent;
+
                 this.updateDOM();
 
             }
@@ -342,6 +362,9 @@
                 textarea.value = initialText;
                 this.textareas.splice(index, 0, newTextarea);
                 openButton.style.display = 'none';
+                const indentNumber = newTextarea.querySelector('.indent-number');
+                indentNumber.textContent = indent;
+
                 this.updateDOM();
 
             }
@@ -482,7 +505,7 @@
                 const textareaAndNumberWrapper = document.createElement('div');
                 textareaAndNumberWrapper.className = 'textarea-and-number-wrapper';
 
-                
+                //行の先頭の←　インデントの基準　buttonB　'controls_3_button'
                 const buttonB = document.createElement('button');
                 buttonB.className = 'controls_3_button';
                 buttonB.style.marginLeft = `${indent * 20}px`; // 初期設定
@@ -500,6 +523,24 @@
                     textareaAndNumberWrapper.appendChild(button);
                 });
 
+                const buttonsLabels2 = ['消', '畳む', '開く', 'G'];
+                buttonsLabels2.forEach(label => {
+                    const button = document.createElement('button');
+                    button.className = 'controls_4_B_button';
+                    button.textContent = label;
+                    button.addEventListener('click', () => this.handleButtonClick(label, container));
+                    if (label === '畳む') {
+                        button.classList.add('close-button');
+                    }
+                    if (label === '開く') {
+                        button.classList.add('open-button');
+                    }
+                    textareaAndNumberWrapper.appendChild(button);
+                });
+                const indentNumber = document.createElement('div');
+                indentNumber.className = 'indent-number';
+                textareaAndNumberWrapper.appendChild(indentNumber);
+
                 const textarea = document.createElement('textarea');
                 //textarea.style.marginLeft = `${indent * 20}px`;
                 textarea.rows = 1;
@@ -511,6 +552,8 @@
                 textareaNumber.className = 'textarea-number';
                 textareaAndNumberWrapper.appendChild(textareaNumber);
 
+                //textareaの後に追加しているから、行の末尾
+                //controls_5_button
                 const buttonLabels2 = ['←','→', '↑', '↓'];
                 buttonLabels2.forEach(label => {
                     const button = document.createElement('button');
@@ -520,19 +563,10 @@
                     textareaAndNumberWrapper.appendChild(button);
                 });
 
-                textareaWrapper.appendChild(textareaAndNumberWrapper);
-
-                container.appendChild(textareaWrapper);
-               
-                const controls_A = document.createElement('span');
-                controls_A.className = 'controls';
-                controls_A.style.marginLeft = `${indent * 20}px`; // 初期設定
-                controls_A.style.fontSize = '20px'; // 初期設定
-                controls_A.setAttribute('data-indent', indent); // indentを属性として保存
-                controls_A.style.marginLeft = `${indent * 20}px`;
                 const buttonsA = ['消', '畳む', '開く', 'G'];
                 buttonsA.forEach(label => {
                     const button = document.createElement('button');
+                    button.className = 'controls_6_button';
                     button.textContent = label;
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
                     if (label === '畳む') {
@@ -541,11 +575,24 @@
                     if (label === '開く') {
                         button.classList.add('open-button');
                     }
-                    controls_A.appendChild(button);
+                    textareaAndNumberWrapper.appendChild(button);
                 });
-                container.appendChild(controls_A);
+
+                textareaWrapper.appendChild(textareaAndNumberWrapper);
+                container.appendChild(textareaWrapper);
+
                 return container;
+               
+/*
+                const controls_A = document.createElement('span');
+                controls_A.className = 'controls';
+                controls_A.style.marginLeft = `${indent * 20}px`; // 初期設定
+                controls_A.style.fontSize = '20px'; // 初期設定
+                controls_A.setAttribute('data-indent', indent); // indentを属性として保存
+                controls_A.style.marginLeft = `${indent * 20}px`;
+*/
             }
+
             downloadRTF(content, filename) {
                 const blob = new Blob([content], { type: 'application/rtf' });
                 const link = document.createElement('a');
@@ -960,8 +1007,31 @@
                                 }
                             }
                         }
-                    }   
-                
+                    } else if (event.key === 's' || event.key === 'S' ) {
+                        //真上がないか、真上と異なるグループ番号の時だけ閉じられる
+                        event.preventDefault();
+                        if( index === 0 ){
+                            this.highlightGroup(index);
+                            this.toggleVisibility(index, false);
+                        } else {
+                            if(this.getGroupNumber(this.textareas[index])!=this.getGroupNumber(this.textareas[index-1])){
+                                this.highlightGroup(index);
+                                this.toggleVisibility(index, false);
+                            } else {
+                                if (this.getGroupNumber(this.textareas[index])==0 ){
+                                    this.highlightGroup(index);
+                                    this.toggleVisibility(index, false);
+                                } else {
+                                    this.highlightGroupOff(index);
+                                    this.highlightGroup(index);
+                                    this.toggleVisibility(index, false);
+                                }
+                            }
+                        }
+                    } else if (event.key === 'o' || event.key === 'O' ) {
+                       event.preventDefault();
+                       this.toggleVisibility(index, true);
+                    }
                 } else if (event.key === 'Enter' && !event.shiftKey) {
                     event.preventDefault();
                     const currentIndent = this.getIndent(container);
@@ -1241,17 +1311,21 @@
             setIndent(element, indent) {
                 //element.querySelector('textarea').style.marginLeft = `${indent * 20}px`;
                 // controls_Aのインデントを設定
+                /*
                 const controlsA = element.querySelector('.controls');
                 if (controlsA) {
                     controlsA.style.marginLeft = `${indent * 20}px`;
                     controlsA.setAttribute('data-indent', indent); // indentを属性として保存
 
                 }
+                */
                 const buttonB = element.querySelector('.controls_3_button');
                 if (buttonB) {
                     buttonB.style.marginLeft = `${indent * 20}px`;
                     buttonB.setAttribute('data-indent', indent); // indentを属性として保存
                 }
+                const indentNumber = element.querySelector('.indent-number');
+                indentNumber.textContent = indent;
             }
             
             shiftIndent(startIndex, direction) {
@@ -1453,6 +1527,8 @@
                     textareaNumber.textContent = index;
                 });
             }
+           
+
             writeOutput() {
                 let output =  '{\\rtf1\\ansi\\deff0 {\\fonttbl{\\f0 Times New Roman;}}\n';
                 this.textareas.forEach(textareaDiv => {
@@ -1568,7 +1644,8 @@
                     //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
                     const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
 
-                    const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>');
+                    //const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>');
+                    const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>').replace(/(.{25})/g, '$1<br>');
                     const label = generateAlphabetLabel(index);
                     textareasData.push({ label, content, indent });
                 });
