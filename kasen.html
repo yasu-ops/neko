@@ -23,13 +23,32 @@
         }
         button {
             margin-right: 10px;
+            font-size: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>下線付きテキスト抽出ツール ４</h1>
+    <h1>読めない語句・意味のわからない語句の抽出</h1>
+    <span style="font-size: 20px;">
+    作業手順
+    <ol>
+    <li>teams→１年→現代の国語→１・４・５・６組個人別作業→「インターネット時代の音楽産業.txt」の右横の・・・をタップ。コピーを送信で、自分のiPadに保存。</li>
+    <li>１のファイルを読み込む。→<span><input type="file" id="file-input" accept=".txt"></li>
+    <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く。<br>
+    <u>下線の引き方いろいろ</u><br>
+    選択→ctrl+U　<b>または</b>　選択→浮かび上がるメニューでフォーマット→アンダーライン　<b>または</b>　選択→一番上のメニューのUボタン</br>
+    <u>文字の選択いろいろ</u><br>
+    ダブルタップ→指で範囲広げる　<b>または</b>　ダブルタップ→キーボードでカーソルを語句の先頭に→「ctrlの下の↑」＋▶</br>
+    <u>その他</u><br>
+    ★カーソルキーが動かない→文字を打ってみる　★英数字が入力される→かなキーか、左端手前の↑を押す。</li>
+    <li>一番下の「下線付きテキストを抽出」を押す。</li>
+    <li>「Wordに貼り付け用コピー」というボタンが出てくるので、それを押す</li>
+    <li>teams→１年→現代の国語→１・４・５・６組個人別作業→「インターネット時代の音楽産業.docx」を開き、コピーを保存。※ファイルは開いておく。</li>
+    <li>６のファイルの所定の場所をタップしてして、ペースト</li>
+    <li>safariを閉じる。</li>
+    </ol>
     <div id="editor"></div>
-    <button onclick="extractUnderlinedText()">下線付きテキストを抽出</button>
+    <button onclick="extractUnderlinedAndStarredText()">下線付きテキストを抽出</button>
     <button onclick="copyTableForWord()" id="copyButton" style="display:none;">Wordに貼り付け用にコピー</button>
     <div id="result"></div>
 
@@ -45,6 +64,18 @@
                 ]
             }
         });
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var contents = e.target.result;
+                    quill.setText(''); // エディタの内容をクリア
+                    quill.clipboard.dangerouslyPasteHTML(0, contents); // HTMLとして内容を挿入
+                };
+                reader.readAsText(file, 'UTF-8'); // ファイルをUTF-8としてテキスト読み込み
+            }
+        });
 
         // キーボードショートカットの設定
         document.addEventListener('keydown', function(event) {
@@ -57,32 +88,53 @@
             }
         });
         
-        function extractUnderlinedText() {
+        function extractUnderlinedAndStarredText() {
             const delta = quill.getContents();
-            const underlinedTexts = [];
+            const extractedTexts = [];
+            let starredText = '';
+            let isCollectingStarred = false;
 
             delta.ops.forEach(op => {
-                if (op.attributes && op.attributes.underline) {
-                    underlinedTexts.push(op.insert.trim());
+                if (typeof op.insert === 'string') {
+                    // 下線付きテキストの処理
+                    if (op.attributes && op.attributes.underline) {
+                        extractedTexts.push({ text: op.insert.trim(), type: 'underlined' });
+                    }
+                    
+                    // ★で囲まれたテキストの処理
+                    const parts = op.insert.split('★');
+                    parts.forEach((part, index) => {
+                        if (isCollectingStarred) {
+                            starredText += part;
+                            if (index < parts.length - 1) {
+                                extractedTexts.push({ text: starredText.trim(), type: 'starred' });
+                                starredText = '';
+                                isCollectingStarred = false;
+                            }
+                        } else if (index < parts.length - 1) {
+                            isCollectingStarred = true;
+                        }
+                    });
                 }
             });
-            
+
             const resultDiv = document.getElementById('result');
-            if (underlinedTexts.length > 0) {
+            if (extractedTexts.length > 0) {
                 let textHTML = '';
-                underlinedTexts.forEach(text => {
-                    if (text !== '') {
-                        textHTML += `${text}＝<br>`;
+                extractedTexts.forEach(item => {
+                    if (item.text !== '') {
+                        const symbol1 = item.type === 'underlined' ? '' : '★';
+                        const symbol2 = item.type === 'underlined' ? '＝' : '';
+                        textHTML += `${symbol1}${item.text}${symbol1}${symbol2}<br>`;
                     }
                 });
                 resultDiv.innerHTML = textHTML;
                 document.getElementById('copyButton').style.display = 'inline-block';
             } else {
-                resultDiv.innerHTML = '<p>下線付きのテキストが見つかりませんでした。</p>';
+                resultDiv.innerHTML = '<p>下線付きまたは★で囲まれたテキストが見つかりませんでした。</p>';
                 document.getElementById('copyButton').style.display = 'none';
             }
         }
-
         function copyTableForWord() {
             const table = document.querySelector('result');
             if (!result) return;
