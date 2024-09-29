@@ -188,36 +188,32 @@
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     </head>
 <body>
- ★★テキスト階層化アプリ★★ 操作したら中央３<button id="setumei_hyouji" onclick="setumei_kakusu()">説明・表示設定ボタンを隠す</button><br>
+ <span style="font-size: 20px"> ★★テキスト階層化★★</span><button style="font-size: 20px" id="setumei_hyouji" onclick="setumei_kakusu()">使い方・表示設定ボタンを隠す</button>
 <div id="setumei">
-<table border="1">
+<table border="1" style="font-size: 20px;"" >
     <tr>
-        <td>
+        <td width="80%"">
+            <u>使い方</u>
             <ol>
-            <u>授業での使い方</u><br>
-            <li>teamsの投稿にある本文をコピーして、最初のテキストボックスに貼り付ける。<br>
-            <li>最初の意味のまとまりで改行する。→新しいテキストボックスができて、残りの部分が入る。<br>
-            <li>新しくできたテキストボックスで２を繰り返す。<br>
-            <li>本文がすべてテキストボックスに割り振られたら、→ボタンを押して、字下げして階層構造を作る。（[←ボタン]で字下げを戻せる）<br>
-            ※外付けキーボードがない人は右下のメニューでソフトウェアキーボードを非表示にしてから作業する。<br>
-            ※字下げはtabでも可能。（字下げを戻す時はshift+tab）
-            ※分岐させたものを再び１つの枝にしたいときは、１番目の分岐以外の先頭に半角の+を入れる。<br>
-            ※上下を入れ替える時は↑ボタンや↓ボタンを押す。（ctrl＋↑やctrl＋↓でも可能。）
-            <li>「左→右のツリーを作成」ボタンを押して、図を見て、違うところがあれば修正する。
+            <li>teams＞１年＞現代の国語＞１・４・５・６組個人別作業→インターネット時代の音楽産業.csv→右端の・・・→コピーを送信→ファイルを保存→自分のiPadに保存</li>
+            <li>１のファイルを下の「外部ファイルを読み込む」の「ファイルの選択」ボタンを押して読み込む。</li>
+            <li>後の文が前の文の補足（詳しい説明・例など）だったら、前の文よりランクを１つ下げる。（ランク変更は←→ボタンを指で押すか、ctrl＋←、ctrl+→）</li>
+            <li>△を押すとその文より下位の文がしまわれて非表示に。▼を押すとしまわれていたのが出されて再表示。（しまう＝ctr+s、出す=ctrl+d）</li>
+            <li>右側でボタンの配置は調整できる。
             </ol>
         </td>
-        <td>
-            <b>ソフトウエアキーボード</b><br>
-            <input type="radio" name="keyboard-toggle" value="show" checked>表示　
-            <input type="radio" name="keyboard-toggle" value="hide">非表示<br>
+        <td width="20%">
+            <b>ソフトウエアキーボード制御</b><br>
+            <input type="radio" name="keyboard-toggle" value="show" checked>制御せず
+            <input type="radio" name="keyboard-toggle" value="hide">表示させない<br>
             <b>△・▼ボタン</b><br>
-            <input type="radio" name="button_display" value="left" checked>左寄せ　
-            <input type="radio" name="button_display" value="right" >右寄せ　
+            <input type="radio" name="button_display" value="left" checked>左寄せ
+            <input type="radio" name="button_display" value="right" >右寄せ
             <input type="radio" name="button_display" value="none" >非表示<br>
             <b>←・→</b><br>
-            <input type="radio" name="button_display1" value="left" checked>左端　
-            <input type="radio" name="button_display1" value="right">右端　
-            <input type="radio" name="button_display1" value="both">両方　
+            <input type="radio" name="button_display1" value="left" checked>左端
+            <input type="radio" name="button_display1" value="right">右端
+            <input type="radio" name="button_display1" value="both">両方
             <input type="radio" name="button_display1" value="none" >非表示<br>
             <b>矢印ボタンの大きさ</b></br>
             <button onclick="changeButtonSize(-1)"  style="font-size:20px">小さく</button>
@@ -226,8 +222,11 @@
     </tr>
 </table> 
 </div>
-<span class="upcontrols" >外部ファイルを読み込む（<input class="upcontrols" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
-<button id="inu1" onclick="TM.exportCSV()"  style="font-size:20px;">外部ファイルに保存（字下げ情報＋テキスト）</button>
+<span class="upcontrols" >外部ファイルを読み込む（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
+<button onclick="TM.exportCSV()"  style="font-size:20px;">外部ファイルに保存（字下げ情報＋テキスト）</button>
+<button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部表示する</button>
+<button id="inu1" onclick="TM.clearAllkakusu()"  style="font-size:20px;">全部折りたたむ</button>
+<button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色を消す</button>
 <div id="app"></div>
 
 <script>
@@ -392,6 +391,34 @@
                 //window.scroll(0,0);
                 //this.updateDOM();
                 //this.highlightedGroup = null;
+            }
+            clearAllkakusu() {
+                for(let i=0;i<this.textareas.length;i++){
+                    if(i===0){
+                        this.textareas[i].style.display='';
+                    } else {
+                        this.textareas[i].style.display='none';
+                    }
+
+                    if(i===(this.textareas.length-1)){
+                        this.textareas[i].querySelector('.close-button1').style.display='';
+                        this.textareas[i].querySelector('.open-button1').style.display='none';
+                        this.textareas[i].querySelector('.close-button2').style.display='';
+                        this.textareas[i].querySelector('.open-button2').style.display='none';
+                    }else{
+                        if(this.getIndent(this.textareas[i])<this.getIndent(this.textareas[i+1])){
+                            this.textareas[i].querySelector('.close-button1').style.display='none';
+                            this.textareas[i].querySelector('.open-button1').style.display='';
+                            this.textareas[i].querySelector('.close-button2').style.display='none';
+                            this.textareas[i].querySelector('.open-button2').style.display='';
+                        }else{
+                            this.textareas[i].querySelector('.close-button1').style.display='';
+                            this.textareas[i].querySelector('.open-button1').style.display='none';
+                            this.textareas[i].querySelector('.close-button2').style.display='';
+                            this.textareas[i].querySelector('.open-button2').style.display='none';
+                        }
+                    }
+                }
             }
             clearHighlight() {
                 this.textareas.forEach(container => {
@@ -948,6 +975,7 @@
                 const container = textarea.closest('.textarea-container');
                 const index = this.textareas.indexOf(container);
                 let cindex=index;
+                let scrollTop;
  
                 if (event.ctrlKey) {
                     if (event.key === 'ArrowUp') {
@@ -1080,30 +1108,87 @@
                             }
                         }
                     } else if (event.key === 's' || event.key === 'S' ) {
+                        alert(5);
                         //真上がないか、真上と異なるグループ番号の時だけ閉じられる
                         event.preventDefault();
+                        alert(6);
+                        //現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        alert(7);
                         if( index === 0 ){
+                            alert(1);
                             this.highlightGroup(index);
                             this.toggleVisibility(index, false);
                         } else {
                             if(this.getGroupNumber(this.textareas[index])!=this.getGroupNumber(this.textareas[index-1])){
+                                alert(2);
                                 this.highlightGroup(index);
                                 this.toggleVisibility(index, false);
                             } else {
                                 if (this.getGroupNumber(this.textareas[index])==0 ){
+                                    alert(3);
                                     this.highlightGroup(index);
                                     this.toggleVisibility(index, false);
                                 } else {
+                                    alert(4);
                                     this.highlightGroupOff(index);
                                     this.highlightGroup(index);
                                     this.toggleVisibility(index, false);
                                 }
                             }
                         }
-                    } else if (event.key === 'o' || event.key === 'O' ) {
+                        //元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
+                    } else if (event.key === 'd' || event.key === 'D' ) {
                        event.preventDefault();
+                        //現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                        this.toggleVisibility(index, true);
+                        //元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
+                    } else if (event.key === 'ArrowLeft' ) {
+                        event.preventDefault();
+                        //現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const direction = -1;
+                        const cursorPosition = textarea.selectionStart;
+                        this.shiftIndent(index, direction);
+                        //元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
+                        setTimeout(() => {
+                            const updatedTextarea = this.textareas[index].querySelector('textarea');
+                            updatedTextarea.focus();
+                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                        }, 0);
+                    } else if (event.key ==='ArrowRight' ) {
+                        event.preventDefault();
+                        //現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const direction = 1;
+                        const cursorPosition = textarea.selectionStart;
+                        this.shiftIndent(index, direction);
+                        //元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
+                        setTimeout(() => {
+                            const updatedTextarea = this.textareas[index].querySelector('textarea');
+                            updatedTextarea.focus();
+                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
+                        }, 0);
+
                     }
+
                 } else if (event.key === 'Enter' && !event.shiftKey) {
                     event.preventDefault();
                     const currentIndent = this.getIndent(container);
@@ -1608,8 +1693,8 @@
                 //this.createCSVlabel2();
 
                 //this.addexportButton();
-                this.addExpandButton();
-                this.addColorClearButton();
+                //this.addExpandButton();
+                //this.addColorClearButton();
                 this.textareas.forEach(textarea => {
                     this.app.appendChild(textarea);
                     const textareaElement = textarea.querySelector('textarea');
@@ -1778,37 +1863,62 @@
                 document.getElementById('neko3').style.display='';
 
             }
-            writeOutput5(){
+            
+            writeOutput5() {
                 let pres = new PptxGenJS();
                 let currentSlide = null;
-                let currentIndent = 0;
+                let placeholderContent = '';
 
-                let count=0;
+                let ans1 = confirm("表示されている行のみスライドにしますか?(はい=OK いいえ=cancel。「いいえ」を選ぶと表示されていない行もスライドに表示されます。)");
+                let ans2 = confirm("インデントが１になるところから新しいページになるようにしますが、いいですか(はい=OK いいえ=cancel。「いいえ」を選ぶとインデント０になるところから新しいページになります。)");
+                let start_page;
+                if(ans2){
+                    start_page=1;
+                } else{
+                    start_page=0;
+                }
+                
+
+                let i=-1;
                 this.textareas.forEach(textareaDiv => {
-                    const textarea = textareaDiv.querySelector('textarea');
-                    const btn = textareaDiv.querySelector('.indent-number');
-                    const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
-                    const text = textarea.value;
+                    i++;
+                    if(!ans1 || this.textareas[i].style.display===''){
+                        const textarea = textareaDiv.querySelector('textarea');
+                        const btn = textareaDiv.querySelector('.indent-number');
+                        const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
+                        const text = textarea.value;
+                        
 
-                    if(indent > 0 ){
-                        if (indent === 1 ) {
-                            // 新しいスライドを作成
+                        if (indent === start_page) {
+                            // 新しいスライドを作成し、前のスライドのプレースホルダーコンテンツを追加
+                            if (currentSlide) {
+                                currentSlide.addText(placeholderContent, { x: 0.5, y: 1.5, w: '90%', h: '70%', fontSize: 18 });
+                            }
+                            
                             currentSlide = pres.addSlide();
-                            currentSlide.addText(text, { x: 0.5, y: 0.5, fontSize: 24, bold: true });
-                            currentIndent = 0;
-                        }  else if (currentSlide) {
-                            // テキストをスライドに追加
-                            currentSlide.addText([
-                                { text: text, options: { x: 0.5, y: (50+count*20), fontSize: 18, indentLevel: indent } },
-                            ]);
+                            currentSlide.addText(text, { x: 0.5, y: 0.5, w: '90%', fontSize: 24, bold: true });
+                            placeholderContent = ''; // プレースホルダーコンテンツをリセット
+                        } else if (indent > start_page && currentSlide) {
+                            // インデントが2以上のテキストをプレースホルダーコンテンツに追加
+                            placeholderContent += '• ' + text + '\n';
                         }
                     }
-                    count++;
                 });
 
+                // 最後のスライドのプレースホルダーコンテンツを追加
+                if (currentSlide && placeholderContent) {
+                    currentSlide.addText(placeholderContent, { x: 0.5, y: 1.5, w: '90%', h: '70%', fontSize: 18 });
+                }
+
+                let filename = prompt("ファイル名を付けてください。",this.getFormattedDate()+"_"+this.file_name_first.slice(0,-4)+".pptx");
+                if(filename==="" || filename===null){
+                    return;
+                }
+
                 // PowerPointファイルを保存
-                pres.writeFile('outline.pptx');                
-            }
+                pres.writeFile(filename);
+            }            
+            
         }
 
         // DOMのcontainer要素を取得します
