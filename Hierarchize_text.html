@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hierarchize text Application</title>
     <style>
+        /*表示の書式設定*/
         :root {
             --button-width: 30px;
             --button-height: 30px;
             --button-font-size: 20px;
             --controls-text-align: right;
             --controls-display: none;
-            --controls-display1: none;
-            --controls-display1B: none;
+            --controls-display1: inline-block;
+            --controls-display1B: inline-block;
             --controls-display2: none;
             --controls-display2B: none;
-            --controls-visibility: hidden;
         }
         table {
             border-collapse: collapse; /* セルの間に隙間をなくす */
@@ -106,21 +106,26 @@
             font-size:50px;
         }
 
-        /*行の先頭の←ボタン　１つだけ*/
-        .controls_3_button {
-            visibility: var(--controls-visibility);
+        /*先頭のindent数*/
+        .indent-number {
             height: var(--button-height);
             font-size: var(--button-font-size);
         }        
-        /*行の先頭の←以外の矢印ボタン*/
+        /*先頭の△・▼*/
         .controls_4_button {
             display: var(--controls-display1);  /* ボタンをインラインブロックにする */
             height: var(--button-height);
             font-size: var(--button-font-size);
             
         }        
+        /*末尾の△・▼*/
+        .controls_6_button {
+            display: var(--controls-display2B);  /* ボタンをインラインブロックにする */
+            height: var(--button-height);
+            font-size: var(--button-font-size);
+        }
 
-        /*行の先頭の消・G・畳むボタン*/
+        /*先頭の←→*/
         .controls_4_B_button {
             display: var(--controls-display1B);  /* ボタンをインラインブロックにする */
             height: var(--button-height);
@@ -128,20 +133,20 @@
             
         }        
 
-        /*行の末尾の矢印ボタン 4つ*/
+        /*末尾の←→*/
         .controls_5_button {
             display: var(--controls-display2);  /* ボタンをインラインブロックにする */
             height: var(--button-height);
             font-size: var(--button-font-size);
         }        
-        /*畳む・開く・G 消*/
-        .controls_6_button {
-            display: var(--controls-display2B);  /* ボタンをインラインブロックにする */
-            height: var(--button-height);
-            font-size: var(--button-font-size);
-        }
         #moto {
             display: none;
+        }
+        .open-button1{
+            background: red;
+        }
+        .open-button2{
+            background: red;
         }
     </style>
     <script>
@@ -150,9 +155,9 @@
             const currentUrl = window.location.href;
             // 現在のファイルのディレクトリを取得
             const directory = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
-            // 新しいウィンドウで開くファイルのURLを生成
+            // 新しいウィンドウでだファイルのURLを生成
             const newUrl = directory + '/Hierarchize_text_readme.html';
-            // 新しいウィンドウでファイルを開く
+            // 新しいウィンドウでファイルをだ
             window.open(newUrl, '_blank', 'width=800,height=600');
         }
         function changeButtonSize(increment) {
@@ -180,9 +185,10 @@
             }
         }
     </script>
-</head>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    </head>
 <body>
- ★★テキスト階層化アプリ★★ 操作したら中央２<button id="setumei_hyouji" onclick="setumei_kakusu()">説明・表示設定ボタンを隠す</button><br>
+ ★★テキスト階層化アプリ★★ 操作したら中央３<button id="setumei_hyouji" onclick="setumei_kakusu()">説明・表示設定ボタンを隠す</button><br>
 <div id="setumei">
 <table border="1">
     <tr>
@@ -204,15 +210,15 @@
             <b>ソフトウエアキーボード</b><br>
             <input type="radio" name="keyboard-toggle" value="show" checked>表示　
             <input type="radio" name="keyboard-toggle" value="hide">非表示<br>
-            <b>←・→・↑・↓ボタン</b><br>
-            <input type="radio" name="button_display1" value="left" >左端　
+            <b>△・▼ボタン</b><br>
+            <input type="radio" name="button_display" value="left" checked>左寄せ　
+            <input type="radio" name="button_display" value="right" >右寄せ　
+            <input type="radio" name="button_display" value="none" >非表示<br>
+            <b>←・→</b><br>
+            <input type="radio" name="button_display1" value="left" checked>左端　
             <input type="radio" name="button_display1" value="right">右端　
             <input type="radio" name="button_display1" value="both">両方　
-            <input type="radio" name="button_display1" value="none" checked>非表示<br>
-            <b>消・畳む・Gボタン</b><br>
-            <input type="radio" name="button_display" value="left" >左寄せ　
-            <input type="radio" name="button_display" value="right" >右寄せ　
-            <input type="radio" name="button_display" value="none" checked>非表示<br>
+            <input type="radio" name="button_display1" value="none" >非表示<br>
             <b>矢印ボタンの大きさ</b></br>
             <button onclick="changeButtonSize(-1)"  style="font-size:20px">小さく</button>
             <button onclick="changeButtonSize(1)"    style="font-size:20px">大きく</button><br>
@@ -220,6 +226,8 @@
     </tr>
 </table> 
 </div>
+<span class="upcontrols" >外部ファイルを読み込む（<input class="upcontrols" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
+<button id="inu1" onclick="TM.exportCSV()"  style="font-size:20px;">外部ファイルに保存（字下げ情報＋テキスト）</button>
 <div id="app"></div>
 
 <script>
@@ -235,6 +243,7 @@
                 //this.addimportButton();
                 //this.addexportButton();
                 //this.createCSVFileInput();
+                this.file_name_first="";
 
                 // yas01 グループ番号管理のための追加
                 this.maxGroupNumber = 0;
@@ -253,21 +262,23 @@
                 // 初期状態を設定
                 this.toggleReadonly();
 
-                //消・畳む・Gボタン
+
+                //△▼ボタン
                 this.radioButtons = document.querySelectorAll('input[name="button_display"]');
                 this.radioButtons.forEach(radio => {
                     radio.addEventListener('change', () => {
                         const selectedValue = document.querySelector('input[name="button_display"]:checked').value;
-                        if (selectedValue === 'right') {
-                             //行の先頭以外の←ボタン 表示 controls_4B_button
-                            document.documentElement.style.setProperty('--controls-display1B', 'none');
-                            //行の末尾の矢印ボタン　conrols_5B_button*
-                            document.documentElement.style.setProperty('--controls-display2B', 'inline-block');
-                        } else if (selectedValue === 'left') {
-                            document.documentElement.style.setProperty('--controls-display1B', 'inline-block');
+                        if (selectedValue === 'left') {
+                            //先頭controls_4_buttonを表示　末尾controls_6_button を非表示
+                            document.documentElement.style.setProperty('--controls-display1', 'inline-block');
                             document.documentElement.style.setProperty('--controls-display2B', 'none');
+                        } else if (selectedValue === 'right') {
+                            //先頭controls_4_buttonを非表示　末尾controls_6_button を表示
+                            document.documentElement.style.setProperty('--controls-display1', 'none');
+                            document.documentElement.style.setProperty('--controls-display2B', 'inline-block');
                         } else if (selectedValue === 'none') {
-                            document.documentElement.style.setProperty('--controls-display1B', 'none');
+                            //先頭controls_4_buttonを非表示　末尾 controls_6_button を非表示
+                            document.documentElement.style.setProperty('--controls-display1', 'none');
                             document.documentElement.style.setProperty('--controls-display2B', 'none');
                         }
                     });                
@@ -277,40 +288,44 @@
                 this.radioButtons.forEach(radio => {
                     radio.addEventListener('change', () => {
                         const selectedValue = document.querySelector('input[name="button_display1"]:checked').value;
-                        if (selectedValue === 'right') {
-                            //行の先頭の←ボタン 隠す controls_3_button
-                            document.documentElement.style.setProperty('--controls-visibility', 'hidden');
-                             //行の先頭以外の←ボタン 表示 controls_4_button
-                            document.documentElement.style.setProperty('--controls-display1', 'none');
-                            //行の末尾の矢印ボタン　conrols_5_button*
-                            document.documentElement.style.setProperty('--controls-display2', 'inline-block');
-                        } else if (selectedValue === 'left') {
-                            document.documentElement.style.setProperty('--controls-visibility', 'visible');
-                            document.documentElement.style.setProperty('--controls-display1', 'inline-block');
+                        if (selectedValue === 'left') {
+                            //先頭表示controls_4_B_button　末尾controls_5_button非表示
+                            document.documentElement.style.setProperty('--controls-display1B', 'inline-block');
                             document.documentElement.style.setProperty('--controls-display2', 'none');
+                        } else if (selectedValue === 'right') {
+                            //先頭非表示controls_4_B_button　末尾controls_5_button表示
+                            document.documentElement.style.setProperty('--controls-display1B', 'none');
+                            document.documentElement.style.setProperty('--controls-display2', 'inline-block');
                         } else if (selectedValue === 'both') {
-                            document.documentElement.style.setProperty('--controls-visibility', 'visible');
-                            document.documentElement.style.setProperty('--controls-display1', 'inline-block');
+                            //先頭表示controls_4_B_button　末尾controls_5_button表示
+                            document.documentElement.style.setProperty('--controls-display1B', 'inline-block');
                             document.documentElement.style.setProperty('--controls-display2', 'inline-block');
                         } else if (selectedValue === 'none') {
-                            document.documentElement.style.setProperty('--controls-visibility', 'hidden');
-                            document.documentElement.style.setProperty('--controls-display1', 'none');
+                            //先頭非表示controls_4_B_button　末尾controls_5_button非表示
+                            document.documentElement.style.setProperty('--controls-display1B', 'none');
                             document.documentElement.style.setProperty('--controls-display2', 'none');
                         }
                     });                
                 });        
 
             }
-            addClearButton() {
-                const clearButton = document.createElement('button');
-                clearButton.textContent = '全グループ化解除';
-                clearButton.className = 'upcontrols';
-                clearButton.addEventListener('click', () => this.clearAllHighlights());
-                this.app.appendChild(clearButton);
+            addColorClearButton() {
+                const ColorClearButton = document.createElement('button');
+                ColorClearButton.textContent = '色を全部消す';
+                ColorClearButton.className = 'upcontrols';
+                ColorClearButton.addEventListener('click', () => this.clearAllHighlights());
+                this.app.appendChild(ColorClearButton);
+            }
+            addExpandButton() {
+                const ExpandButton = document.createElement('button');
+                ExpandButton.textContent = '非表示の行を全部表示する';
+                ExpandButton.className = 'upcontrols';
+                ExpandButton.addEventListener('click', () => this.clearAlldasu());
+                this.app.appendChild(ExpandButton);
             }
             addexportButton() {
                 const exportButton = document.createElement('button');
-                exportButton.textContent = 'csvファイルに保存する';
+                exportButton.textContent = '字下げ情報とテキストを外部ファイルに保存する';
                 exportButton.className = 'upcontrols';
                 exportButton.addEventListener('click', () => this.exportCSV());
                 this.app.appendChild(exportButton);
@@ -318,10 +333,12 @@
             addTextarea(index = this.textareas.length, indent = 0, initialText = '') {
                 const newTextarea = this.createTextareaElement(indent);
                 const textarea = newTextarea.querySelector('textarea');
-                const openButton = newTextarea.querySelector('.open-button');
+                const openButton1 = newTextarea.querySelector('.open-button1');
+                const openButton2 = newTextarea.querySelector('.open-button2');
                 textarea.value = initialText;
                 this.textareas.splice(index, 0, newTextarea);
-                openButton.style.display = 'none';
+                openButton1.style.display = 'none';
+                openButton2.style.display = 'none';
                 const indentNumber = newTextarea.querySelector('.indent-number');
                 indentNumber.textContent = indent;
 
@@ -332,10 +349,12 @@
                 const index = this.textareas.length; 
                 const newTextarea = this.createTextareaElement(indent);
                 const textarea = newTextarea.querySelector('textarea');
-                const openButton = newTextarea.querySelector('.open-button');
+                const openButton1 = newTextarea.querySelector('.open-button1');
+                const openButton2 = newTextarea.querySelector('.open-button2');
                 textarea.value = initialText;
                 this.textareas.splice(index, 0, newTextarea);
-                openButton.style.display = 'none';
+                openButton1.style.display = 'none';
+                openButton2.style.display = 'none';
                 const indentNumber = newTextarea.querySelector('.indent-number');
                 indentNumber.textContent = indent;
 
@@ -351,6 +370,27 @@
                 this.textareas.forEach(container => {
                     container.querySelector('textarea').style.backgroundColor = '';
                 });
+                //this.highlightedGroup = null;
+            }
+            clearAlldasu() {
+                for(let i=0;i<this.textareas.length;i++){
+                    this.textareas[i].style.display='';
+                    this.textareas[i].querySelector('.close-button1').style.display='';
+                    this.textareas[i].querySelector('.open-button1').style.display='none';
+                    this.textareas[i].querySelector('.close-button2').style.display='';
+                    this.textareas[i].querySelector('.open-button2').style.display='none';
+                }
+                /*
+                setTimeout(() => {
+                    const nowTextarea = this.textareas[0].querySelector('textarea');
+                    nowTextarea.focus();
+                    this.moveCursor(0, 0);
+                    // カーソルを先頭に移動
+                    nowTextarea.selectionStart = nowTextarea.selectionEnd = 0;
+                }, 100); // 100msの遅延を追加
+                */
+                //window.scroll(0,0);
+                //this.updateDOM();
                 //this.highlightedGroup = null;
             }
             clearHighlight() {
@@ -389,6 +429,7 @@
                 return (last-first+1);
             }
             createCSVFileInput() {
+
                 const csvFileInput = document.createElement('input');
                 csvFileInput.className = 'upcontrols';
                 csvFileInput.type = 'file';
@@ -398,18 +439,7 @@
 
                 this.app.appendChild(csvFileInput);
             }
-            createCSVlabel() {
-                const csvfileinputlabel = document.createElement('label');
-                csvfileinputlabel.textContent = '保存したファイルを読み込む→(';
-                csvfileinputlabel.className = 'upcontrols'; // スタイリング用のクラスを追加（オプション）
-                this.app.appendChild(csvfileinputlabel);
-            }
-            createCSVlabel2() {
-                const csvfileinputlabel2 = document.createElement('label');
-                csvfileinputlabel2.textContent = '）';
-                csvfileinputlabel2.className = 'upcontrols'; // スタイリング用のクラスを追加（オプション）
-                this.app.appendChild(csvfileinputlabel2);
-            }
+            
             createDownloadLink(content, filename) {
                 // Blobオブジェクトを作成
                 const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
@@ -479,41 +509,38 @@
                 const textareaAndNumberWrapper = document.createElement('div');
                 textareaAndNumberWrapper.className = 'textarea-and-number-wrapper';
 
-                //行の先頭の←　インデントの基準　buttonB　'controls_3_button'
-                const buttonB = document.createElement('button');
-                buttonB.className = 'controls_3_button';
-                buttonB.style.marginLeft = `${indent * 20}px`; // 初期設定
-                buttonB.setAttribute('data-indent', indent); // indentを属性として保存
-                buttonB.textContent = ['←'];
-                buttonB.addEventListener('click', () => this.handleButtonClick('←', container));
-                textareaAndNumberWrapper.appendChild(buttonB); 
+                //行の先頭 インデント数　インデントの基準　indentNumber　'indent-number'
+                const indentNumber = document.createElement('div');
+                indentNumber.className = 'indent-number';
+                indentNumber.style.marginLeft = `${indent * 20}px`; // 初期設定
+                indentNumber.setAttribute('data-indent', indent); // indentを属性として保存
+                textareaAndNumberWrapper.appendChild(indentNumber);
                 
-                const buttonLabels1 = ['→'];
+                //行の先頭12「△・▼」　controls_4_button close-button1 open-button1
+                const buttonLabels1 = ['△','▼'];
                 buttonLabels1.forEach(label => {
                     const button = document.createElement('button');
                     button.className = 'controls_4_button';
                     button.textContent = label;
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
+                    if (label === '△') {
+                        button.classList.add('close-button1');
+                    }
+                    if (label === '▼') {
+                        button.classList.add('open-button1');
+                    }
                     textareaAndNumberWrapper.appendChild(button);
                 });
 
-                const buttonsLabels2 = ['畳む', '開く'];
+                //行の先頭34←→　　controls_4_B_button
+                const buttonsLabels2 = ['←', '→'];
                 buttonsLabels2.forEach(label => {
                     const button = document.createElement('button');
                     button.className = 'controls_4_B_button';
                     button.textContent = label;
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
-                    if (label === '畳む') {
-                        button.classList.add('close-button');
-                    }
-                    if (label === '開く') {
-                        button.classList.add('open-button');
-                    }
                     textareaAndNumberWrapper.appendChild(button);
                 });
-                const indentNumber = document.createElement('div');
-                indentNumber.className = 'indent-number';
-                textareaAndNumberWrapper.appendChild(indentNumber);
 
                 const textarea = document.createElement('textarea');
                 //textarea.style.marginLeft = `${indent * 20}px`;
@@ -526,7 +553,7 @@
                 textareaNumber.className = 'textarea-number';
                 textareaAndNumberWrapper.appendChild(textareaNumber);
 
-                //textareaの後に追加しているから、行の末尾
+                //textareaの後に追加しているから、行の末尾1 ←→　controls_5_button
                 //controls_5_button
                 const buttonLabels2 = ['←','→'];
                 buttonLabels2.forEach(label => {
@@ -536,18 +563,18 @@
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
                     textareaAndNumberWrapper.appendChild(button);
                 });
-
-                const buttonsA = ['畳む', '開く'];
+                //行の末尾2 　△・▼　  controls_6_button  
+                const buttonsA = ['△', '▼'];
                 buttonsA.forEach(label => {
                     const button = document.createElement('button');
                     button.className = 'controls_6_button';
                     button.textContent = label;
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
-                    if (label === '畳む') {
-                        button.classList.add('close-button');
+                    if (label === '△') {
+                        button.classList.add('close-button2');
                     }
-                    if (label === '開く') {
-                        button.classList.add('open-button');
+                    if (label === '▼') {
+                        button.classList.add('open-button2');
                     }
                     textareaAndNumberWrapper.appendChild(button);
                 });
@@ -581,7 +608,7 @@
                 // テキストエリアの内容とインデントを取得
                 this.textareas.forEach((textareaDiv) => {
                     const textarea = textareaDiv.querySelector('textarea');
-                    const btn = textareaDiv.querySelector('.controls_3_button');
+                    const btn = textareaDiv.querySelector('.indent-number');
                     //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
                     const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
                     const content = textarea.value.replace(/\n/g, '\\n').trim(); // 改行をエスケープしてトリム
@@ -594,11 +621,25 @@
 
                 // ファイル名を入力要素から取得
                 //const filename = this.getFilename() || 'textareas_data.csv';
-                const filename = 'textareas_data.csv';
+                let filename = prompt("ファイル名を付けてください。",this.getFormattedDate()+"保存の"+this.file_name_first);
+                if(filename==="" || filename===null){
+                    return;
+                }
 
                 // CSVファイルとして保存
                 this.createDownloadLink(csvContent, filename);
             }
+            getFormattedDate() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+
+                return `${year}_${month}_${day}_${hours}_${minutes}`;
+            }
+
             escapeHtml(unsafe) {
                 return unsafe
                     .replace(/&/g, "&amp;")
@@ -639,9 +680,9 @@
             getIndent(element) {
                 //alert(element.querySelector('textarea').style.marginLeft);
                 //return parseInt(element.querySelector('textarea').style.marginLeft) / 20;
-                //alert(element.querySelector('.controls_3_button').style.marginLeft);
+                //alert(element.querySelector('.indent-number').style.marginLeft);
                 
-                return parseInt(element.querySelector('.controls_3_button').style.marginLeft) / 20;
+                return parseInt(element.querySelector('.indent-number').style.marginLeft) / 20;
             }
             handleButtonClick(label, container) {
                 const index = this.textareas.indexOf(container);
@@ -651,16 +692,25 @@
                 let cindex=index;
                 let updatedTextarea;
 
+                let rect;
+                let scrollTop;
+                let originalTop;
+
                 switch (label) {
                     case '→':
                         direction = 1;
                         cursorPosition = textarea.selectionStart;
+
+                        //現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
                         this.shiftIndent(index, direction);
-                        this.textareas[index].scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'center',
-                                inline: 'center'
-                            });
+
+                        //元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
 
                         setTimeout(() => {
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
@@ -672,12 +722,25 @@
                     case '←':
                         direction = -1;
                         cursorPosition = textarea.selectionStart;
+
+                        //現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        
                         this.shiftIndent(index, direction);
+
+                        //元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
+
+                        /*
                         this.textareas[index].scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'center',
-                                inline: 'center'
-                            });
+                            behavior: 'instant',
+                            block: 'nearest',
+                            //inline: 'center'
+                        });
+                        */
 
                         setTimeout(() => {
                             const updatedTextarea = this.textareas[index].querySelector('textarea');
@@ -688,30 +751,54 @@
                     case '消':
                         this.removeTextarea(index);
                         break;
-                    case '畳む':
-                        //真上がないか、真上と異なるグループ番号の時だけ閉じられる
+                    case '△':
+                        //現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                        //ボタンを押したテキストエリアが一番上である
                         if( index === 0 ){
+                            //色を変えて
                             this.highlightGroup(index);
+                            //下の行を非表示に
                             this.toggleVisibility(index, false);
+                        //ボタンを押したテキストエリアより上に行がある
                         } else {
+                            //この行と上の行は違うグループ。＝どちらもグループ化されている。OR どちらか一方がグループ化されていない。
                             if(this.getGroupNumber(this.textareas[index])!=this.getGroupNumber(this.textareas[index-1])){
                                 this.highlightGroup(index);
                                 this.toggleVisibility(index, false);
+                            //この行は上の行とは同じグループ。＝どちらもグループ化されていない。OR　同じグループである。
                             } else {
+                                //どちらもグループ化されていない。
                                 if (this.getGroupNumber(this.textareas[index])==0 ){
                                     this.highlightGroup(index);
                                     this.toggleVisibility(index, false);
+                                //★同じグループである。    
                                 } else {
+                                    //上の行とは違う、新たなグループにする。
                                     this.highlightGroupOff(index);
                                     this.highlightGroup(index);
                                     this.toggleVisibility(index, false);
                                 }
                             }
                         }
+                        //元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
                         break;
-                    case '開く':
-                        
+                    case '▼':
+                        //現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
                         this.toggleVisibility(index, true);
+
+                        //元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
                         break;
                     case 'G':
                         this.toggleHighlightGroup(index);
@@ -1035,41 +1122,25 @@
                     }, 0);
                 } else if (event.key === 'Tab') {
                     event.preventDefault();
+
+                    //現在の位置
+                    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
                     const direction = event.shiftKey ? -1 : 1;
                     const cursorPosition = textarea.selectionStart;
                     this.shiftIndent(index, direction);
+
+                    //元の位置に表示する
+                    window.scrollBy({
+                        top:scrollTop,
+                        behavior: 'instant'
+                    });
                     
                     setTimeout(() => {
                         const updatedTextarea = this.textareas[index].querySelector('textarea');
                         updatedTextarea.focus();
                         updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
                     }, 0);
-                /*
-                } else  if (event.shiftKey) {
-                    let m=0;
-                    let direction = 0;
-                    let cursorPosition = textarea.selectionStart;
-
-                    if (event.key === 'ArrowUp') {
-                        event.preventDefault();
-                        direction = -1;
-                        cursorPosition = textarea.selectionStart;
-                        m=1;
-                    } else if (event.key === 'ArrowDown') {
-                        event.preventDefault();
-                        direction = 1;
-                        cursorPosition = textarea.selectionStart;
-                        m=1;
-                    }
-                    if(m==1){
-                        this.shiftIndent(index, direction);
-                        setTimeout(() => {
-                            const updatedTextarea = this.textareas[index].querySelector('textarea');
-                            updatedTextarea.focus();
-                            updatedTextarea.selectionStart = updatedTextarea.selectionEnd = cursorPosition;
-                        }, 0);
-                    }
-                */
                 } else if (event.key === 'ArrowUp' && textarea.selectionStart === 0) {
                     this.moveCursor(index, -1);
                 } else if (event.key === 'ArrowDown' && textarea.selectionStart === textarea.value.length) {
@@ -1142,6 +1213,8 @@
                 let text_count=this.textareas.length
                 const file = document.getElementById('csvFile').files[0];
                 if (file) {
+                    this.file_name_first=file.name;
+
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const content = e.target.result;
@@ -1264,7 +1337,12 @@
             moveCursor(currentIndex, direction) {
                 //currentIndex: 現在のテキストエリアのインデックス。direction: 移動する方向。1なら次のテキストエリア、-1なら前のテキストエリア。
                 //現在のインデックスに方向を加算して、移動先のインデックスを計算します。
-                const targetIndex = currentIndex + direction;
+
+                let targetIndex = currentIndex + direction;
+                while (this.textareas[targetIndex].style.display === 'none') {
+                    targetIndex += direction;
+                }
+
                 //ターゲットインデックスが有効な範囲内にあるかを確認します。
                 if (targetIndex >= 0 && targetIndex < this.textareas.length) {
                     //ターゲットインデックスのテキストエリアを取得し、フォーカスを移動します。
@@ -1304,12 +1382,12 @@
 
                 }
                 */
-                const buttonB = element.querySelector('.controls_3_button');
-                if (buttonB) {
-                    buttonB.style.marginLeft = `${indent * 20}px`;
-                    buttonB.setAttribute('data-indent', indent); // indentを属性として保存
+                let indentNumber = element.querySelector('.indent-number');
+                if (indentNumber) {
+                    indentNumber.style.marginLeft = `${indent * 20}px`;
+                    indentNumber.setAttribute('data-indent', indent); // indentを属性として保存
                 }
-                const indentNumber = element.querySelector('.indent-number');
+                indentNumber = element.querySelector('.indent-number');
                 indentNumber.textContent = indent;
             }
             
@@ -1407,43 +1485,82 @@
             //showがtrueだと２つ目以降が表示、falseだと非表示になる
                 // デバッグ用：開始インデックスをログ出力
                 console.log(startIndex);
+                let indent_kiroku=0;
 
                 // 開始要素のインデントレベルを取得
                 const startIndent = this.getIndent(this.textareas[startIndex]);
-                // 閉じるボタンのスタイルを更新
-
-                //２つ目以降を処理
+                
+                //indexを２つ目にする
                 let i = startIndex + 1;
 
-                // 開始要素より深いインデントの要素を処理
+                // 下位の行である間はindexを増やして下へと進んでいく
                 while (i < this.textareas.length) {
+                    //処理する行
                     const currentIndent = this.getIndent(this.textareas[i]);
                     // 開始要素以下のインデントレベルになったら処理を終了
                     if (currentIndent <= startIndent) break;
                     
+                    //ボタンを押した行の表示状態を変更　※いつでもいんだけど、ボタンを押した行の真下を処理するタイミングで実行
                     if(i===(startIndex + 1)){
-                        let closeButton = this.textareas[startIndex].querySelector('.close-button');
-                        let openButton = this.textareas[startIndex].querySelector('.open-button');
+                        let closeButton1 = this.textareas[startIndex].querySelector('.close-button1');
+                        let openButton1 = this.textareas[startIndex].querySelector('.open-button1');
+                        let closeButton2 = this.textareas[startIndex].querySelector('.close-button2');
+                        let openButton2 = this.textareas[startIndex].querySelector('.open-button2');
                         if (show===true) {
-                            closeButton.style.display = '';
-                            openButton.style.display = 'none';
+                            closeButton1.style.display = '';
+                            openButton1.style.display = 'none';
+                            closeButton2.style.display = '';
+                            openButton2.style.display = 'none';
                         } else {
-                            closeButton.style.display = 'none';
-                            openButton.style.display = '';
+                            closeButton1.style.display = 'none';
+                            openButton1.style.display = '';
+                            closeButton2.style.display = 'none';
+                            openButton2.style.display = '';
                         }
                     }
-                    let closeButton = this.textareas[i].querySelector('.close-button');
-                    let openButton = this.textareas[i].querySelector('.open-button');
+                    
+                    //i行目を処理
+                    let closeButton1 = this.textareas[i].querySelector('.close-button1');
+                    let openButton1 = this.textareas[i].querySelector('.open-button1');
+                    let closeButton2 = this.textareas[i].querySelector('.close-button2');
+                    let openButton2 = this.textareas[i].querySelector('.open-button2');
 
-                    // ２つ目以降を１つずつ表示（非表示）に  ※３つ目以降も非表示なら表示にってやってるからだめなんだ。非表示なのか、表示なのかは２つ目で決める！
                     if(show===true){
-                        this.textareas[i].style.display='';
-                        closeButton.style.display = '';
-                        openButton.style.display = 'none';
+                        //alert("index"+i + "_記録インデント" + indent_kiroku + "_現在のインデント" + this.getIndent(this.textareas[i]) + "_畳むボタン表示" + closeButton1.style.display);
+                        //インデント変数が0の場合
+                        if(indent_kiroku===0){
+                            //表示
+                            this.textareas[i].style.display='';
+                            //  もし、▼なら、インデントを記録
+                            if(closeButton1.style.display === 'none'){
+                                indent_kiroku=this.getIndent(this.textareas[i]);
+                            }
+                        //インデント変数が0でない場合
+                        } else{
+                            //下位のランクなら非表示　
+                            if(this.getIndent(this.textareas[i])>indent_kiroku){
+                                this.textareas[i].style.display='none';
+                            //同等か上位なら表示　インデント変数初期化　
+                            }else{
+                                this.textareas[i].style.display='';
+                                indent_kiroku=this.getIndent(this.textareas[i]);
+                            }
+                        }
+                        /*
+                        closeButton1.style.display = '';
+                        openButton1.style.display = 'none';
+                        closeButton2.style.display = '';
+                        openButton2.style.display = 'none';
+                        */
                     } else {
+                        //△ボタンを押した時、その行のボタンが▼になっていたら、それはそのままにしておく。
                         this.textareas[i].style.display='none';
-                        closeButton.style.display = 'none';
-                        openButton.style.display = '';
+                        /*
+                        closeButton1.style.display = 'none';
+                        openButton1.style.display = '';
+                        closeButton2.style.display = 'none';
+                        openButton2.style.display = '';
+                        */
                     }
                     i++;
                 }
@@ -1486,11 +1603,13 @@
             }
             updateDOM() {
                 this.app.innerHTML = '';
-                this.createCSVlabel();
-                this.createCSVFileInput();
-                this.createCSVlabel2();
-                this.addexportButton();
-                this.addClearButton();
+                //this.createCSVlabel();
+                //this.createCSVFileInput();
+                //this.createCSVlabel2();
+
+                //this.addexportButton();
+                this.addExpandButton();
+                this.addColorClearButton();
                 this.textareas.forEach(textarea => {
                     this.app.appendChild(textarea);
                     const textareaElement = textarea.querySelector('textarea');
@@ -1513,92 +1632,50 @@
                 });
             }
            
-
             writeOutput() {
                 let output =  '{\\rtf1\\ansi\\deff0 {\\fonttbl{\\f0 Times New Roman;}}\n';
                 this.textareas.forEach(textareaDiv => {
                     const textarea = textareaDiv.querySelector('textarea');
-                    const btn = textareaDiv.querySelector('.controls_3_button');
+                    const btn = textareaDiv.querySelector('.indent-number');
                     //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
                     const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
                     const indentPx = indent * 210;
-                    
-                    output += `{\\pard\\li${indentPx} ` + this.escapeRTF(textarea.value) + '\\par\\par}\n';
+                    //各文の間に空白の行が入る
+                    //output += `{\\pard\\li${indentPx} ` + this.escapeRTF(textarea.value) + '\\par\\par}\n';
+                    //箇条書きの記号が入らない
+                    output += `{\\pard\\li${indentPx} ` + this.escapeRTF(textarea.value) + '\\par}\n';
                 });
-                output += '}'
-                this.downloadRTF(output, 'outline.doc')
-            }
-            writeOutput2(num) {
-                let output = '';
-                const textareasData = [];
-                
-                // アルファベットの呼び名を生成する関数
-                const generateAlphabetLabel = (index) => {
-                    let label = '';
-                    while (index >= 0) {
-                        label = String.fromCharCode((index % 26) + 65) + label;
-                        index = Math.floor(index / 26) - 1;
-                    }
-                    return label;
-                };
+                output += '}';
 
-                // テキストエリアの内容を収集
-                this.textareas.forEach((textareaDiv, index) => {
-                    const textarea = textareaDiv.querySelector('textarea');
-                    const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
-                    const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>');
-                    const label = generateAlphabetLabel(index);
-                    textareasData.push({ label, content, indent });
-                });
-
-                // 関連付けと出力の生成
-                for (let i = 1; i < textareasData.length; i++) {
-                    const current = textareasData[i];
-                    if (current.indent > 0) {
-                        let relatedLabel = '';
-                        for (let j = i - 1; j >= 0; j--) {
-                            if (textareasData[j].indent < current.indent) {
-                                relatedLabel = textareasData[j].label;
-                                //output += `${relatedLabel}[${textareasData[j].content}]---${current.label}[${current.content}]<br>`;
-                                output += `${relatedLabel}[${textareasData[j].content}]---${current.label}[${current.content}]\n`;
-                                break;
-                            }
-                        }
-                    }
+                let filename = prompt("ファイル名を付けてください。",this.getFormattedDate()+"_"+this.file_name_first.slice(0,-4)+".doc");
+                if(filename==="" || filename===null){
+                    return;
                 }
 
-                //this.outputArea.innerHTML = output;
-                let mae_str;
-                if(num===1){
-                    mae_str='graph LR';
-                } else{
-                    mae_str='graph TB';
-                }
-                
-                document.getElementById('moto').innerHTML = mae_str+'\n'+output;
-                window.myfunction();
-
+                this.downloadRTF(output, filename);
             }
             writeOutput3() {
+                let ans = confirm("表示されている行のみマインドマップにしますか?(はい=OK いいえ=cancel。「いいえ」を選ぶと表示されていない行もマインドマップ化されます。)");
                 let output = '';
                 const textareasData = [];
                 let tmp;
+                let i=-1;
                 this.textareas.forEach(textareaDiv => {
-                    const textarea = textareaDiv.querySelector('textarea');
-                    const btn = textareaDiv.querySelector('.controls_3_button');
-                    //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
-                    const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
-                    const spaces = ' '.repeat(indent);
-                    if(textarea.value.slice(0,1)==='+'){
-                        tmp=textarea.value.slice(1);
-                    } else {
-                        tmp=textarea.value;
+                    i++;
+                    if(!ans || this.textareas[i].style.display===''){
+                        const textarea = textareaDiv.querySelector('textarea');
+                        const btn = textareaDiv.querySelector('.indent-number');
+                        //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
+                        const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
+                        const spaces = ' '.repeat(indent);
+                        if(textarea.value.slice(0,1)==='+'){
+                            tmp=textarea.value.slice(1);
+                        } else {
+                            tmp=textarea.value;
+                        }
+                        const escapedText = spaces+tmp+'\n';
+                        output += escapedText;
                     }
-
-                    const escapedText = spaces+tmp+'\n';
-                    
-                    output += escapedText;
-                    
                 });
 
                 //this.outputArea.innerHTML = output;
@@ -1606,11 +1683,18 @@
                 window.myfunction();
                 document.getElementById('neko1').style.display='';
                 document.getElementById('neko2').style.display='';
+                document.getElementById('neko3').style.display='';
             }
             writeOutput4(num){ 
+                let ans = confirm("表示されている行のみツリー図にしますか?(はい=OK いいえ=cancel。「いいえ」を選ぶと表示されていない行もツリー図内に表示されます。)");
                 let output = '';
                 const textareasData = [];
                 let temp;
+                let mojisu_str = prompt("枠の中の文字数を半角数字で入力してください。","10");
+                if(mojisu_str==="" || mojisu_str===null){
+                    return;
+                }
+                let mojisu=Number(mojisu_str);
                 
                 // アルファベットの呼び名を生成する関数
                 const generateAlphabetLabel = (index) => {
@@ -1623,16 +1707,20 @@
                 };
 
                 // テキストエリアの内容を収集
+                let i=-1;
                 this.textareas.forEach((textareaDiv, index) => {
-                    const textarea = textareaDiv.querySelector('textarea');
-                    const btn = textareaDiv.querySelector('.controls_3_button');
-                    //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
-                    const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
+                    i++;
+                    if(!ans || this.textareas[i].style.display===''){
+                        const textarea = textareaDiv.querySelector('textarea');
+                        const btn = textareaDiv.querySelector('.indent-number');
+                        //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
+                        const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
 
-                    //const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>');
-                    const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>').replace(/(.{25})/g, '$1<br>');
-                    const label = generateAlphabetLabel(index);
-                    textareasData.push({ label, content, indent });
+                        //const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>');
+                        const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>').replace(new RegExp(`(.{${mojisu}})`, 'g'), '$1<br>');
+                        const label = generateAlphabetLabel(index);
+                        textareasData.push({ label, content, indent });
+                    }
                 });
 
 
@@ -1670,6 +1758,11 @@
                     }
                 }
 
+                for (let i = 0; i < textareasData.length; i++) {
+                    const current = textareasData[i];
+                    output += `style ${current.label} text-align:left;\n`;
+                }
+                
                 //this.outputArea.innerHTML = output;
                 let mae_str;
                 if(num===1){
@@ -1682,7 +1775,39 @@
                 window.myfunction();
                 document.getElementById('neko1').style.display='';
                 document.getElementById('neko2').style.display='';
+                document.getElementById('neko3').style.display='';
 
+            }
+            writeOutput5(){
+                let pres = new PptxGenJS();
+                let currentSlide = null;
+                let currentIndent = 0;
+
+                let count=0;
+                this.textareas.forEach(textareaDiv => {
+                    const textarea = textareaDiv.querySelector('textarea');
+                    const btn = textareaDiv.querySelector('.indent-number');
+                    const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
+                    const text = textarea.value;
+
+                    if(indent > 0 ){
+                        if (indent === 1 ) {
+                            // 新しいスライドを作成
+                            currentSlide = pres.addSlide();
+                            currentSlide.addText(text, { x: 0.5, y: 0.5, fontSize: 24, bold: true });
+                            currentIndent = 0;
+                        }  else if (currentSlide) {
+                            // テキストをスライドに追加
+                            currentSlide.addText([
+                                { text: text, options: { x: 0.5, y: (50+count*20), fontSize: 18, indentLevel: indent } },
+                            ]);
+                        }
+                    }
+                    count++;
+                });
+
+                // PowerPointファイルを保存
+                pres.writeFile('outline.pptx');                
             }
         }
 
@@ -1705,6 +1830,8 @@
     <button id="inu2" onclick="TM.writeOutput4(1)" style="font-size:20px;">左→右のツリーを生成</button>
     <button id="inu3" onclick="TM.writeOutput4(2)" style="font-size:20px;" >上→下のツリーを生成</button>
     <button id="inu4" onclick="TM.writeOutput3()" style="font-size:20px;">マインドマップを生成</button>
+    <button id="inu5" onclick="TM.writeOutput5()"  style="font-size:20px;">パワーポイントのスライドとして保存</button>
+
 </div>
     
 <textarea id="moto"></textarea><br> 
@@ -1732,7 +1859,8 @@
 <div id="dst">
 </div>
 
-<button id="neko1" onclick="captureHighResImage()" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像としてコピー（safariでは使用不可）</button><br>
+<button id="neko1" onclick="captureHighResImage(1)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像としてコピー（safariでは使用不可）</button><br>
+<button id="neko3" onclick="captureHighResImage(2)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像として保存</button><br>
 <button id="neko2" onclick="hideImage()" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを消す</button>
 
 <!--ローカルの場合は以下の一文を入れる
@@ -1744,9 +1872,12 @@ function hideImage() {
     document.getElementById("yasu").innerHTML='';
     document.getElementById('neko1').style.display='none';
     document.getElementById('neko2').style.display='none';
+    document.getElementById('neko3').style.display='none';
 
-}    
-async function captureHighResImage() {
+}
+
+
+async function captureHighResImage(num) {
     const src = document.getElementById('yasu');
     const svg = src.querySelector('svg');
     
@@ -1789,16 +1920,40 @@ async function captureHighResImage() {
 
     // 以下、キャンバスの処理（クリップボードへのコピーなど）
     canvas.toBlob(function(blob) {
-        const item = new ClipboardItem({ "image/png": blob });
-        navigator.clipboard.write([item]).then(() => {
-            console.log('Image copied to clipboard');
-        }).catch(err => {
-            console.error('Failed to copy image: ', err);
-        });
+        if(num===1){
+            const item = new ClipboardItem({ "image/png": blob });
+            navigator.clipboard.write([item]).then(() => {
+                console.log('Image copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy image: ', err);
+            });
+        }else{
+            const a = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = 'image.png'; // 保存するファイル名
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 0);            
+        }
     });
     // ここでcanvasを削除します
     canvas.remove();
 }   
+
+function table_save(){
+    html2canvas(document.getElementById('dst')).then(canvas => {
+    var link = document.createElement('a');
+    link.href = canvas.toDataURL();
+    link.download = 'table.png';
+    link.click();
+    });
+}
+
+
 
 </script>
 
