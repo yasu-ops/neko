@@ -32,7 +32,7 @@
     <span style="font-size: 20px;">
     作業手順
     <ol>
-    <li>teams→１年→現代の国語→１・４・５・６組個人別作業→「インターネット時代の音楽産業.txt」の右横の・・・をタップ。コピーを送信で、自分のiPadに保存。</li>
+    <li>teams→１年→現代の国語→１・４・５・６組個人別作業→「インターネット時代の音楽産業.txt」の右横の・・・をタップ。「コピーを送信」→「ファイルに保存」→自分のiPadに保存。</li>
     <li>１のファイルを読み込む。→<span><input type="file" id="file-input" accept=".txt"></li>
     <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く。<br>
     <u>下線の引き方いろいろ</u><br>
@@ -70,8 +70,10 @@
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     var contents = e.target.result;
+                    // 改行コードをHTMLの改行タグに変換
+                    var formattedContents = contents.replace(/\n/g, '<br>');
                     quill.setText(''); // エディタの内容をクリア
-                    quill.clipboard.dangerouslyPasteHTML(0, contents); // HTMLとして内容を挿入
+                    quill.clipboard.dangerouslyPasteHTML(0, formattedContents); // HTMLとして内容を挿入
                 };
                 reader.readAsText(file, 'UTF-8'); // ファイルをUTF-8としてテキスト読み込み
             }
