@@ -12,10 +12,10 @@
             --button-font-size: 20px;
             --controls-text-align: right;
             --controls-display: none;
-            --controls-display1: inline-block;
-            --controls-display1B: inline-block;
-            --controls-display2: none;
-            --controls-display2B: none;
+            --controls-display1: none;
+            --controls-display1B: none;
+            --controls-display2: inline-block;
+            --controls-display2B:  inline-block;
         }
         table {
             border-collapse: collapse; /* セルの間に隙間をなくす */
@@ -192,17 +192,17 @@
 <div id="setumei">
 <table border="1" style="font-size: 20px;"" >
     <tr>
-        <td width="80%"">
+        <td width="70%"">
             <u>使い方</u>
             <ol>
-            <li>teams＞１年＞現代の国語＞１・４・５・６組個人別作業→インターネット時代の音楽産業.csv→右端の・・・→コピーを送信→ファイルを保存→自分のiPadに保存</li>
+            <li>teams＞１年＞現代の国語＞１・４・５・６組個人別作業＞インターネット時代の音楽産業.csv＞右端の・・・＞コピーを送信＞ファイルを保存＞自分のiPadに保存</li>
             <li>１のファイルを下の「外部ファイルを読み込む」の「ファイルの選択」ボタンを押して読み込む。</li>
             <li>後の文が前の文の補足（詳しい説明・例など）だったら、前の文よりランクを１つ下げる。（ランク変更は←→ボタンを指で押すか、ctrl＋←、ctrl+→）</li>
-            <li>△を押すとその文より下位の文がしまわれて非表示に。▼を押すとしまわれていたのが出されて再表示。（しまう＝ctr+s、出す=ctrl+d）</li>
+            <li>△を押すとその文より下位の文がしまわれて非表示に。▼を押すとしまわれていたのが広げられて再表示。（しまう＝ctr+s、広げる：ワイドに=ctrl+w）</li>
             <li>右側でボタンの配置は調整できる。
             </ol>
         </td>
-        <td width="20%">
+        <td width="30%">
             <b>ソフトウエアキーボード制御</b><br>
             <input type="radio" name="keyboard-toggle" value="show" checked>制御せず
             <input type="radio" name="keyboard-toggle" value="hide">表示させない<br>
@@ -394,7 +394,7 @@
             }
             clearAllkakusu() {
                 for(let i=0;i<this.textareas.length;i++){
-                    if(i===0){
+                    if(i===0 || this.getIndent(this.textareas[i])===0){
                         this.textareas[i].style.display='';
                     } else {
                         this.textareas[i].style.display='none';
@@ -1560,7 +1560,7 @@
                 });
             }
             toggleVisibility(startIndex, show) {
-            //showがtrueだと２つ目以降が表示、falseだと非表示になる
+                //showがtrueだと２つ目以降が表示、falseだと非表示になる
                 // デバッグ用：開始インデックスをログ出力
                 console.log(startIndex);
                 let indent_kiroku=0;
@@ -1604,7 +1604,6 @@
                     let openButton2 = this.textareas[i].querySelector('.open-button2');
 
                     if(show===true){
-                        //alert("index"+i + "_記録インデント" + indent_kiroku + "_現在のインデント" + this.getIndent(this.textareas[i]) + "_畳むボタン表示" + closeButton1.style.display);
                         //インデント変数が0の場合
                         if(indent_kiroku===0){
                             //表示
@@ -1856,11 +1855,10 @@
                 document.getElementById('neko3').style.display='';
 
             }
-            
             writeOutput5() {
                 let pres = new PptxGenJS();
                 let currentSlide = null;
-                let placeholderContent = '';
+                let placeholderContent = [];
 
                 let ans1 = confirm("表示されている行のみスライドにしますか?(はい=OK いいえ=cancel。「いいえ」を選ぶと表示されていない行もスライドに表示されます。)");
                 let ans2 = confirm("インデントが１になるところから新しいページになるようにしますが、いいですか(はい=OK いいえ=cancel。「いいえ」を選ぶとインデント０になるところから新しいページになります。)");
@@ -1871,7 +1869,6 @@
                     start_page=0;
                 }
                 
-
                 let i=-1;
                 this.textareas.forEach(textareaDiv => {
                     i++;
@@ -1885,15 +1882,21 @@
                         if (indent === start_page) {
                             // 新しいスライドを作成し、前のスライドのプレースホルダーコンテンツを追加
                             if (currentSlide) {
-                                currentSlide.addText(placeholderContent, { x: 0.5, y: 1.5, w: '90%', h: '70%', fontSize: 18 });
+                                currentSlide.addText(placeholderContent, { x: 0.5, y: 1.5, w: '90%',  h: '70%', fontSize: 18,valign: 'top'  });
                             }
                             
                             currentSlide = pres.addSlide();
-                            currentSlide.addText(text, { x: 0.5, y: 0.5, w: '90%', fontSize: 24, bold: true });
-                            placeholderContent = ''; // プレースホルダーコンテンツをリセット
+                            currentSlide.addText(text, { x: 0.5, y: 0.5, w: '90%', h: '20%',  fontSize: 24, bold: true,valign: 'top'  });
+                            placeholderContent = []; 
                         } else if (indent > start_page && currentSlide) {
                             // インデントが2以上のテキストをプレースホルダーコンテンツに追加
-                            placeholderContent += '• ' + text + '\n';
+                            placeholderContent.push({
+                                text: text,
+                                options: {
+                                    bullet: true,                  // 箇条書きを有効化
+                                    indentLevel: indent - start_page - 1  // インデントレベルを設定
+                                }
+                            });
                         }
                     }
                 });
