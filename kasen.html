@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-    <h1>下線付きテキスト抽出ツール 3</h1>
+    <h1>下線付きテキスト抽出ツール ４</h1>
     <div id="editor"></div>
     <button onclick="extractUnderlinedText()">下線付きテキストを抽出</button>
     <button onclick="copyTableForWord()" id="copyButton" style="display:none;">Wordに貼り付け用にコピー</button>
@@ -66,17 +66,16 @@
                     underlinedTexts.push(op.insert.trim());
                 }
             });
-
+            
             const resultDiv = document.getElementById('result');
             if (underlinedTexts.length > 0) {
-                let tableHTML = '<table><tr><th width="40px">頁</th><th width="40px">行</th><th width="200px">調べたい語句</th><th width="400px">調べた結果</th></tr>';
+                let textHTML = '';
                 underlinedTexts.forEach(text => {
                     if (text !== '') {
-                        tableHTML += `<tr><td></td><td></td><td>${text}</td><td></td></tr>`;
+                        textHTML += `${text}＝<br>`;
                     }
                 });
-                tableHTML += '</table>';
-                resultDiv.innerHTML = tableHTML;
+                resultDiv.innerHTML = textHTML;
                 document.getElementById('copyButton').style.display = 'inline-block';
             } else {
                 resultDiv.innerHTML = '<p>下線付きのテキストが見つかりませんでした。</p>';
@@ -85,17 +84,17 @@
         }
 
         function copyTableForWord() {
-            const table = document.querySelector('table');
-            if (!table) return;
+            const table = document.querySelector('result');
+            if (!result) return;
 
             const range = document.createRange();
-            range.selectNode(table);
+            range.selectNode(result);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
 
             try {
                 document.execCommand('copy');
-                alert('表がクリップボードにコピーされました。Wordに貼り付けることができます。');
+                alert('書きだした語句がクリップボードにコピーされました。Wordに貼り付けることができます。');
             } catch (err) {
                 console.error('コピーに失敗しました:', err);
                 alert('コピーに失敗しました。ブラウザの設定を確認してください。');
