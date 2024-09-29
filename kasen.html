@@ -23,12 +23,13 @@
     </style>
 </head>
 <body>
-    <h1>下線付きテキスト抽出ツール</h1>
+    <h1>下線付きテキスト抽出ツール ver1</h1>
     <div id="editor"></div>
     <button onclick="extractUnderlinedText()">下線付きテキストを抽出</button>
     <div id="result"></div>
 
     <script>
+        // Quillエディタのインスタンスを取得
         var quill = new Quill('#editor', {
             theme: 'snow',
             modules: {
@@ -39,6 +40,18 @@
                 ]
             }
         });
+
+        // キーボードショートカットの設定
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && (event.key === 'u'|| event.key === 'U')) {
+                event.preventDefault();
+                let range = quill.getSelection();
+                if (range) {
+                    quill.formatText(range.index, range.length, 'underline', true);
+                }
+            }
+        });
+
 
         function extractUnderlinedText() {
             const delta = quill.getContents();
