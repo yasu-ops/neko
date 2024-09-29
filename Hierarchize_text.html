@@ -1108,29 +1108,22 @@
                             }
                         }
                     } else if (event.key === 's' || event.key === 'S' ) {
-                        alert(5);
                         //真上がないか、真上と異なるグループ番号の時だけ閉じられる
                         event.preventDefault();
-                        alert(6);
                         //現在の位置
                         scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                        alert(7);
                         if( index === 0 ){
-                            alert(1);
                             this.highlightGroup(index);
                             this.toggleVisibility(index, false);
                         } else {
                             if(this.getGroupNumber(this.textareas[index])!=this.getGroupNumber(this.textareas[index-1])){
-                                alert(2);
                                 this.highlightGroup(index);
                                 this.toggleVisibility(index, false);
                             } else {
                                 if (this.getGroupNumber(this.textareas[index])==0 ){
-                                    alert(3);
                                     this.highlightGroup(index);
                                     this.toggleVisibility(index, false);
                                 } else {
-                                    alert(4);
                                     this.highlightGroupOff(index);
                                     this.highlightGroup(index);
                                     this.toggleVisibility(index, false);
