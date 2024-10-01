@@ -26,8 +26,8 @@
         <li>teams＞１年＞現代の国語＞１・４・５・６組個人別作業＞「インターネット時代の音楽産業.txt」の右横の・・・をタップ。＞コピーを送信＞「ファイルに保存」＞自分のiPadに保存</li>
         <li>１のファイルを読み込む。→<span><input type="file" id="file-input" accept=".txt"></li>
         <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く。<br>
-        <u>下線の引き方いろいろ</u><br>
-        選択＞ctrl+U　<b>または</b>　選択＞浮かび上がるメニューでフォーマット＞アンダーライン　<b>または</b>　選択＞一番上のメニューのUボタン</br>
+        <u>下線の引き方いろいろ（下線が引いてあるところで以下の操作をすると下線が消えます）</u><br>
+        選択＞ctrl+U　<b>または</b>　選択＞浮かび上がるメニューでフォーマット＞アンダーライン（iPadの場合のみ）　<b>または</b>　下線ボタン＞下線ボタンをドラッグ（三本線をドラッグ）して選択したいところに持って行く＞選択＞下線ボタン</br>
         <u>文字の選択いろいろ</u><br>
         ダブルタップ＞指で範囲広げる　<b>または</b>　ダブルタップ＞キーボードでカーソルを語句の先頭に＞「ctrlの下の↑」＋▶</br>
         <u>その他</u><br>
@@ -36,6 +36,7 @@
         <li>「AIへの貼り付け用にコピー」というボタンが出てくるので、それを押す。（このサイトでの作業はここまでです。）</li>
         </ol>
     </span>
+    <button id="showbar" onclick="showFloatingToolbar()">下線ボタン表示</button>
     <div id="editor"></div>
     <button onclick="extractTexts()">テキストを抽出</button>
     <button onclick="copyExtractedText()" id="copyButton" style="display:none;">AIへの貼り付け用にコピー</button>
@@ -67,7 +68,7 @@ var quill = new Quill('#editor', {
 // フローティングツールバーの要素を作成
 var floatingToolbar = document.createElement('div');
 floatingToolbar.id = 'floating-toolbar';
-floatingToolbar.innerHTML = '<div id="drag-handle">≡</div><button class="ql-underline">U</button>';
+floatingToolbar.innerHTML = '<div id="drag-handle">≡</div><button style="background-color: red;" class="ql-underline">U</button>';
 document.body.appendChild(floatingToolbar);
 
 // ドラッグ関連の変数
@@ -114,6 +115,10 @@ document.addEventListener('touchend', endDrag);
 
 // テキスト選択時にフローティングツールバーを表示
 function showFloatingToolbar() {
+    var button = document.getElementById("showbar");
+    var rect = button.getBoundingClientRect();
+
+    /*
   var range = quill.getSelection();
   if (range && range.length > 0) {
     var bounds = quill.getBounds(range.index + range.length);
@@ -133,34 +138,38 @@ function showFloatingToolbar() {
     //if (top + toolbarRect.height > window.innerHeight) {
     //  top = bounds.top + editorRect.top - toolbarRect.height - 5; // 5pxのマージン
     //}
-
+*/
+    let left=0;
+    let top=0;
     // 位置を設定
-    floatingToolbar.style.left = left + 'px';
-    floatingToolbar.style.top = top + 'px';
+    floatingToolbar.style.left = rect.left + 'px';
+    floatingToolbar.style.top = rect.top + 'px';
     floatingToolbar.style.display = 'block';
 
     // 選択範囲の書式を確認し、下線ボタンの状態を更新
     var format = quill.getFormat(range);
     var underlineButton = floatingToolbar.querySelector('.ql-underline');
     underlineButton.classList.toggle('active', format.underline);
+/*  
   } else {
     floatingToolbar.style.display = 'none';
   }
+*/
 }
 
 // 選択イベントのリスナーを更新
-quill.on('selection-change', showFloatingToolbar);
+//quill.on('selection-change', showFloatingToolbar);
 
 // スクロールイベントのリスナーを追加
-quill.root.addEventListener('scroll', showFloatingToolbar);
+//quill.root.addEventListener('scroll', showFloatingToolbar);
 
 // ウィンドウのリサイズイベントのリスナーを更新
-window.addEventListener('resize', showFloatingToolbar);
+//window.addEventListener('resize', showFloatingToolbar);
 
 // タッチデバイス用のイベントリスナーを更新
-quill.root.addEventListener('touchend', function() {
-  setTimeout(showFloatingToolbar, 100);
-});
+//quill.root.addEventListener('touchend', function() {
+//  setTimeout(showFloatingToolbar, 100);
+//});
 
 // フローティングツールバーのボタンにイベントリスナーを追加
 floatingToolbar.querySelector('.ql-underline').addEventListener('click', function() {
