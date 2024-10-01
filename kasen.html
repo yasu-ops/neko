@@ -21,8 +21,7 @@
 <body>
     <h1></h1>
     <span style="font-size: 15px;">
-        <u>読めない語句・意味のわからない語句の抽出</u><br>
-        ■作業手順■
+        <u>読めない語句・意味のわからない語句の抽出　作業手順 ver.1</u><br>
         <ol>
         <li>teams＞１年＞現代の国語＞１・４・５・６組個人別作業＞「インターネット時代の音楽産業.txt」の右横の・・・をタップ。＞コピーを送信＞「ファイルに保存」＞自分のiPadに保存</li>
         <li>１のファイルを読み込む。→<span><input type="file" id="file-input" accept=".txt"></li>
@@ -164,8 +163,8 @@
                         break;
                     case 'context':
                         const parts = item.text.split(item.underlined);
-                        const beforeContext = parts[0].length > 0 ? '…' + parts[0] : '';
-                        const afterContext = parts[1].length > 0 ? parts[1] + '…' : '';
+                        const beforeContext = parts[0].length > 0 ? '～' + parts[0] : '';
+                        const afterContext = parts[1].length > 0 ? parts[1] + '～' : '';
                         resultHTML += `「${beforeContext}【${item.underlined}】${afterContext}」<br>`;
                         break;
                     case 'underlined':
