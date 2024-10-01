@@ -11,15 +11,6 @@
             height: auto;
             margin-bottom: 20px;
             font-size: 20px;
-
-        }
-        table {
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
         }
         button {
             margin-right: 10px;
@@ -30,26 +21,26 @@
 <body>
     <h1>読めない語句・意味のわからない語句の抽出</h1>
     <span style="font-size: 20px;">
-    作業手順
-    <ol>
-    <li>teams→１年→現代の国語→１・４・５・６組個人別作業→「インターネット時代の音楽産業.txt」の右横の・・・をタップ。「コピーを送信」→「ファイルに保存」→自分のiPadに保存。</li>
-    <li>１のファイルを読み込む。→<span><input type="file" id="file-input" accept=".txt"></li>
-    <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く。<br>
-    <u>下線の引き方いろいろ</u><br>
-    選択→ctrl+U　<b>または</b>　選択→浮かび上がるメニューでフォーマット→アンダーライン　<b>または</b>　選択→一番上のメニューのUボタン</br>
-    <u>文字の選択いろいろ</u><br>
-    ダブルタップ→指で範囲広げる　<b>または</b>　ダブルタップ→キーボードでカーソルを語句の先頭に→「ctrlの下の↑」＋▶</br>
-    <u>その他</u><br>
-    ★カーソルキーが動かない→文字を打ってみる　★英数字が入力される→かなキーか、左端手前の↑を押す。</li>
-    <li>一番下の「下線付きテキストを抽出」を押す。</li>
-    <li>「Wordに貼り付け用コピー」というボタンが出てくるので、それを押す</li>
-    <li>teams→１年→現代の国語→１・４・５・６組個人別作業→「インターネット時代の音楽産業.docx」を開き、コピーを保存。※ファイルは開いておく。</li>
-    <li>６のファイルの所定の場所をタップしてして、ペースト</li>
-    <li>safariを閉じる。</li>
-    </ol>
-    <div id="editor"></div>
-    <button onclick="extractUnderlinedAndStarredText()">下線付きテキストを抽出</button>
-    <button onclick="copyTableForWord()" id="copyButton" style="display:none;">Wordに貼り付け用にコピー</button>
+        作業手順
+        <ol>
+        <li>teams＞１年＞現代の国語＞１・４・５・６組個人別作業＞「インターネット時代の音楽産業.txt」の右横の・・・をタップ。＞コピーを送信＞「ファイルに保存」＞自分のiPadに保存</li>
+        <li>１のファイルを読み込む。→<span><input type="file" id="file-input" accept=".txt"></li>
+        <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く。<br>
+        <u>下線の引き方いろいろ</u><br>
+        選択＞ctrl+U　<b>または</b>　選択＞浮かび上がるメニューでフォーマット＞アンダーライン　<b>または</b>　選択＞一番上のメニューのUボタン</br>
+        <u>文字の選択いろいろ</u><br>
+        ダブルタップ＞指で範囲広げる　<b>または</b>　ダブルタップ＞キーボードでカーソルを語句の先頭に＞「ctrlの下の↑」＋▶</br>
+        <u>その他</u><br>
+        ★カーソルキーが動かない＞文字を打ってみる　★英数字が入力される＞かなキーか、左端手前の↑を押す。</li>
+        <li>一番下の「下線付きテキストを抽出」を押す。</li>
+        <li>「Wordに貼り付け用コピー」というボタンが出てくるので、それを押す</li>
+        <li>teams＞１年→現代の国語＞１・４・５・６組個人別作業＞「インターネット時代の音楽産業.docx」を開き、コピーを保存。※ファイルは開いておく。</li>
+        <li>６のファイルの所定の場所をタップしてして、ペースト</li>
+        <li>safariを閉じる。</li>
+        </ol>
+        <div id="editor"></div>
+    <button onclick="extractTexts()">テキストを抽出</button>
+    <button onclick="copyExtractedText()" id="copyButton" style="display:none;">Wordに貼り付け用にコピー</button>
     <div id="result"></div>
 
     <script>
@@ -64,6 +55,7 @@
                 ]
             }
         });
+
         document.getElementById('file-input').addEventListener('change', function(e) {
             var file = e.target.files[0];
             if (file) {
@@ -89,18 +81,47 @@
                 }
             }
         });
-        
-        function extractUnderlinedAndStarredText() {
+
+        function extractTexts() {
             const delta = quill.getContents();
-            const extractedTexts = [];
+            const extractedItems = [];
+            let fullText = '';
             let starredText = '';
             let isCollectingStarred = false;
 
             delta.ops.forEach(op => {
                 if (typeof op.insert === 'string') {
+                    fullText += op.insert;
+                }
+            });
+
+            let lastIndex = 0;
+            delta.ops.forEach(op => {
+                if (typeof op.insert === 'string') {
+                    const currentIndex = fullText.indexOf(op.insert, lastIndex);
+                    
                     // 下線付きテキストの処理
                     if (op.attributes && op.attributes.underline) {
-                        extractedTexts.push({ text: op.insert.trim(), type: 'underlined' });
+                        const underlinedPart = op.insert.trim();
+                        const start = Math.max(0, currentIndex - 10);
+                        const end = Math.min(fullText.length, currentIndex + op.insert.length + 10);
+                        const context = fullText.substring(start, end);
+                        
+                        // 下線部のみの項目を後に追加
+                        extractedItems.push({
+                            type: 'underlined',
+                            text: underlinedPart,
+                            index: currentIndex
+                        });
+
+                        // 前後10文字付きの項目を先に追加
+                        extractedItems.push({
+                            type: 'context',
+                            text: context,
+                            underlined: underlinedPart,
+                            index: currentIndex
+                        });
+                        
                     }
                     
                     // ★で囲まれたテキストの処理
@@ -109,7 +130,11 @@
                         if (isCollectingStarred) {
                             starredText += part;
                             if (index < parts.length - 1) {
-                                extractedTexts.push({ text: starredText.trim(), type: 'starred' });
+                                extractedItems.push({
+                                    type: 'starred',
+                                    text: starredText.trim(),
+                                    index: currentIndex + op.insert.indexOf(starredText)
+                                });
                                 starredText = '';
                                 isCollectingStarred = false;
                             }
@@ -117,38 +142,52 @@
                             isCollectingStarred = true;
                         }
                     });
+
+                    lastIndex = currentIndex + op.insert.length;
                 }
             });
 
-            const resultDiv = document.getElementById('result');
-            if (extractedTexts.length > 0) {
-                let textHTML = '';
-                extractedTexts.forEach(item => {
-                    if (item.text !== '') {
-                        const symbol1 = item.type === 'underlined' ? '' : '★';
-                        const symbol2 = item.type === 'underlined' ? '＝' : '';
-                        textHTML += `${symbol1}${item.text}${symbol1}${symbol2}<br>`;
-                    }
-                });
-                resultDiv.innerHTML = textHTML;
-                document.getElementById('copyButton').style.display = 'inline-block';
-            } else {
-                resultDiv.innerHTML = '<p>下線付きまたは★で囲まれたテキストが見つかりませんでした。</p>';
-                document.getElementById('copyButton').style.display = 'none';
-            }
+            displayResults(extractedItems);
         }
-        function copyTableForWord() {
-            const table = document.querySelector('result');
-            if (!result) return;
+
+        function displayResults(extractedItems) {
+            extractedItems.sort((a, b) => a.index - b.index);
+
+            const resultDiv = document.getElementById('result');
+            let resultHTML = '';
+
+            extractedItems.forEach(item => {
+                switch (item.type) {
+                    case 'starred':
+                        resultHTML += `${item.text}<br>`;
+                        break;
+                    case 'context':
+                        const parts = item.text.split(item.underlined);
+                        const beforeContext = parts[0].length > 0 ? '…' + parts[0] : '';
+                        const afterContext = parts[1].length > 0 ? parts[1] + '…' : '';
+                        resultHTML += `「${beforeContext}【${item.underlined}】${afterContext}」<br>`;
+                        break;
+                    case 'underlined':
+                        resultHTML += `${item.text}＝<br>`;
+                        break;
+                }
+            });
+
+            resultDiv.innerHTML = "（１）次の「＝」がついている語句について、「＝」のあとにその読みと意味をつけ加えてください。<br>（２）頁、語句、読み、意味、例文が見出しの表にしてください。<br>"+resultHTML;
+            document.getElementById('copyButton').style.display = 'inline-block';
+        }
+        function copyExtractedText() {
+            const resultDiv = document.getElementById('result');
+            if (!resultDiv) return;
 
             const range = document.createRange();
-            range.selectNode(result);
+            range.selectNode(resultDiv);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
 
             try {
                 document.execCommand('copy');
-                alert('書きだした語句がクリップボードにコピーされました。Wordに貼り付けることができます。');
+                alert('抽出されたテキストがクリップボードにコピーされました。Wordに貼り付けることができます。');
             } catch (err) {
                 console.error('コピーに失敗しました:', err);
                 alert('コピーに失敗しました。ブラウザの設定を確認してください。');
@@ -159,5 +198,3 @@
     </script>
 </body>
 </html>
-
-
