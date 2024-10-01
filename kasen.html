@@ -20,7 +20,7 @@
 </head>
 <body>
     <h1>読めない語句・意味のわからない語句の抽出</h1>
-    <span style="font-size: 20px;">
+    <span style="font-size: 15px;">
         作業手順
         <ol>
         <li>teams＞１年＞現代の国語＞１・４・５・６組個人別作業＞「インターネット時代の音楽産業.txt」の右横の・・・をタップ。＞コピーを送信＞「ファイルに保存」＞自分のiPadに保存</li>
@@ -40,7 +40,7 @@
         </ol>
         <div id="editor"></div>
     <button onclick="extractTexts()">テキストを抽出</button>
-    <button onclick="copyExtractedText()" id="copyButton" style="display:none;">Wordに貼り付け用にコピー</button>
+    <button onclick="copyExtractedText()" id="copyButton" style="display:none;">AIへの貼り付け用にコピー</button>
     <div id="result"></div>
 
     <script>
@@ -187,13 +187,14 @@
 
             try {
                 document.execCommand('copy');
-                alert('抽出されたテキストがクリップボードにコピーされました。Wordに貼り付けることができます。');
+                alert('抽出されたテキストがクリップボードにコピーされました。Microsoft Copilotが開きますので、その入力欄に貼り付けてください。');
             } catch (err) {
                 console.error('コピーに失敗しました:', err);
                 alert('コピーに失敗しました。ブラウザの設定を確認してください。');
             }
 
             window.getSelection().removeAllRanges();
+            window.open("https://www.copilot.com", "_blank");
         }
     </script>
 </body>
