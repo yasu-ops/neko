@@ -29,21 +29,21 @@
         <u>読めない語句・意味のわからない語句について調べる　このサイトでの作業 ver.2</u><br>
         <ol>
         <li>teams＞１年＞現代の国語＞１・４・５・６組個人別作業＞「インターネット時代の音楽産業.txt」の右横の・・・をタップ。＞コピーを送信＞「ファイルに保存」＞自分のiPadに保存</li>
-        <li>１のファイルを読み込む。→<span><input type="file" id="file-input" accept=".txt"></li>
+        <li>１のファイルを読み込む。<span><input type="file" id="file-input" accept=".txt"></li>
         <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く。<br>
         <u>下線の引き方いろいろ（下線が引いてあるところで以下の操作をすると下線が消えます）</u><br>
-        <b>キーボードがある場合→</b>文字列選択＞ctrl+U　<b>iPadでキーボードがない・iPhone→</b>文字列選択＞浮かび上がるメニューでフォーマット＞アンダーライン　<b>スマホ→</b>下線ボタン＞赤いＵボタンの上の三本線をドラッグして選択したいところに持って行く＞文字列選択＞赤いＵボタン</br>
+        <b>キーボードがある場合→</b>文字列選択＞ctrl+U　<b>iPadでキーボードがない・iPhone→</b>文字列選択＞浮かび上がるメニューでフォーマット＞アンダーライン　<b>スマホ向け（他の機器でもＯＫ）→</b>下線ボタン表示＞赤いＵボタンの上の三本線をドラッグして選択したいところに持って行く＞文字列選択＞赤いＵボタン</br>
         <u>文字の選択いろいろ</u><br>
         ダブルタップ＞指で範囲広げる　<b>または</b>　ダブルタップ＞キーボードでカーソルを語句の先頭に＞「ctrlの下の↑」＋▶</br>
         <u>その他</u><br>
         ★カーソルキーが動かない＞文字を打ってみる　★他のアプリを閉じる</li>
-        <li>一番下の「下線付きテキストを抽出」を押す。</li>
+        <li>一番下の「下線部を抽出」を押す。</li>
         <li>「AIへの貼り付け用にコピー」というボタンが出てくるので、それを押す。（このサイトでの作業はここまでです。）</li>
         </ol>
     </span>
     <button id="showbar" onclick="showFloatingToolbar()">下線ボタン表示</button>
     <div id="editor"></div>
-    <button onclick="extractTexts()">テキストを抽出</button>
+    <button onclick="extractTexts()">下線部を抽出</button>
     <button onclick="copyExtractedText()" id="copyButton" style="display:none;">AIへの貼り付け用にコピー</button>
     <div id="result"></div>
 
@@ -182,6 +182,7 @@ floatingToolbar.querySelector('.ql-underline').addEventListener('click', functio
   if (range) {
     var format = quill.getFormat(range);
     var isUnderlined = format.underline;
+    alert(isUnderlined);
     quill.formatText(range.index, range.length, 'underline', !isUnderlined);
   }
 });
@@ -240,7 +241,23 @@ document.head.appendChild(style);
             }
         });
 
-        // キーボードショートカットの設定
+        /*
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && (event.key === 'u' || event.key === 'U')) {
+                event.preventDefault();
+                
+                let range = quill.getSelection();
+                if (range) {
+                    
+                    var format = quill.getFormat(range);
+                    var isUnderlined = format.underline;
+                    alert(isUnderlined);
+                    quill.formatText(range.index, range.length, 'underline', !isUnderlined);
+                }
+            }
+        });
+        */
+        /* キーボードショートカットの設定
         document.addEventListener('keydown', function(event) {
             if (event.ctrlKey && (event.key === 'u'|| event.key === 'U')) {
                 event.preventDefault();
@@ -252,13 +269,13 @@ document.head.appendChild(style);
                 }
             }
         });
-
+        */
         function extractTexts() {
             const delta = quill.getContents();
             const extractedItems = [];
             let fullText = '';
-            let starredText = '';
-            let isCollectingStarred = false;
+            let currentPage = '';
+            let isCollectingPage = false;
 
             delta.ops.forEach(op => {
                 if (typeof op.insert === 'string') {
@@ -271,48 +288,66 @@ document.head.appendChild(style);
                 if (typeof op.insert === 'string') {
                     const currentIndex = fullText.indexOf(op.insert, lastIndex);
                     
-                    // 下線付きテキストの処理
+                    // ★で囲まれたテキストの処理（ページ）
+                    const parts = op.insert.split('★');
+                    parts.forEach((part, index) => {
+                        if (isCollectingPage) {
+                            currentPage += part;
+                            if (index < parts.length - 1) {
+                                isCollectingPage = false;
+                                // 新しいページの開始
+                                extractedItems.push({
+                                    type: 'page',
+                                    text: currentPage.trim(),
+                                    index: currentIndex + op.insert.indexOf(currentPage),
+                                    underlinedItems: []
+                                });
+                                currentPage = '';
+                            }
+                        } else if (index < parts.length - 1) {
+                            isCollectingPage = true;
+                        }
+                    });
+
+                    /* 下線付きテキストの処理
                     if (op.attributes && op.attributes.underline) {
                         const underlinedPart = op.insert.trim();
                         const start = Math.max(0, currentIndex - 10);
                         const end = Math.min(fullText.length, currentIndex + op.insert.length + 10);
                         const context = fullText.substring(start, end);
                         
-                        // 下線部のみの項目を後に追加
-                        extractedItems.push({
-                            type: 'underlined',
-                            text: underlinedPart,
-                            index: currentIndex
-                        });
-
-                        // 前後10文字付きの項目を先に追加
-                        extractedItems.push({
-                            type: 'context',
-                            text: context,
-                            underlined: underlinedPart,
-                            index: currentIndex
-                        });
-                        
-                    }
-                    
-                    // ★で囲まれたテキストの処理
-                    const parts = op.insert.split('★');
-                    parts.forEach((part, index) => {
-                        if (isCollectingStarred) {
-                            starredText += part;
-                            if (index < parts.length - 1) {
-                                extractedItems.push({
-                                    type: 'starred',
-                                    text: starredText.trim(),
-                                    index: currentIndex + op.insert.indexOf(starredText)
-                                });
-                                starredText = '';
-                                isCollectingStarred = false;
-                            }
-                        } else if (index < parts.length - 1) {
-                            isCollectingStarred = true;
+                        // 現在のページに下線項目を追加
+                        if (extractedItems.length > 0 && extractedItems[extractedItems.length - 1].type === 'page') {
+                            extractedItems[extractedItems.length - 1].underlinedItems.push({
+                                text: underlinedPart,
+                                context: context
+                            });
                         }
-                    });
+                    }*/
+
+                    if (op.attributes && op.attributes.underline) {
+                        const underlinedPart = op.insert.trim();
+                        const start = Math.max(0, currentIndex - 10);
+                        const end = Math.min(fullText.length, currentIndex + op.insert.length + 10);
+                        
+                        // 下線部の前後の文脈を抽出
+                        const beforeContext = fullText.substring(start, currentIndex).trim();
+                        const afterContext = fullText.substring(currentIndex + op.insert.length, end).trim();
+                        
+                        // 下線部を【】で囲む
+                        const bracketedUnderline = `【${underlinedPart}】`;
+                        
+                        // 前後の文脈と下線部を組み合わせて新しいコンテキストを作成
+                        const context = `${beforeContext}${bracketedUnderline}${afterContext}`;
+                        
+                        // 現在のページに下線項目を追加
+                        if (extractedItems.length > 0 && extractedItems[extractedItems.length - 1].type === 'page') {
+                            extractedItems[extractedItems.length - 1].underlinedItems.push({
+                                text: underlinedPart,
+                                context: context
+                            });
+                        }
+                    }                    
 
                     lastIndex = currentIndex + op.insert.length;
                 }
@@ -322,29 +357,18 @@ document.head.appendChild(style);
         }
 
         function displayResults(extractedItems) {
-            extractedItems.sort((a, b) => a.index - b.index);
-
             const resultDiv = document.getElementById('result');
-            let resultHTML = '';
+            let resultHTML = '頁,下線部の語句,,,下線部の前後10字を含む文字列\n';
 
-            extractedItems.forEach(item => {
-                switch (item.type) {
-                    case 'starred':
-                        resultHTML += `${item.text}<br>`;
-                        break;
-                    case 'context':
-                        const parts = item.text.split(item.underlined);
-                        const beforeContext = parts[0].length > 0 ? '・・・' + parts[0] : '';
-                        const afterContext = parts[1].length > 0 ? parts[1] + '・・・' : '';
-                        resultHTML += `「${beforeContext}【${item.underlined}】${afterContext}」<br>`;
-                        break;
-                    case 'underlined':
-                        resultHTML += `${item.text}＝<br>`;
-                        break;
+            extractedItems.forEach(page => {
+                if (page.type === 'page') {
+                    page.underlinedItems.forEach(item => {
+                        resultHTML += `${page.text},${item.text},,,…${item.context}…\n`;
+                    });
                 }
             });
 
-            resultDiv.innerHTML = "（１）次の「＝」がついている語句について、「＝」のあとにその読みと意味をつけ加えてください。<br>（２）頁、語句、読み、意味、例文が見出しの表にしてください。<br>"+resultHTML;
+            resultDiv.innerText = "次の表の読みと意味の欄を埋めてください。表には出力せずにカンマ区切りで見出しも含めて出力してください。\n"+resultHTML;
             document.getElementById('copyButton').style.display = 'inline-block';
         }
         function copyExtractedText() {
@@ -358,14 +382,14 @@ document.head.appendChild(style);
 
             try {
                 document.execCommand('copy');
-                alert('抽出されたテキストがクリップボードにコピーされました。Microsoft Copilotが開きますので、その入力欄に貼り付けてください。');
+                alert('抽出されたテキストがクリップボードにコピーされました。ChatGPTが開きますので、その入力欄に貼り付けてください。');
             } catch (err) {
                 console.error('コピーに失敗しました:', err);
                 alert('コピーに失敗しました。ブラウザの設定を確認してください。');
             }
 
             window.getSelection().removeAllRanges();
-            window.open("https://www.bing.com/chat?form=NTPCHB", "_blank");
+            window.open("https://chatgpt.com", "_blank");
         }
     </script>
 </body>
