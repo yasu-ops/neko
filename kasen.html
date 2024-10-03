@@ -66,10 +66,20 @@
 var quill = new Quill('#editor', {
   theme: 'snow',
   modules: {
-    toolbar: false // デフォルトのツールバーを無効化
+    toolbar: false, // デフォルトのツールバーを無効化
+    keyboard: {
+        bindings: {
+                    underline: {
+                        key: 'U',
+                        shortKey: false,
+                        handler: function(range, context) {
+                            this.quill.format('underline', !context.format.underline);
+                        }
+                    }
+                 }
+        }
   }
 });
-
 // フローティングツールバーの要素を作成
 var floatingToolbar = document.createElement('div');
 floatingToolbar.id = 'floating-toolbar';
@@ -182,7 +192,7 @@ floatingToolbar.querySelector('.ql-underline').addEventListener('click', functio
   if (range) {
     var format = quill.getFormat(range);
     var isUnderlined = format.underline;
-    alert(isUnderlined);
+    isUnderlined;
     quill.formatText(range.index, range.length, 'underline', !isUnderlined);
   }
 });
@@ -241,23 +251,7 @@ document.head.appendChild(style);
             }
         });
 
-        /*
-        document.addEventListener('keydown', function(event) {
-            if (event.ctrlKey && (event.key === 'u' || event.key === 'U')) {
-                event.preventDefault();
-                
-                let range = quill.getSelection();
-                if (range) {
-                    
-                    var format = quill.getFormat(range);
-                    var isUnderlined = format.underline;
-                    alert(isUnderlined);
-                    quill.formatText(range.index, range.length, 'underline', !isUnderlined);
-                }
-            }
-        });
-        */
-        /* キーボードショートカットの設定
+        // キーボードショートカットの設定
         document.addEventListener('keydown', function(event) {
             if (event.ctrlKey && (event.key === 'u'|| event.key === 'U')) {
                 event.preventDefault();
@@ -269,7 +263,7 @@ document.head.appendChild(style);
                 }
             }
         });
-        */
+        
         function extractTexts() {
             const delta = quill.getContents();
             const extractedItems = [];
