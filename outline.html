@@ -648,7 +648,7 @@
 
                 // ファイル名を入力要素から取得
                 //const filename = this.getFilename() || 'textareas_data.csv';
-                let filename = prompt("ファイル名を付けてください。",this.getFormattedDate()+"保存の"+this.file_name_first);
+                let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",this.getFormattedDate()+"保存の"+this.file_name_first);
                 if(filename==="" || filename===null){
                     return;
                 }
@@ -1724,7 +1724,7 @@
                 });
                 output += '}';
 
-                let filename = prompt("ファイル名を付けてください。",this.getFormattedDate()+"_"+this.file_name_first.slice(0,-4)+".doc");
+                let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",this.getFormattedDate()+"_"+this.file_name_first.slice(0,-4)+".doc");
                 if(filename==="" || filename===null){
                     return;
                 }
@@ -1906,7 +1906,7 @@
                     currentSlide.addText(placeholderContent, { x: 0.5, y: 1.5, w: '90%', h: '70%', fontSize: 18 });
                 }
 
-                let filename = prompt("ファイル名を付けてください。",this.getFormattedDate()+"_"+this.file_name_first.slice(0,-4)+".pptx");
+                let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",this.getFormattedDate()+"_"+this.file_name_first.slice(0,-4)+".pptx");
                 if(filename==="" || filename===null){
                     return;
                 }
@@ -2025,7 +2025,6 @@ async function captureHighResImage(num) {
     });
 
     // 以下、キャンバスの処理（クリップボードへのコピーなど）
-    /*old
     canvas.toBlob(function(blob) {
         if(num===1){
             const item = new ClipboardItem({ "image/png": blob });
@@ -2035,10 +2034,14 @@ async function captureHighResImage(num) {
                 console.error('Failed to copy image: ', err);
             });
         }else{
+            let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",TM.getFormattedDate()+"保存の"+TM.file_name_first.slice(0,-4) + ".png");
+            if(filename==="" || filename===null){
+                    return;
+            }        
             const a = document.createElement('a');
             const url = URL.createObjectURL(blob);
             a.href = url;
-            a.download = 'image.png'; // 保存するファイル名
+            a.download = filename; // 保存するファイル名 filename
             document.body.appendChild(a);
             a.click();
             setTimeout(() => {
@@ -2047,9 +2050,8 @@ async function captureHighResImage(num) {
             }, 0);            
         }
     });
-    */
-
-//new-------------------------------
+  
+/*new-------------------------------
 canvas.toBlob(function(blob) {
     // Blobのサイズをチェック（例：100MB以上の場合は警告）
     alert(`画像サイズ：${(blob.size / (1024 * 1024)).toFixed(2)}MB`);
@@ -2085,7 +2087,7 @@ canvas.toBlob(function(blob) {
         }
     }
 });
-//-----------------------------------
+*/
 
 
 
@@ -2093,16 +2095,6 @@ canvas.toBlob(function(blob) {
     canvas.remove();
 }   
 
-function getBlobImageSize(blob) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      resolve({ width: img.width, height: img.height });
-    };
-    img.onerror = reject;
-    img.src = URL.createObjectURL(blob);
-  });
-}
 
 
 function table_save(){
