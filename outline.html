@@ -1983,6 +1983,7 @@ function hideImage() {
 }
 
 async function captureHighResImage(num) {
+    
     const src = document.getElementById('yasu');
     const svg = src.querySelector('svg');
     
@@ -2001,8 +2002,8 @@ async function captureHighResImage(num) {
     // 基本的なスケールファクター（デバイスのピクセル比）
     const baseScale = window.devicePixelRatio || 1;
     
-    // 追加の解像度倍率（必要に応じて調整）
-    const resolutionMultiplier = 2;
+    // 追加の解像度倍率（必要に応じて調整） original2
+    const resolutionMultiplier = 1;
     
     // 最終的なスケールファクター
     const finalScale = baseScale * resolutionMultiplier;
