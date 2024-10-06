@@ -178,17 +178,17 @@
         function setumei_kakusu(){
             if(document.getElementById("setumei").style.display===""){
                 document.getElementById("setumei").style.display="none";
-                document.getElementById("setumei_hyouji").textContent="「使い方」を表示する";
+                document.getElementById("setumei_hyouji").textContent="「使い方・ボタン表示設定」を表示する";
             } else {
                 document.getElementById("setumei").style.display="";
-                document.getElementById("setumei_hyouji").textContent="「使い方」を隠す";
+                document.getElementById("setumei_hyouji").textContent="「使い方・ボタン表示設定」を隠す";
             }
         }
     </script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     </head>
 <body>
- <span style="font-size: 20px"> ★★文章の骨組みをつかむ★★</span><button style="font-size: 20px" id="setumei_hyouji" onclick="setumei_kakusu()">使い方・表示設定ボタンを隠す</button>
+ <span style="font-size: 20px"> ★★文章の骨組みをつかむ★★</span><button style="font-size: 20px" id="setumei_hyouji" onclick="setumei_kakusu()">使い方・ボタン表示設定を隠す</button>
 <div id="setumei">
 <table border="1" style="font-size: 20px;"" >
     <tr>
@@ -203,9 +203,10 @@
             </ol>
         </td>
         <td width="30%">
-            <b>ソフトウエアキーボード制御</b><br>
-            <input type="radio" name="keyboard-toggle" value="show" checked>制御せず
-            <input type="radio" name="keyboard-toggle" value="hide">表示させない<br>
+            <u>ボタン表示設定</u><br>
+            <b>ソフトウエアキーボード</b><br>
+            <input type="radio" name="keyboard-toggle" value="show" checked>自動表示<br>
+            <input type="radio" name="keyboard-toggle" value="hide">非表示(キーボードがない場合はこちら）<br>
             <b>△・▼ボタン</b><br>
             <input type="radio" name="button_display" value="left" checked>左寄せ
             <input type="radio" name="button_display" value="right" >右寄せ
@@ -215,13 +216,13 @@
             <input type="radio" name="button_display1" value="right">右端
             <input type="radio" name="button_display1" value="both">両方
             <input type="radio" name="button_display1" value="none" >非表示<br>
-            <b>矢印ボタンの大きさ</b></br>
+            <b>←・→・△・▼の大きさ</b></br>
             <button onclick="changeButtonSize(-1)"  style="font-size:20px">小さく</button>
             <button onclick="changeButtonSize(1)"    style="font-size:20px">大きく</button><br>
         </td>
     </tr>
 </table> 
-</div>
+</div><br>
 <span class="upcontrols" >外部ファイルを読み込む（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
 <button onclick="TM.exportCSV()"  style="font-size:20px;">外部ファイルに保存（字下げ情報＋テキスト）</button>
 <button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部表示する</button>
