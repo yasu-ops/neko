@@ -131,7 +131,8 @@ document.addEventListener('touchend', endDrag);
 // テキスト選択時にフローティングツールバーを表示
 function showFloatingToolbar() {
     var button = document.getElementById("showbar");
-    var rect = button.getBoundingClientRect();
+    var editor = document.getElementById("editor");
+    var rect =editor.getBoundingClientRect();
 
     /*
   var range = quill.getSelection();
@@ -159,7 +160,13 @@ function showFloatingToolbar() {
     // 位置を設定
     floatingToolbar.style.left = rect.left + 'px';
     floatingToolbar.style.top = rect.top + 'px';
-    floatingToolbar.style.display = 'block';
+    if(floatingToolbar.style.display === 'block'){
+        floatingToolbar.style.display = 'none';
+        button.innerText="下線ボタン表示";
+    } else {
+        floatingToolbar.style.display = 'block';
+        button.innerText="下線ボタン非表示";
+    }
 
     // 選択範囲の書式を確認し、下線ボタンの状態を更新
     var format = quill.getFormat(range);
