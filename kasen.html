@@ -370,7 +370,8 @@ document.head.appendChild(style);
                 }
             });
 
-            resultDiv.innerText = "次の表の読みと意味の欄を埋めてください。表には出力せずにカンマ区切りで見出しも含めて出力してください。\n"+resultHTML;
+            //resultDiv.innerText = "次の表の読みと意味の欄を埋めてください。表には出力せずにカンマ区切りで見出しも含めて出力してください。\n"+resultHTML;
+            resultDiv.innerText = "次の表の読みと意味の欄を埋めてください。見出しも含めて、表形式ではなく、カンマ区切りで、レコードごとに改行して、出力してください。\n"+resultHTML;
             document.getElementById('copyButton').style.display = 'inline-block';
         }
         function copyExtractedText() {
