@@ -360,7 +360,7 @@ document.head.appendChild(style);
 
         function displayResults(extractedItems) {
             const resultDiv = document.getElementById('result');
-            let resultHTML = '頁,下線部の語句,,,下線部の前後10字を含む文字列\n';
+            let resultHTML = '頁,下線部の語句,読み,意味,下線部の前後10字を含む文字列\n';
 
             extractedItems.forEach(page => {
                 if (page.type === 'page') {
