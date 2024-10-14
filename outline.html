@@ -229,9 +229,10 @@
         </td>
         <td width="30%" style="vertical-align: top;">
             <u>ボタン表示設定</u><br><br>
+            <!--
             <b>ソフトウエアキーボード</b><br>★スマホの人は非表示に！★<br>
-            <input type="radio" name="keyboard-toggle" value="show"  checked>自動表示<br>
-            <input type="radio" name="keyboard-toggle" value="hide">非表示<br>
+            <input type="radio" name="keyboard-toggle" value="show"  checked>表示<br>
+            <input type="radio" name="keyboard-toggle" value="hide">非表示<br>-->
             <b>△・▼ボタン</b><br>
             <input type="radio" name="button_display" value="left">左端
             <input type="radio" name="button_display" value="right"  checked>右端
@@ -260,6 +261,7 @@
 <button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色消す</button>
 <button onclick="changefontSize(-1)"  style="font-size:20px">字を小さく</button>
 <button onclick="changefontSize(1)"    style="font-size:20px">字を大きく</button>
+ソフトウエアキーボード（<input type="radio" name="keyboard-toggle" value="show"  checked>表示　<input type="radio" name="keyboard-toggle" value="hide">非表示）
 
 <div id="app"></div>
 
