@@ -10,6 +10,7 @@
             --button-width: 30px;
             --button-height: 30px;
             --button-font-size: 20px;
+            --text-font-size: 20px;
             --controls-text-align: right;
             --controls-display: none;
             --controls-display1: none;
@@ -67,7 +68,7 @@
 
         textarea {
             flex-grow: 1;
-            font-size: 20px;
+            font-size: var(--text-font-size);
             min-height: 24px; /*必要に応じて調整*/
             border: 1px solid #ccc;
             /*padding: 5px;*/
@@ -160,6 +161,14 @@
             // 新しいウィンドウでファイルをだ
             window.open(newUrl, '_blank', 'width=800,height=600');
         }
+        function changefontSize(increment) {
+            const root = document.documentElement;
+            const currentFontSize = parseInt(getComputedStyle(root).getPropertyValue('--text-font-size'));
+            const newFontSize = currentFontSize + increment;
+            root.style.setProperty('--text-font-size', newFontSize + 'px');
+            TM.updateDOM();
+        }
+
         function changeButtonSize(increment) {
             const root = document.documentElement;
             const currentWidth = parseInt(getComputedStyle(root).getPropertyValue('--button-width'));
@@ -188,7 +197,8 @@
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     </head>
 <body>
- <span style="font-size: 20px"> ★★文章の骨組みをつかむ★★</span><button style="font-size: 20px" id="setumei_hyouji" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
+ <span style="font-size: 20px"> ★★文章の骨組みをつかむ★★</span>
+ <button style="font-size: 20px" id="setumei_hyouji" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
 <div id="setumei">
 <table border="1" style="font-size: 20px;"" >
     <tr>
@@ -223,12 +233,12 @@
             <input type="radio" name="keyboard-toggle" value="show">自動表示<br>
             <input type="radio" name="keyboard-toggle" value="hide" checked>非表示<br>
             <b>△・▼ボタン</b><br>
-            <input type="radio" name="button_display" value="left" checked>左寄せ
-            <input type="radio" name="button_display" value="right" >右寄せ
+            <input type="radio" name="button_display" value="left">左端
+            <input type="radio" name="button_display" value="right"  checked>右端
             <input type="radio" name="button_display" value="none" >非表示<br>
             <b>←・→</b><br>
-            <input type="radio" name="button_display1" value="left" checked>左端
-            <input type="radio" name="button_display1" value="right">右端
+            <input type="radio" name="button_display1" value="left" >左端
+            <input type="radio" name="button_display1" value="right" checked>右端
             <input type="radio" name="button_display1" value="both">両方
             <input type="radio" name="button_display1" value="none" >非表示<br>
             <b>←・→・△・▼の大きさ</b></br>
@@ -243,11 +253,14 @@
     </tr>
 </table> 
 </div><br>
-<span class="upcontrols" >外部ファイルを読み込む（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
-<button onclick="TM.exportCSV()"  style="font-size:20px;">外部ファイルに保存（字下げ情報＋テキスト）</button>
-<button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部表示する</button>
-<button id="inu1" onclick="TM.clearAllkakusu()"  style="font-size:20px;">全部折りたたむ</button>
-<button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色を消す</button>
+<span class="upcontrols" style="font-weight:bold;color:red">外部ファイル読み込み（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
+<button onclick="TM.exportCSV()"  style="font-size:20px;">外部ファイルに保存</button>
+<button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部広げる</button>
+<button id="inu1" onclick="TM.clearAllkakusu()"  style="font-size:20px;">全部たたむ</button>
+<button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色消す</button>
+<button onclick="changefontSize(-1)"  style="font-size:20px">字を小さく</button>
+<button onclick="changefontSize(1)"    style="font-size:20px">字を大きく</button>
+
 <div id="app"></div>
 
 <script>
@@ -258,7 +271,8 @@
                 //output用
                 this.outputArea = null;
                 //this.highlightedGroup = null;
-                this.addTextarea();
+                
+
                 //this.addClearButton();
                 //this.addimportButton();
                 //this.addexportButton();
@@ -327,7 +341,7 @@
                         }
                     });                
                 });        
-
+                this.addTextarea();
             }
             addColorClearButton() {
                 const ColorClearButton = document.createElement('button');
@@ -2055,7 +2069,7 @@ async function captureHighResImage(num) {
                 console.error('Failed to copy image: ', err);
             });
         }else{
-            let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",TM.getFormattedDate()+"保存の"+TM.file_name_first.slice(0,-4) + ".png");
+            let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",TM.file_name_first.slice(0,-4) + ".png");
             if(filename==="" || filename===null){
                     return;
             }        
