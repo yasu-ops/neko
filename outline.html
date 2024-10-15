@@ -204,10 +204,10 @@
     <tr>
         <td width="70%" style="vertical-align: top;">
             <u>使い方</u><br>
-            <span style="color: red;font-weight: bold;">以下の1～5の説明はプリントと同じです。不要な場合は上の「『使い方・ボタン表示設定』を隠す」をタップして非表示にしてください。</span>
+            <span style="font-weight: bold;">以下の1～5の説明はプリントと同じです。不要な場合は上の「『使い方・ボタン表示設定』を隠す」をタップして非表示にしてください。</span>
             <ol>
-            <li>この「使い方」のすぐ下にある「外部ファイルを読み込む」の「ファイルを選択」ボタンをタップして、所定のファイル（プリントに指示してあります。）を読み込む。（iPadの場合は「ダウンロード」フォルダにあるはず。）</li>
-            <li>補足的な文を字下げしたり、非表示にしたりして、文章の骨組みを「見える化」する。</li>
+            <li><span style="color: red;font-weight: bold;">この「使い方」のすぐ下にある「外部ファイル読み込み」の「ファイルを選択」ボタンをタップして、所定のファイル（プリントに指示してあります。）を読み込む。</span>（iPadの場合は「ダウンロード」フォルダにあるはず。）</li>
+            <li>補足的な文を字下げしたり、非表示にしたりして、文章の骨組みを「見える化」する。<span style="color: blue;font-weight: bold;">（作業を中断するときは、この「使い方」のすぐ下にある「外部ファイルに保存」をタップして保存し、作業を再開する時は一時保存したファイルを「外部ファイル読み込み」で読み込む。）</span></li>
             <blockquote>
                 <ul>
                     <li>前の文を補足している文（補足説明・例など）は前の文より字下げする。(字下げ・字上げ＝指で←/→ボタンをタップ。またはキーボードでctrl＋←/ctrl+→。)</li>
@@ -255,7 +255,7 @@
 </table> 
 </div><br>
 <span class="upcontrols" style="font-weight:bold;color:red">外部ファイル読み込み（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
-<button onclick="TM.exportCSV()"  style="font-size:20px;">外部ファイルに保存</button>
+<button onclick="TM.exportCSV()"  style="font-size:20px;color: blue;font-weight: bold;">外部ファイルに保存</button>
 <button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部広げる</button>
 <button id="inu1" onclick="TM.clearAllkakusu()"  style="font-size:20px;">全部たたむ</button>
 <button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色消す</button>
