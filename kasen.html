@@ -27,11 +27,11 @@
     <div style="text-align: right;">リッチテキストエディタの処理にquill.jsを使っています。<br>このサイトは授業中以外は使用しないでください。</div>
     <span style="font-size: 15px;">
         <u>読めない語句・意味のわからない語句について調べる</u><br>
-        <span style="font-weight: bold;">～～１・４・５組の皆さんへ：変更点があります。以下の変更点１～３を読んでから作業に取り組んでください。～～</span><br>
+        <span style="font-weight: bold;">～～１・４・５組の皆さんへ：変更点があります。以下の変更点１・２を読んでから作業に取り組んでください。～～</span><br>
         <ul>
             <li><b>変更点１</b>「インターネット時代の音楽産業.txt」は読み込めなくなりました。teams＞１年＞現代の国語＞１・４・５・６組個人作業＞「インターネット時代の音楽産業.json」をダウンロードして、読み込み用に使ってください。</li>
             <li><b>変更点２</b>下線を引いた状態を一時保存できるようになりました。下記の３で保存できます。保存したファイルは１で読み込んで作業を再開できます。</li>
-            <li><b>変更点３</b>ChatGPTに表を作ってもらい、表のままwordに貼り付けるようにしました。ChatGPTが作った表をコピーする時は、<u>コピー用アイコンをタップせず、表のセルをなぞって、手動で選択して</u>、浮かび上がるメニューでコピーを選んで、コピーしてください。</li>
+            <!--<li><b>変更点３</b>ChatGPTに表を作ってもらい、表のままwordに貼り付けるようにしました。ChatGPTが作った表をコピーする時は、<u>コピー用アイコンをタップせず、表のセルをなぞって、手動で選択して</u>、浮かび上がるメニューでコピーを選んで、コピーしてください。</li>-->
         </ul>
         <ol>
         <li><span style="color: red;font-weight: bold;">「ファイルを選択」ボタンをタップして、所定のファイル（プリントに指示してあります。）を読み込む。</span>（iPadの場合は「このiPad内」の、先ほど自分で選んだフォルダの中にあるはずです。）
@@ -409,7 +409,8 @@ document.head.appendChild(style);
 
             //resultDiv.innerText = "次の表の読みと意味の欄を埋めてください。表には出力せずにカンマ区切りで見出しも含めて出力してください。\n"+resultHTML;
             //resultDiv.innerText = "次の表の読みと意味の欄を埋めてください。見出しも含めて、表形式ではなく、カンマ区切りで、レコードごとに改行して、出力してください。\n"+resultHTML;
-            resultDiv.innerText = "次のカンマ区切りの表について、読みと意味の欄を埋めて、罫線付きの表にしてください。\n"+resultHTML;
+            resultDiv.innerText = "次のカンマ区切りの表について、読みと意味の欄を埋めてください。\n"+resultHTML;
+            //resultDiv.innerText = "次のカンマ区切りの表について、読みと意味の欄を埋めて、罫線付きの表にしてください。\n"+resultHTML;
             document.getElementById('copyButton').style.display = 'inline-block';
         }
         function copyExtractedText() {
@@ -423,7 +424,7 @@ document.head.appendChild(style);
 
             try {
                 document.execCommand('copy');
-                alert('抽出されたテキストがクリップボードにコピーされました。ＯＫを押すとChatGPTが開きます。その後は、ChatGPTの入力欄をタップ＞ペースト＞入力欄の右端の上向き矢印をタップ＞表ができたら、手動で表のセルをなぞって表全体を選択＞浮かび上がるメニューでコピーを選択＞wordを開き、貼り付ける。');
+                alert('抽出されたテキストがクリップボードにコピーされました。ＯＫを押すとChatGPTが開きます。その後は、ChatGPTの入力欄をタップ＞ペースト＞入力欄の右端の上向き矢印をタップ＞回答が表示されたら紙が２枚重なった形のアイコンをタップしてコピー＞wordを開き、貼り付ける。');
             } catch (err) {
                 console.error('コピーに失敗しました:', err);
                 alert('コピーに失敗しました。ブラウザの設定を確認してください。');
