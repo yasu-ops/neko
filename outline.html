@@ -187,18 +187,20 @@
         function setumei_kakusu(){
             if(document.getElementById("setumei").style.display===""){
                 document.getElementById("setumei").style.display="none";
-                document.getElementById("setumei_hyouji").textContent="「使い方・ボタン表示設定」を表示する";
+                document.getElementById("setumei_hyouji1").textContent="「使い方・ボタン表示設定」を表示する";
+                document.getElementById("setumei_hyouji2").textContent="「使い方・ボタン表示設定」を表示する";
             } else {
                 document.getElementById("setumei").style.display="";
-                document.getElementById("setumei_hyouji").textContent="「使い方・ボタン表示設定」を隠す";
+                document.getElementById("setumei_hyouji1").textContent="「使い方・ボタン表示設定」を隠す";
+                document.getElementById("setumei_hyouji2").textContent="「使い方・ボタン表示設定」を隠す";
             }
         }
     </script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     </head>
 <body>
- <span style="font-size: 20px"> ★★文章の骨組みをつかむ★★</span>
- <button style="font-size: 20px" id="setumei_hyouji" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
+ <span style="font-size: 20px"> ★★文章の骨組みをつかむ★★</span><br>
+ <button style="font-size: 20px" id="setumei_hyouji1" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
 <div id="setumei">
 <table border="1" style="font-size: 20px;"" >
     <tr>
@@ -224,7 +226,7 @@
                 <li>枠の中の１行の字数を増減させたい場合は、作成ボタンを押して２回目の質問で数値を変えられる。></div></li>
                 </ul>
             </blockquote>
-            <li>ちょうどよいツリー図ができたら、ツリー図の下の「表示されているツリー図やマインドマップを画像として保存」をタップ。＞わかりやすいファイル名をつけてOKをタップ。＞ダウンロードしますかと聞かれたら、ダウンロードを選ぶ。（このあとの操作はプリントを見てください。）</li>
+            <li>ちょうどよいツリー図ができたら、ツリー図の下の「表示されているツリー図やマインドマップを画像として保存」をタップ。＞解像度をどうするか聞かれるが、最初は初期値（1.5）のままＯＫでよい。保存ができない場合（いつまでたっても「ダウンロードしますか」と言われない場合）はもう一度保存ボタンを押し、解像度を下げてみる。＞わかりやすいファイル名をつけてOKをタップ。＞ダウンロードしますかと聞かれたら、ダウンロードを選ぶ。</li>
             </ol>
         </td>
         <td width="30%" style="vertical-align: top;">
@@ -254,6 +256,7 @@
     </tr>
 </table> 
 </div><br>
+<button style="font-size: 20px" id="setumei_hyouji2" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button><br>
 <span class="upcontrols" style="font-weight:bold;color:red">外部ファイル読み込み（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
 <button onclick="TM.exportCSV()"  style="font-size:20px;color: blue;font-weight: bold;">外部ファイルに保存</button>
 <button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部広げる</button>
