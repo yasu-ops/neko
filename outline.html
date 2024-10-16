@@ -2039,8 +2039,12 @@ async function captureHighResImage(num) {
     // 基本的なスケールファクター（デバイスのピクセル比）
     const baseScale = window.devicePixelRatio || 1;
     
-    // 追加の解像度倍率（必要に応じて調整） original2
-    const resolutionMultiplier = 0.5;
+    // 追加の解像度倍率（必要に応じて調整） original2 あるいは0.5
+    let kaizoudo = prompt("解像度を0.5～2の間で半角数字で入力してください。最高解像度が2です。2でやってみてファイル名入力ダイアログボックスが出なかったら、もう一度ボタンを押して数値を下げて入力してください。","2");
+            if(kaizoudo==="" || kaizoudo===null){
+                    return;
+            }        
+    const resolutionMultiplier = parseFloat(kaizoudo);
     
     // 最終的なスケールファクター
     const finalScale = baseScale * resolutionMultiplier;
