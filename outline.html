@@ -2040,7 +2040,7 @@ async function captureHighResImage(num) {
     const baseScale = window.devicePixelRatio || 1;
     
     // 追加の解像度倍率（必要に応じて調整） original2 あるいは0.5
-    let kaizoudo = prompt("解像度を0.5～2の間で半角数字で入力してください。最高解像度が2です。2でやってみてファイル名入力ダイアログボックスが出なかったら、もう一度ボタンを押して数値を下げて入力してください。","2");
+    let kaizoudo = prompt("解像度を0.5～2の間で半角数字で入力してください。初期値は1.5です。1.5でやってみて、ファイル名を指定後、「ダウンロードしますか？」というメッセージが表示されなかったら、もう一度ボタンを押して数値を下げて再チャレンジしてください。","1.5");
             if(kaizoudo==="" || kaizoudo===null){
                     return;
             }        
