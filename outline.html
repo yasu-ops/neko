@@ -13,10 +13,12 @@
             --text-font-size: 20px;
             --controls-text-align: right;
             --controls-display: none;
-            --controls-display1: none;
-            --controls-display1B: none;
-            --controls-display2: inline-block;
-            --controls-display2B:  inline-block;
+            --controls-display1: none; /*先頭の△・▼*/
+            --controls-display2B:  inline-block; /*末尾の△・▼*/
+            --controls-display1B: none; /*先頭の←→*/
+            --controls-display2: inline-block;/*末尾の←→*/
+            --controls-display3A: none;/*末尾の↑↓*/
+            --controls-display3B: none;/*末尾の↑↓*/
         }
         table {
             border-collapse: collapse; /* セルの間に隙間をなくす */
@@ -140,6 +142,20 @@
             height: var(--button-height);
             font-size: var(--button-font-size);
         }        
+                /*先頭の↑↓*/
+                .controls_4_C_button {
+            display: var(--controls-display3A);  /* ボタンをインラインブロックにする */
+            height: var(--button-height);
+            font-size: var(--button-font-size);
+            
+        }        
+
+        /*末尾の↑↓*/
+        .controls_7_button {
+            display: var(--controls-display3B);  /* ボタンをインラインブロックにする */
+            height: var(--button-height);
+            font-size: var(--button-font-size);
+        }        
         #moto {
             display: none;
         }
@@ -200,7 +216,7 @@
     </head>
 <body>
  <span style="font-size: 20px"> ★★文章の骨組みをつかむ★★</span><br>
- <button style="font-size: 20px" id="setumei_hyouji1" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
+ <button style="font-size: 20px" id="setumei_hyouji1" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button><span style="font-size: 20px;color: brown;font-weight: bold;">（各文を操作する時は隠してから操作する）</span>
 <div id="setumei">
 <table border="1" style="font-size: 20px;"" >
     <tr>
@@ -244,7 +260,12 @@
             <input type="radio" name="button_display1" value="right" checked>右端
             <input type="radio" name="button_display1" value="both">両方
             <input type="radio" name="button_display1" value="none" >非表示<br>
-            <b>←・→・△・▼の大きさ</b></br>
+            <b>↑・↓</b><br>
+            <input type="radio" name="button_display2" value="left" >左端
+            <input type="radio" name="button_display2" value="right" >右端
+            <input type="radio" name="button_display2" value="both">両方
+            <input type="radio" name="button_display2" value="none" checked >非表示<br>
+            <b>ボタンの大きさ</b></br>
             <button onclick="changeButtonSize(-1)"  style="font-size:20px">小さく</button>
             <button onclick="changeButtonSize(1)"    style="font-size:20px">大きく</button><br><br><br>
             <ul>
@@ -256,7 +277,7 @@
     </tr>
 </table> 
 </div><br>
-<button style="font-size: 20px" id="setumei_hyouji2" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button><br>
+<button style="font-size: 20px" id="setumei_hyouji2" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button><span style="font-size: 20px;color: brown;font-weight: bold;">（各文を操作する時は隠してから操作する）</span><br>
 <span class="upcontrols" style="font-weight:bold;color:red">外部ファイル読み込み（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
 <button onclick="TM.exportCSV()"  style="font-size:20px;color: blue;font-weight: bold;">外部ファイルに保存</button>
 <button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部広げる</button>
@@ -265,7 +286,6 @@
 <button onclick="changefontSize(-1)"  style="font-size:20px">字を小さく</button>
 <button onclick="changefontSize(1)"    style="font-size:20px">字を大きく</button>
 ソフトウエアキーボード（<input type="radio" name="keyboard-toggle" value="show"  checked>表示　<input type="radio" name="keyboard-toggle" value="hide">非表示）
-
 <div id="app"></div>
 
 <script>
@@ -322,7 +342,7 @@
                         }
                     });                
                 }); 
-                //矢印ボタン       
+                //←→       
                 this.radioButtons = document.querySelectorAll('input[name="button_display1"]');
                 this.radioButtons.forEach(radio => {
                     radio.addEventListener('change', () => {
@@ -343,6 +363,30 @@
                             //先頭非表示controls_4_B_button　末尾controls_5_button非表示
                             document.documentElement.style.setProperty('--controls-display1B', 'none');
                             document.documentElement.style.setProperty('--controls-display2', 'none');
+                        }
+                    });                
+                });        
+                //↑↓
+                this.radioButtons = document.querySelectorAll('input[name="button_display2"]');
+                this.radioButtons.forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        const selectedValue = document.querySelector('input[name="button_display2"]:checked').value;
+                        if (selectedValue === 'left') {
+                            //先頭表示controls_4_B_button　末尾controls_5_button非表示
+                            document.documentElement.style.setProperty('--controls-display3A', 'inline-block');
+                            document.documentElement.style.setProperty('--controls-display3B', 'none');
+                        } else if (selectedValue === 'right') {
+                            //先頭非表示controls_4_B_button　末尾controls_5_button表示
+                            document.documentElement.style.setProperty('--controls-display3A', 'none');
+                            document.documentElement.style.setProperty('--controls-display3B', 'inline-block');
+                        } else if (selectedValue === 'both') {
+                            //先頭表示controls_4_B_button　末尾controls_5_button表示
+                            document.documentElement.style.setProperty('--controls-display3A', 'inline-block');
+                            document.documentElement.style.setProperty('--controls-display3B', 'inline-block');
+                        } else if (selectedValue === 'none') {
+                            //先頭非表示controls_4_B_button　末尾controls_5_button非表示
+                            document.documentElement.style.setProperty('--controls-display3A', 'none');
+                            document.documentElement.style.setProperty('--controls-display3B', 'none');
                         }
                     });                
                 });        
@@ -608,6 +652,14 @@
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
                     textareaAndNumberWrapper.appendChild(button);
                 });
+                const buttonsLabels3 = ['↑', '↓'];
+                buttonsLabels3.forEach(label => {
+                    const button = document.createElement('button');
+                    button.className = 'controls_4_C_button';
+                    button.textContent = label;
+                    button.addEventListener('click', () => this.handleButtonClick(label, container));
+                    textareaAndNumberWrapper.appendChild(button);
+                });
 
                 const textarea = document.createElement('textarea');
                 //textarea.style.marginLeft = `${indent * 20}px`;
@@ -620,10 +672,19 @@
                 textareaNumber.className = 'textarea-number';
                 textareaAndNumberWrapper.appendChild(textareaNumber);
 
+                const buttonsLabels4 = ['↑','↓'];
+                buttonsLabels4.forEach(label => {
+                    const button = document.createElement('button');
+                    button.className = 'controls_7_button';
+                    button.textContent = label;
+                    button.addEventListener('click', () => this.handleButtonClick(label, container));
+                    textareaAndNumberWrapper.appendChild(button);
+                });
+
                 //textareaの後に追加しているから、行の末尾1 ←→　controls_5_button
                 //controls_5_button
-                const buttonLabels2 = ['←','→'];
-                buttonLabels2.forEach(label => {
+                const buttonsLabels2_1 = ['←','→'];
+                buttonsLabels2_1.forEach(label => {
                     const button = document.createElement('button');
                     button.className = 'controls_5_button';
                     button.textContent = label;
@@ -1265,6 +1326,12 @@
                     this.moveCursor(index, 1);
                 } else if (event.key === 'Backspace' && textarea.selectionStart === 0) {
                     event.preventDefault();
+                    //
+                    if(index!==0){
+                        const preTextarea = this.textareas[index - 1].querySelector('textarea');
+                        preTextarea.value = preTextarea.value + textarea.value;
+                    }
+                    //
                     this.removeTextarea(index);
                     this.moveCursor(index, -1);
                 }
@@ -1977,7 +2044,10 @@
     <button id="inu3" onclick="TM.writeOutput4(2)" style="font-size:20px;" >上→下のツリーを生成</button>
     <button id="inu4" onclick="TM.writeOutput3()" style="font-size:20px;">マインドマップを生成</button>
     <button id="inu5" onclick="TM.writeOutput5()"  style="font-size:20px;">パワーポイントのスライドとして保存</button>
-
+    <button id="neko1" onclick="captureHighResImage(1)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像としてコピー（safariでは使用不可）</button><br>
+    <button id="neko3" onclick="captureHighResImage(2)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像として保存</button><br>
+    <button id="neko2" onclick="hideImage()" class="upcontrols" style="font-weight:bold;color:brown;display: none;">ツリー図やマインドマップを消す（各文を操作する時は必ず消してから操作する）</button>
+    
 </div>
     
 <textarea id="moto"></textarea><br> 
@@ -2005,9 +2075,6 @@
 <div id="dst">
 </div>
 
-<button id="neko1" onclick="captureHighResImage(1)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像としてコピー（safariでは使用不可）</button><br>
-<button id="neko3" onclick="captureHighResImage(2)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像として保存</button><br>
-<button id="neko2" onclick="hideImage()" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを消す</button>
 
 <!--ローカルの場合は以下の一文を入れる
 <script src="./html2canvas.min.js"></script>-->
