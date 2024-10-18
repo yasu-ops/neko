@@ -111,6 +111,29 @@
     // 前回のポインタの位置を記録する変数
     let lastPos
 
+    function pointStartHandler(e){
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ドラッグを終了する
+            down(pos(e.changedTouches[0]))
+        }
+    }
+    function pointEndHandler(e){
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ドラッグを終了する
+            up(pos(e.changedTouches[0]))
+        }
+    }
+    function pointMoveHandler(e) {
+        e.preventDefault();
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ポインタ
+            move(pos(e.changedTouches[0]));
+        }
+    }
+    /*
     function touchStartHandler(e){
         // タッチされたポインタが1つだけなら
         if (e.changedTouches.length === 1) {
@@ -133,7 +156,7 @@
             move(pos(e.changedTouches[0]));
         }
     }
-
+    */
     function kaku(num,gyou) {
         // 変数の宣言
         let i;
@@ -158,10 +181,18 @@
             //ctx.fillRect(0, 0, c.width, c.height);    
             
             highlightCell("questionList",2,gyou);  
+            c.addEventListener('ponterdown',pointerStartHandler);
+            c.addEventListener('pointerup',pointerEndHandler);
+            c.addEventListener('pointermove',pointerMoveHandler);
+            c.style.touchAction='none';
+
+            window.addEventListener('pointermove',pointerMoveHandler);
+            /*
             c.addEventListener('touchstart',touchStartHandler);
             c.addEventListener('touchend',touchEndHandler);
             c.addEventListener('touchmove',touchMoveHandler, { passive: false });
             window.addEventListener('touchmove',touchMoveHandler, { passive: false });
+            */
         }
     }
 
@@ -170,12 +201,21 @@
     function scroll_on(num){
         c = document.getElementById('canvas'+num);
         highlightCell("questionList",0,0);  
+        c.removeEventListener('pointerstart', pointerStartHandler);
+        c.removeEventListener('pointerend', pointerEndHandler);
+        c.removeEventListener('pointermove', pointerMoveHandler);
+        window.removeEventListener('pointermove', pointerMoveHandler);
+    }
+    /*
+    function scroll_on(num){
+        c = document.getElementById('canvas'+num);
+        highlightCell("questionList",0,0);  
         c.removeEventListener('touchstart', touchStartHandler);
         c.removeEventListener('touchend', touchEndHandler);
         c.removeEventListener('touchmove', touchMoveHandler, { passive: false });
         window.removeEventListener('touchmove', touchMoveHandler, { passive: false });
     }
-
+    */
 
     // ポインタの位置に線を描く関数
     function move(pos) {
@@ -405,6 +445,7 @@
             ★<label for="fileInput">問題読み込み　※やりかけの問題も読み込めます</label><br>
             　<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
             ★解答結果を保存：<button onclick="saveAnswers(1)">保存</button>　※やりかけの問題も保存できます<br>
+            iPadだとダウンロードフォルダに保存されるので、保存したらすぐに現代の国語フォルダ内に移動しておきましょう。
             ★表示切替：<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
             <!--★問題作成：<button onclick="createQuestionForm(true,false)">新規</button>
             <button onclick="handleQuestionCreation()">修正・追加・削除</button>
@@ -429,8 +470,14 @@
             <button onclick="hideAllAnswers()">隠す</button>　　
             <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">↑を押した場所に戻る</button><br>
             手書き欄のボタンの使い方<br>
+            ペンを使う時の注意点　字はペンで書けますが、ボタンは指で押して下さい。
             「書く」＝手書きモードになる。指ではスクロールできない。<br>
             「画面スクロール」ボタン＝手書きモードから抜ける。指でスクロールできる。
+            字を部分的に消す場合は「色を選ぶ」で左上端の白を選んでください。字を書く時は色を黒に戻してください。
+            ※ペンでボタンを操作できないか
+            ※落(堕）
+            ↑でここに戻れる
+            )
         </td>
     </tr>
 </table>
