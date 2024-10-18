@@ -38,7 +38,7 @@
             <span><!--<input type="file" id="file-input" accept=".txt">--><input type="file" id="upload"></li>
         <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く。<br>
         <u>下線の引き方（下線が引いてあるところで以下の操作をすると下線が消えます）</u><br>
-        <b>キーボードがある場合→</b>語選択＞ctrl+U　<b>iPad・iPhone→</b>語選択＞フォーマット＞アンダーライン　<b>機器問わず→</b>下線ボタン表示＞下線を引きたい語の近くに三本線をドラッグ＞語選択＞Ｕボタン</br>
+        <b>キーボードがある場合→</b>語選択＞<del>ctrl</del>cmd+U　<b>iPad・iPhone→</b>語選択＞フォーマット＞アンダーライン　<b>機器問わず→</b>下線ボタン表示＞下線を引きたい語の近くに三本線をドラッグ＞語選択＞Ｕボタン</br>
         <u>語の選択の仕方</u><br>
         ダブルタップ＞「指で範囲広げる」<br>
         <b>または</b><br>
@@ -50,7 +50,7 @@
         <li>「AIへの貼り付け用にコピー」というボタンが出てくるので、タップ。（このあとの操作はプリントを見てください。）</li>
         </ol>
     </span>
-    <button id="showbar" onclick="showFloatingToolbar()">下線ボタン表示</button>
+    <button id="showbar" onclick="showFloatingToolbar()">下線ボタン表示</button>※注意※　iPadのキーボードで下線を引く場合はcmd+Uを押してください。
     <div id="editor"></div>
     <button onclick="extractTexts()">下線部を抽出</button>
     <button onclick="copyExtractedText()" id="copyButton" style="display:none;">AIへの貼り付け用にコピー</button>
