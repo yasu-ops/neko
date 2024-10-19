@@ -92,6 +92,7 @@
             font-size: 20px; 
             font-weight: bold;
         }
+        
         .hidden {
             display: none;
         }
@@ -107,33 +108,36 @@
     let c;
     let ctx;
     // ドラッグ中かどうかを表すフラグ
-    let dragging = false
+    let dragging = false;
     // 前回のポインタの位置を記録する変数
-    let lastPos
+    let lastPos;
+    let currentColor = '#000000'; // デフォルトの色を黒に設定
+    let currentlineWidth=9;
 
-    function pointStartHandler(e){
-        // タッチされたポインタが1つだけなら
-        if (e.changedTouches.length === 1) {
-            // ドラッグを終了する
-            down(pos(e.changedTouches[0]))
-        }
+
+
+    //new
+    function startDrawing(e) {
+        isDrawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
     }
-    function pointEndHandler(e){
-        // タッチされたポインタが1つだけなら
-        if (e.changedTouches.length === 1) {
-            // ドラッグを終了する
-            up(pos(e.changedTouches[0]))
-        }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        //ctx.strokeStyle = 'black';
+        //ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        [lastX, lastY] = [e.offsetX, e.offsetY];
     }
-    function pointMoveHandler(e) {
-        e.preventDefault();
-        // タッチされたポインタが1つだけなら
-        if (e.changedTouches.length === 1) {
-            // ポインタ
-            move(pos(e.changedTouches[0]));
-        }
-    }
-    /*
+
+    function stopDrawing() {
+        isDrawing = false;
+    } 
+    /*既存
     function touchStartHandler(e){
         // タッチされたポインタが1つだけなら
         if (e.changedTouches.length === 1) {
@@ -173,7 +177,7 @@
             // canvasの2Dコンテキストを取得する
             ctx = c.getContext('2d');
             // 線の色を青にする
-            ctx.strokeStyle = 'blue';
+            ctx.strokeStyle = currentColor;
             // 線の太さを1にする
             ctx.lineWidth = document.getElementById("hutosa"+num).innerHTML;
             //背景を白にする
@@ -181,13 +185,17 @@
             //ctx.fillRect(0, 0, c.width, c.height);    
             
             highlightCell("questionList",2,gyou);  
-            c.addEventListener('ponterdown',pointerStartHandler);
-            c.addEventListener('pointerup',pointerEndHandler);
-            c.addEventListener('pointermove',pointerMoveHandler);
-            c.style.touchAction='none';
+            
 
-            window.addEventListener('pointermove',pointerMoveHandler);
-            /*
+            c.addEventListener('pointerdown', startDrawing);
+            //c.addEventListener('pointermove', draw,{ passive: false });
+            c.addEventListener('pointermove', draw);
+            c.addEventListener('pointerup', stopDrawing);
+            c.addEventListener('pointerout', stopDrawing);
+            //window.addEventListener('pointermove', draw,{ passive: false });
+            c.style.touchAction='none';
+            
+            /*/既存
             c.addEventListener('touchstart',touchStartHandler);
             c.addEventListener('touchend',touchEndHandler);
             c.addEventListener('touchmove',touchMoveHandler, { passive: false });
@@ -201,10 +209,13 @@
     function scroll_on(num){
         c = document.getElementById('canvas'+num);
         highlightCell("questionList",0,0);  
-        c.removeEventListener('pointerstart', pointerStartHandler);
-        c.removeEventListener('pointerend', pointerEndHandler);
-        c.removeEventListener('pointermove', pointerMoveHandler);
-        window.removeEventListener('pointermove', pointerMoveHandler);
+        c.removeEventListener('pointerdown', startDrawing);
+        //c.removeEventListener('pointermove', draw,{ passive: false });
+        c.removeEventListener('pointermove', draw);
+        c.removeEventListener('pointerup', stopDrawing);
+        c.removeEventListener('pointerout', stopDrawing);
+        //window.removeEventListener('pointermove', draw,{ passive: false });
+        c.style.touchAction='';
     }
     /*
     function scroll_on(num){
@@ -217,7 +228,7 @@
     }
     */
 
-    // ポインタの位置に線を描く関数
+    /*/ ポインタの位置に線を描く関数
     function move(pos) {
         if(ctx){
             // ドラッグ中なら
@@ -270,30 +281,36 @@
     ２　ドラッグフラッグをtrueにして、
     ３　その座標をlastposに格納する
     */
+   /*
     addEventListener('mousedown', (e) => {
         // ドラッグを開始する
         down(pos(e))
     })
+    */
     /* 
     マウスアップイベントeが発生したら、
     １　pos(e)で、そのイベントの開始位置の座標を取得し、
     ２　move(e)で、記録されたlastposから現在の位置までの線を引く
     ３　ドラッグフラッグをfalseにする
     */
+   /*
     addEventListener('mouseup', (e) => {
         // ドラッグを終了する
         up(pos(e))
     })
+    */
     /* 
     マウス移動イベントeが発生したら、
     １　pos(e)で、そのイベントの開始位置の座標を取得し、
     ２　move(e)で、記録されたlastposから現在の位置までの線を引く
     ３　ドラッグフラッグをfalseにする
     */
+   /*
     addEventListener('mousemove', (e) => {
         // ポインタの位置に線を描く
         move(pos(e))
     })
+    */
     /* 
     タッチスタートイベントeが発生したら、
     １　pos(e.changedTouches[0])で、そのイベントの1本目の指を開始位置の座標を取得し、
@@ -349,23 +366,27 @@
         
     function Colorbutton(num){
         if(ctx){
-            ctx.strokeStyle = document.getElementById("inputColor"+num).value;
+            currentColor= document.getElementById("inputColor"+num).value;
+            ctx.strokeStyle=currentColor;
+            ctx.lineWidth=currentlineWidth;
         }
     }
 
     function hutoku(num){
         if(ctx){
-            var a=ctx.lineWidth;
-            ctx.lineWidth=a+1;
-            document.getElementById("hutosa"+num).innerHTML=ctx.lineWidth;
+            currentlineWidth=currentlineWidth+1;
+            ctx.lineWidth=currentlineWidth;
+            ctx.strokeStyle=currentColor;
+            document.getElementById("hutosa"+num).innerHTML=currentlineWidth;
         }
     }
 
     function hosoku(num){
         if(ctx){
-            var a=ctx.lineWidth;
-            ctx.lineWidth=a-1;
-            document.getElementById("hutosa"+num).innerHTML=ctx.lineWidth;
+            currentlineWidth=currentlineWidth-1;
+            ctx.lineWidth=currentlineWidth;
+            ctx.strokeStyle=currentColor;
+            document.getElementById("hutosa"+num).innerHTML=currentlineWidth;
         }        
     }
 
@@ -434,12 +455,12 @@
 </head>
 <body>
 <div style="text-align: right;">※CSVファイルの処理に PapaParse ライブラリを使用しています。<br></div>
-<span style="font-size: 50px">漢字の練習 </span><button id="otona_hyouji" onclick="toggleRow('otona')">メニューBを表示</button>（メニューB：問題読み込み・やりかけ保存・解答結果保存・teams提出用画像作成・表示切替）
+<span style="font-size: 50px">漢字の練習 </span><button id="otona_hyouji" onclick="toggleRow('otona')">補助メニューを隠す</button>（補助メニュー：問題読み込み・やりかけ保存・解答結果保存・teams提出用画像作成・表示切替）
 
 <table style="font-size: 20px;font-weight: bold;">
-    <tr id="otona" class="hidden">
+    <tr id="otona">
         <td width="140px">
-            メニューB
+            補助メニュー
         </td>
         <td>
             ★<label for="fileInput">問題読み込み　※やりかけの問題も読み込めます</label><br>
@@ -461,7 +482,7 @@
 <table style="font-size: 20px;font-weight: bold;">
         <tr>
         <td width="140px">
-            メニューA<br>20240916
+            メインメニュー<br>20240916
         </td>
         <td>
             表示：<button onclick="showWrong()">間違った問題だけ</button>
@@ -531,10 +552,10 @@
             var row = document.getElementById(rowId);
             if (row.classList.contains('hidden')) {
                 row.classList.remove('hidden');
-                document.getElementById("otona_hyouji").textContent="メニューBを隠す";
+                document.getElementById("otona_hyouji").textContent="補助メニューを隠す";
             } else {
                 row.classList.add('hidden');
-                document.getElementById("otona_hyouji").textContent="メニューBを表示";
+                document.getElementById("otona_hyouji").textContent="補助メニューを表示";
             }
         }
 
@@ -911,14 +932,10 @@ function completeQuestionCreation() {
                             <div style="font-size: 20px;font-weight: bold;">
                                 <button onclick="buttonclear(${q.id},${i})">消す</button>
                                 色を選ぶ
-                                <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#0000FF" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
+                                <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#000000" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
                                 <datalist id="color-picker${q.id}">
-                                <option value="blue">
-                                <option value="green">
                                 <option value="black">
                                 <option value="white">
-                                <option value="red">
-                                <option value="pink">
                                 </datalist>
                                 <button onclick="kaku(${q.id},${i});hosoku(${q.id},${i})">細く</button>
                                 <button onclick="kaku(${q.id},${i});hutoku(${q.id},${i})">太く</button>
