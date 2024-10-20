@@ -492,10 +492,11 @@
             <button onclick="saveAnswers(2)">作成した問題の保存</button><br>
             ※ＰＣでお手本がはみでたら→<button onclick="for_pc()">お手本を枠内におさめる</button><br>-->
             ★手書き解答を漢字練習プリントの代わりに提出する方法★
-            <button onclick="table_save()">（１）このボタンを押して今、表示されている手書き解答を画像として保存</button><br>
-            （１）で試験範囲の３つの手書き解答画像が保存できたら…<br>
-            <button onclick="openInNewWindow()">（２）このボタンを押して、３つての手書き画像を合体させた画像を作る（これを漢字プリントの代わりに提出する）</button><br>
-            ※（１）も（２）もiPadだとダウンロードフォルダに保存されるので、保存したら「現代の国語」フォルダに移しておきましょう。
+            <button onclick="table_save()">Ａ　このボタンを押して今、表示されている手書き解答を画像として保存</button><br>
+            Ａボタンで試験範囲の３つの手書き解答画像が保存できたら…<br>
+            <button onclick="openInNewWindow()">Ｂ　このボタンを押して、３つての手書き画像を合体させた画像を作る</button><br>
+            ※Ｂボタンで作った画像を漢字練習プリントの代わりに提出できます。
+            ※ＡでもＢでもiPadだとダウンロードフォルダに保存されるので、保存したら「現代の国語」フォルダに移しておきましょう。
             
         </td>
     </tr>
@@ -513,9 +514,9 @@
             <button onclick="hideAllAnswers()">隠す</button>　　
             <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">↑を押した場所に戻る</button><br>
             手書き欄のボタンの使い方<br>
-            「書く」＝手書きモードになる。<br>
-            「画面スクロール」ボタン＝通常は使わなくてよい。うまくスクロールできないときに押す。<br>
-            字を消す時は線の色を白にする。
+            ・「書く」＝手書きモードになる。<br>
+            ・「画面スクロール」ボタン＝うまくスクロールできないときに押す。<br>
+            ・字を消す時は線の色を白にする。
         </td>
     </tr>
 </table>
@@ -950,10 +951,10 @@ function completeQuestionCreation() {
                             
                             <div style="font-size: 20px;font-weight: bold;">
                                 <button onclick="buttonclear(${q.id},${i})">消す</button>
-                                線の色：
-                                <button style="background-color:black;" onclick="iro(${q.id},1)">　</button>
-                                <button style="background-color:white;"  onclick="iro(${q.id},2)">　</button>
-                                <button style="background-color:red;"  onclick="iro(${q.id},3)">　</button>
+                                色：
+                                <button style="background-color:black;" onclick="iro(${q.id},1)"> </button>
+                                <button style="background-color:white;"  onclick="iro(${q.id},2)"> </button>
+                                <button style="background-color:red;"  onclick="iro(${q.id},3)"> </button>
                                 <!--
                                 <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#000000" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
                                 <datalist id="color-picker${q.id}">
@@ -1065,7 +1066,7 @@ async function table_save() {
     const baseScale = window.devicePixelRatio || 1;
     
     // 追加の解像度倍率（必要に応じて調整）
-    let kaizoudo = prompt("解像度を0.5～2の間で半角数字で入力してください。初期値は1.5です。1.5でやってみて、ファイル名を指定後、「ダウンロードしますか？」というメッセージが表示されなかったら、もう一度ボタンを押して数値を下げて再チャレンジしてください。", "1.5");
+    let kaizoudo = prompt("iPadの場合は初期値0.5のままにしてください。他のデバイスの場合は試行錯誤して、いい感じの画像ができるよう数値をさがしてください。数値が高いほど解像度が高くなりますが、動作しなくなる可能性も高まります。「ダウンロードしますか？」というメッセージが表示されなかったら、もう一度ボタンを押して数値を下げて再チャレンジしてください。", "0.5");
     if (kaizoudo === "" || kaizoudo === null) {
         return;
     }        
@@ -1074,7 +1075,6 @@ async function table_save() {
     // 最終的なスケールファクター
     const finalScale = baseScale * resolutionMultiplier;
     
-    alert(1);
     const canvas = await html2canvas(table, {
         width: rect.width,
         height: rect.height,
@@ -1084,10 +1084,9 @@ async function table_save() {
         allowTaint: false,
         backgroundColor: null
     });
-    alert(2);
 
     canvas.toBlob(function(blob) {
-        let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。", "table_image.png");
+        let filename = prompt("月と回を入れてください。※iPadの場合は「ダウンロード」に保存されます。", "月の回目の手書き漢字.png");
         if (filename === "" || filename === null) {
             return;
         }        
@@ -1102,8 +1101,6 @@ async function table_save() {
             URL.revokeObjectURL(url);
         }, 0);            
     });
-    alert(3);
-
 }
 //
 

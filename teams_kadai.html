@@ -25,15 +25,20 @@
     </style>
 </head>
 <body>
-    <input type="file" id="fileInput1" accept="image/*">
-    <input type="file" id="fileInput2" accept="image/*">
-    <input type="file" id="fileInput3" accept="image/*">
+    <h1>teamsの課題に添付する「漢字練習プリント」の代わりとなる画像を作成する</h1>
+    <h2>【注意】事前に試験範囲、３回分の手書き解答の画像を作っておくこと。</h2>
+    <span style="font-size: 20px;">
+    １　試験範囲の１つ目の手書き解答画像を読み込む<input type="file" id="fileInput1" accept="image/*"><br>
+    ２　試験範囲の２つ目の手書き解答画像を読み込む<input type="file"   id="fileInput2" accept="image/*"><br>
+    ３　試験範囲の３つ目の手書き解答画像を読み込む<input type="file"  id="fileInput3" accept="image/*"><br>
+    ４　<button style="font-size: 20px;" onclick="table_save()" >下の表を画像にしたもの(teams提出用画像)を作る</button>
+    </span>
 
     <table id="imageTable">
         <tr>
-            <th>列1</th>
-            <th>列2</th>
-            <th>列3</th>
+            <th>１つ目</th>
+            <th>２つ目</th>
+            <th>３つ目</th>
         </tr>
         <tr>
             <td id="cell1"></td>
@@ -42,6 +47,7 @@
         </tr>
     </table>
 
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         function handleFileSelect(event, cellId) {
             const file = event.target.files[0];
@@ -52,12 +58,83 @@
                     cell.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
                 };
                 reader.readAsDataURL(file);
+//
+            // n列目の見出しを変更する関数
+                // テーブル要素を取得
+                const table = document.getElementById('imageTable');
+                
+                // テーブルの見出し行を取得
+                const headers = table.querySelectorAll('th');
+                
+                // n列目の見出しを変更
+                switch(cellId){
+                    case "cell1":headers[0].textContent = file.name;break;
+                    case "cell2":headers[1].textContent = file.name;break;
+                    case "cell3":headers[2].textContent = file.name;
+                }
+//
+ 
             }
         }
 
         document.getElementById('fileInput1').addEventListener('change', (e) => handleFileSelect(e, 'cell1'));
         document.getElementById('fileInput2').addEventListener('change', (e) => handleFileSelect(e, 'cell2'));
         document.getElementById('fileInput3').addEventListener('change', (e) => handleFileSelect(e, 'cell3'));
+
+        async function table_save() {
+            alert(1);
+            const table = document.getElementById('imageTable');
+            
+            if (!table) {
+                console.error('Table element not found');
+                return;
+            }
+            
+            const rect = table.getBoundingClientRect();
+            alert(2);
+            
+            // 基本的なスケールファクター（デバイスのピクセル比）
+            const baseScale = window.devicePixelRatio || 1;
+            alert(3);
+            
+            // 追加の解像度倍率（必要に応じて調整）
+            let kaizoudo = prompt("iPadの場合は初期値0.5のままにしてください。他のデバイスの場合は試行錯誤して、いい感じの画像ができるよう数値をさがしてください。数値が高いほど解像度が高くなりますが、動作しなくなる可能性も高まります。「ダウンロードしますか？」というメッセージが表示されなかったら、もう一度ボタンを押して数値を下げて再チャレンジしてください。", "0.5");
+            if (kaizoudo === "" || kaizoudo === null) {
+                return;
+            }        
+            const resolutionMultiplier = parseFloat(kaizoudo);
+            
+            // 最終的なスケールファクター
+            const finalScale = baseScale * resolutionMultiplier;
+            
+            const canvas = await html2canvas(table, {
+                width: rect.width,
+                height: rect.height,
+                scale: finalScale,
+                logging: false,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: null
+            });
+
+            canvas.toBlob(function(blob) {
+                let filename = prompt("月を入れてください。※iPadの場合は「ダウンロード」に保存されます。", "月の手書き漢字提出用.png");
+                if (filename === "" || filename === null) {
+                    return;
+                }        
+                const a = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 0);            
+            });
+        }
+
     </script>
 </body>
 </html>
