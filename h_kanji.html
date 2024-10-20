@@ -954,11 +954,10 @@ function completeQuestionCreation() {
                             <canvas class="myCanvas" id="canvas${q.id}"  data-num1="${q.id}" data-num2="${i}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
                             
                             <div style="font-size: 20px;font-weight: bold;">
-                                <button onclick="buttonclear(${q.id},${i})">消す</button>
-                                色：
-                                <button style="background-color:black;" onclick="iro(${q.id},1)">　</button>
-                                <button style="background-color:white;"  onclick="iro(${q.id},2)">　</button>
-                                <button style="background-color:red;"  onclick="iro(${q.id},3)">　</button>
+                                <button onclick="buttonclear(${q.id},${i})">消</button>
+                                <button style="background-color:black;" onclick="iro(${q.id},1)">B</button>
+                                <button style="background-color:white;"  onclick="iro(${q.id},2)">W</button>
+                                <button style="background-color:red;"  onclick="iro(${q.id},3)">R</button>
                                 <!--
                                 <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#000000" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
                                 <datalist id="color-picker${q.id}">
@@ -966,9 +965,9 @@ function completeQuestionCreation() {
                                 <option value="white">
                                 </datalist>
                                 -->
-                                <button onclick="hosoku(${q.id},${i})">細く</button>
-                                <button onclick="hutoku(${q.id},${i})">太く</button>
-                                太さ：<span id="hutosa${q.id}">9</span><button style="background-color:aqua;" class="right-align" onclick="go_top()">↑</button>
+                                <button onclick="hosoku(${q.id},${i})">細</button>
+                                <button onclick="hutoku(${q.id},${i})">太</button>
+                                <span id="hutosa${q.id}">9</span><button style="background-color:aqua;" class="right-align" onclick="go_top()">↑</button>
                             </div>
                         </td>
                         <td style="font-size: 20px;font-weight:bold;padding: 0px; text-align: center;">
