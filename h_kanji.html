@@ -116,11 +116,8 @@
 
 
 
-    //new
+    /*
     function startDrawing(e) {
-        if(e.pointerType === 'pen'){
-            event.preventDefault();
-        }
         isDrawing = true;
         [lastX, lastY] = [e.offsetX, e.offsetY];
     }
@@ -139,8 +136,9 @@
 
     function stopDrawing() {
         isDrawing = false;
-    } 
-    /*既存
+    }
+    */
+    //既存
     function touchStartHandler(e){
         // タッチされたポインタが1つだけなら
         if (e.changedTouches.length === 1) {
@@ -163,7 +161,7 @@
             move(pos(e.changedTouches[0]));
         }
     }
-    */
+    //
     function kaku(num,gyou) {
         // 変数の宣言
         let i;
@@ -186,6 +184,7 @@
             // 線の太さを1にする
             ctx.lineWidth=9;
             currentlineWidth=9;
+            ctx.lineCap = 'round';
 
             //背景を白にする
             //ctx.fillStyle = 'white';
@@ -193,7 +192,7 @@
             
             highlightCell("questionList",2,gyou);  
             
-
+            /*
             c.addEventListener('pointerdown', startDrawing);
             //c.addEventListener('pointermove', draw,{ passive: false });
             c.addEventListener('pointermove', draw);
@@ -201,18 +200,19 @@
             c.addEventListener('pointerout', stopDrawing);
             //window.addEventListener('pointermove', draw,{ passive: false });
             c.style.touchAction='none';
+            */
             
-            /*/既存
+            //既存
             c.addEventListener('touchstart',touchStartHandler);
             c.addEventListener('touchend',touchEndHandler);
             c.addEventListener('touchmove',touchMoveHandler, { passive: false });
             window.addEventListener('touchmove',touchMoveHandler, { passive: false });
-            */
+            
         }
     }
 
 
-    // B: スクロールを有効にする
+    /* B: スクロールを有効にする
     function scroll_on(num){
         c = document.getElementById('canvas'+num);
         highlightCell("questionList",0,0);  
@@ -224,7 +224,7 @@
         //window.removeEventListener('pointermove', draw,{ passive: false });
         c.style.touchAction='';
     }
-    /*
+    */
     function scroll_on(num){
         c = document.getElementById('canvas'+num);
         highlightCell("questionList",0,0);  
@@ -233,9 +233,9 @@
         c.removeEventListener('touchmove', touchMoveHandler, { passive: false });
         window.removeEventListener('touchmove', touchMoveHandler, { passive: false });
     }
-    */
+    
 
-    /*/ ポインタの位置に線を描く関数
+    // ポインタの位置に線を描く関数
     function move(pos) {
         if(ctx){
             // ドラッグ中なら
@@ -288,36 +288,36 @@
     ２　ドラッグフラッグをtrueにして、
     ３　その座標をlastposに格納する
     */
-   /*
+   
     addEventListener('mousedown', (e) => {
         // ドラッグを開始する
         down(pos(e))
     })
-    */
+    
     /* 
     マウスアップイベントeが発生したら、
     １　pos(e)で、そのイベントの開始位置の座標を取得し、
     ２　move(e)で、記録されたlastposから現在の位置までの線を引く
     ３　ドラッグフラッグをfalseにする
     */
-   /*
+   
     addEventListener('mouseup', (e) => {
         // ドラッグを終了する
         up(pos(e))
     })
-    */
+    
     /* 
     マウス移動イベントeが発生したら、
     １　pos(e)で、そのイベントの開始位置の座標を取得し、
     ２　move(e)で、記録されたlastposから現在の位置までの線を引く
     ３　ドラッグフラッグをfalseにする
     */
-   /*
+   
     addEventListener('mousemove', (e) => {
         // ポインタの位置に線を描く
         move(pos(e))
     })
-    */
+    
     /* 
     タッチスタートイベントeが発生したら、
     １　pos(e.changedTouches[0])で、そのイベントの1本目の指を開始位置の座標を取得し、
