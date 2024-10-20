@@ -177,9 +177,13 @@
             // canvasの2Dコンテキストを取得する
             ctx = c.getContext('2d');
             // 線の色を青にする
-            ctx.strokeStyle = currentColor;
+            ctx.strokeStyle = 'black';
+            currentColor='black';
+            //document.getElementById("inputColor"+num).value=currentColor;
             // 線の太さを1にする
-            ctx.lineWidth = document.getElementById("hutosa"+num).innerHTML;
+            ctx.lineWidth=9;
+            currentlineWidth=9;
+
             //背景を白にする
             //ctx.fillStyle = 'white';
             //ctx.fillRect(0, 0, c.width, c.height);    
@@ -364,16 +368,30 @@
         ctx.stroke();
     }
         
+    function iro(num,iro_num){
+        if( c === document.getElementById('canvas'+num)){
+            switch(iro_num){
+                case 1:ctx.strokeStyle='black';currentColor='black';break;
+                case 2:ctx.strokeStyle='white';currentColor='white';break;
+                case 3:ctx.strokeStyle='red';currentColor='red';break;
+            }
+            ctx.lineWidth=currentlineWidth;
+        }
+        
+    }
+    /*
     function Colorbutton(num){
         if(ctx){
             currentColor= document.getElementById("inputColor"+num).value;
+            alert(currentColor);
             ctx.strokeStyle=currentColor;
             ctx.lineWidth=currentlineWidth;
         }
     }
+    */
 
     function hutoku(num){
-        if(ctx){
+        if( c === document.getElementById('canvas'+num)){
             currentlineWidth=currentlineWidth+1;
             ctx.lineWidth=currentlineWidth;
             ctx.strokeStyle=currentColor;
@@ -382,7 +400,7 @@
     }
 
     function hosoku(num){
-        if(ctx){
+        if( c === document.getElementById('canvas'+num)){
             currentlineWidth=currentlineWidth-1;
             ctx.lineWidth=currentlineWidth;
             ctx.strokeStyle=currentColor;
@@ -466,15 +484,19 @@
             ★<label for="fileInput">問題読み込み　※やりかけの問題も読み込めます</label><br>
             　<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
             ★解答結果を保存：<button onclick="saveAnswers(1)">保存</button>　※やりかけの問題も保存できます<br>
-            iPadだとダウンロードフォルダに保存されるので、保存したらすぐに現代の国語フォルダ内に移動しておきましょう。
+            ※手書き解答は「合ってたら押す」でチェックしたものだけが保存されます。
+            ※iPadだとダウンロードフォルダに保存されるので、保存したらすぐに現代の国語フォルダ内に移動しておきましょう。<br>
             ★表示切替：<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
             <!--★問題作成：<button onclick="createQuestionForm(true,false)">新規</button>
             <button onclick="handleQuestionCreation()">修正・追加・削除</button>
             <button onclick="saveAnswers(2)">作成した問題の保存</button><br>
             ※ＰＣでお手本がはみでたら→<button onclick="for_pc()">お手本を枠内におさめる</button><br>-->
-            <button onclick="openInNewWindow()">teamsの課題で提出する画像を生成する</button><br>
-            　↑
-            その月の範囲の３回分の手書き解答結果を合成して、漢字練習プリントの代わりに提出できる、画像データにします。
+            ★手書き解答を漢字練習プリントの代わりに提出する方法★
+            <button onclick="table_save()">（１）このボタンを押して今、表示されている手書き解答を画像として保存</button><br>
+            （１）で試験範囲の３つの手書き解答画像が保存できたら…<br>
+            <button onclick="openInNewWindow()">（２）このボタンを押して、３つての手書き画像を合体させた画像を作る（これを漢字プリントの代わりに提出する）</button><br>
+            ※（１）も（２）もiPadだとダウンロードフォルダに保存されるので、保存したら「現代の国語」フォルダに移しておきましょう。
+            
         </td>
     </tr>
 </table>
@@ -491,14 +513,9 @@
             <button onclick="hideAllAnswers()">隠す</button>　　
             <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">↑を押した場所に戻る</button><br>
             手書き欄のボタンの使い方<br>
-            ペンを使う時の注意点　字はペンで書けますが、ボタンは指で押して下さい。
-            「書く」＝手書きモードになる。指ではスクロールできない。<br>
-            「画面スクロール」ボタン＝手書きモードから抜ける。指でスクロールできる。
-            字を部分的に消す場合は「色を選ぶ」で左上端の白を選んでください。字を書く時は色を黒に戻してください。
-            ※ペンでボタンを操作できないか
-            ※落(堕）
-            ↑でここに戻れる
-            )
+            「書く」＝手書きモードになる。<br>
+            「画面スクロール」ボタン＝通常は使わなくてよい。うまくスクロールできないときに押す。<br>
+            字を消す時は線の色を白にする。
         </td>
     </tr>
 </table>
@@ -513,6 +530,8 @@
     <tbody>
     </tbody>
 </table>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
     <script>
         let questions = [];
@@ -931,14 +950,19 @@ function completeQuestionCreation() {
                             
                             <div style="font-size: 20px;font-weight: bold;">
                                 <button onclick="buttonclear(${q.id},${i})">消す</button>
-                                色を選ぶ
+                                線の色：
+                                <button style="background-color:black;" onclick="iro(${q.id},1)">　</button>
+                                <button style="background-color:white;"  onclick="iro(${q.id},2)">　</button>
+                                <button style="background-color:red;"  onclick="iro(${q.id},3)">　</button>
+                                <!--
                                 <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#000000" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
                                 <datalist id="color-picker${q.id}">
                                 <option value="black">
                                 <option value="white">
                                 </datalist>
-                                <button onclick="kaku(${q.id},${i});hosoku(${q.id},${i})">細く</button>
-                                <button onclick="kaku(${q.id},${i});hutoku(${q.id},${i})">太く</button>
+                                -->
+                                <button onclick="hosoku(${q.id},${i})">細く</button>
+                                <button onclick="hutoku(${q.id},${i})">太く</button>
                                 太さ：<span id="hutosa${q.id}">9</span><button style="background-color:aqua;" class="right-align" onclick="go_top()">↑</button>
                             </div>
                         </td>
@@ -1026,6 +1050,62 @@ function completeQuestionCreation() {
                 }
             }
         }
+//
+async function table_save() {
+    const table = document.getElementById('questionList');
+    
+    if (!table) {
+        console.error('Table element not found');
+        return;
+    }
+    
+    const rect = table.getBoundingClientRect();
+    
+    // 基本的なスケールファクター（デバイスのピクセル比）
+    const baseScale = window.devicePixelRatio || 1;
+    
+    // 追加の解像度倍率（必要に応じて調整）
+    let kaizoudo = prompt("解像度を0.5～2の間で半角数字で入力してください。初期値は1.5です。1.5でやってみて、ファイル名を指定後、「ダウンロードしますか？」というメッセージが表示されなかったら、もう一度ボタンを押して数値を下げて再チャレンジしてください。", "1.5");
+    if (kaizoudo === "" || kaizoudo === null) {
+        return;
+    }        
+    const resolutionMultiplier = parseFloat(kaizoudo);
+    
+    // 最終的なスケールファクター
+    const finalScale = baseScale * resolutionMultiplier;
+    
+    alert(1);
+    const canvas = await html2canvas(table, {
+        width: rect.width,
+        height: rect.height,
+        scale: finalScale,
+        logging: false,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: null
+    });
+    alert(2);
+
+    canvas.toBlob(function(blob) {
+        let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。", "table_image.png");
+        if (filename === "" || filename === null) {
+            return;
+        }        
+        const a = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 0);            
+    });
+    alert(3);
+
+}
+//
 
         function go_top(){
             lastScrollPosition=window.pageYOffset;

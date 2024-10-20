@@ -3,308 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, no-store, must-revalidate">
-    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-    <META HTTP-EQUIV="Expires" CONTENT="0">
-
-    <title>Quiz Management System</title>
-    <!--ローカルの場合は以下の一文を入れる
-    <script src="./papaparse.min.js"></script>-->
-    <!--ローカルの場合は以下の一文をコメントアウト-->
-
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <title>画像アップロードとテーブル挿入</title>
     <style>
         table {
             border-collapse: collapse;
-            width: auto;
+            width: 100%;
         }
         th, td {
             border: 1px solid black;
             padding: 8px;
-            text-align: left;
-            /* white-space: nowrap; */
-            white-space: wrap;
+            text-align: center;
+            width: 33.33%; /* 各列の幅を均等に */
         }
-        th {
-            background-color: #f2f2f2;
+        img {
+            width: 30vw; /* ビューポート幅の30% */
+            height: auto; /* アスペクト比を維持 */
+            max-width: 100%; /* セルの幅を超えないように */
+            display: block; /* 余分な空白を削除 */
+            margin: 0 auto; /* 画像を中央揃え */
         }
-        button {
-            margin: 5px;
-            font-size: 20px; 
-            font-weight: bold;
-        }
-        /* canvas タグの背景にルーラーを指定 */
-        #myCanvas {
-            background: url(imgs/bg_ruler.png) no-repeat;
-        }
-        .noto-serif jp-regular {
-            font-family: "Noto Serif JP", serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-
     </style>
-<script>
-   //window.addEventListener("load", init);
-   //document.addEventListener('DOMContentLoaded', (event) => {
-   //     init();
-   //});
-    let c;
-    let ctx;
-    // ドラッグ中かどうかを表すフラグ
-    let dragging = false
-    // 前回のポインタの位置を記録する変数
-    let lastPos
-
-
-    function kaku(num) {
-        // 変数の宣言
-        let i
-
-        // canvas要素を取得する
-        c = document.getElementById('canvas'+num);
-        // canvasの2Dコンテキストを取得する
-        ctx = c.getContext('2d');
-        // 線の色を青にする
-        ctx.strokeStyle = 'black';
-        // 線の太さを1にする
-        ctx.lineWidth = 9;
-        //背景を白にする
-        //ctx.fillStyle = 'white';
-        //ctx.fillRect(0, 0, c.width, c.height);    
-        
-        highlightCell("questionList",2,num);  
-
-    }
-
-    // 今書いた画像をquestions配列とlocalStorageへ保存
-    function buttonSave(num){
-        kaku(num);
-        var png = c.toDataURL("image/png");
-        if (png && png.startsWith('data:image/png;base64,')) {
-            questions[num-1].gazou = png;
-            localStorage.setItem("gazou"+num, png);
-            var v = localStorage.getItem("gazou"+num);
-        } else {
-            console.warn('無効な画像データが生成されました');
-            // エラー処理をここに追加
-        }
-    } 
-    //　localStrage画像読み込み
-    function yomikomi(num){
-        // canvasとコンテキストを取得
-        const c2 = document.getElementById('canvas'+num);
-        const ctx2 = c2.getContext('2d');
-
-        // localStorageから画像データを取得
-        var v = localStorage.getItem("gazou" + num);
-
-        // 画像を読み込む
-        const img = new Image();
-        img.onload = function() {
-            // 画像をcanvasに描画
-            ctx2.drawImage(img, 0, 0, c2.width, c2.height);
-        };
-        img.src = v;
-
-    }
-    //　questions配列画像読み込み->localStorageへの保存とcanvasへの読み込み
-    function q_yomikomi(num,data){
-        const c2 = document.getElementById('canvas'+num);
-        const ctx2 = c2.getContext('2d');
-        
-        if (data && data.startsWith('data:image/png;base64,')) {
-            localStorage.setItem("gazou"+num, data);
-            const img = new Image();
-            img.onload = function() {
-                ctx2.drawImage(img, 0, 0, c2.width, c2.height);
-            };
-            img.onerror = function() {
-                console.error('画像の読み込みに失敗しました');
-                // エラー処理をここに追加
-            };
-            img.src = data;
-        } else {
-            console.warn('無効な画像データ');
-            // エラー処理をここに追加
-        }
-    }
-
-</script>
 </head>
 <body>
-<div style="text-align: right;">※CSVファイルの処理に PapaParse ライブラリを使用しています。<br></div>
+    <input type="file" id="fileInput1" accept="image/*">
+    <input type="file" id="fileInput2" accept="image/*">
+    <input type="file" id="fileInput3" accept="image/*">
 
-
- <h3><label for="fileInput">提出したい月の漢字テスト範囲の解答結果１／３</label><input type="file" id="fileInput1" accept=".csv" onchange="loadQuestions(1)"></h3>
- <h3><label for="fileInput">提出したい月の漢字テスト範囲の解答結果２／３</label><input type="file" id="fileInput2" accept=".csv" onchange="loadQuestions(2)"></h3>
- <h3><label for="fileInput">提出したい月の漢字テスト範囲の解答結果３／３</label><input type="file" id="fileInput3" accept=".csv" onchange="loadQuestions(3)"></h3>
-
-<b>操作ボタン</b>
-    <oli>
-        <li><button onclick="table_save()">テーブルを画像として保存</button></li>
-    </div>
-    <!--<span id="fn"></span>-->
-    <table id="questionList">
-        <tbody>
-        </tbody>
+    <table id="imageTable">
+        <tr>
+            <th>列1</th>
+            <th>列2</th>
+            <th>列3</th>
+        </tr>
+        <tr>
+            <td id="cell1"></td>
+            <td id="cell2"></td>
+            <td id="cell3"></td>
+        </tr>
     </table>
 
     <script>
-        let questions = [];
-        let file_yomikomi_tyokugo = false; 
-
-        function table_save(){
-            html2canvas(document.getElementById('questionList')).then(canvas => {
-                var link = document.createElement('a');
-                link.href = canvas.toDataURL();
-                link.download = 'table.png';
-                link.click();
-            });
-        }
-
-
-
-
-        function loadQuestions(num) {
-            let file_name;
-            const fileInput = document.getElementById('fileInput'+num);
-            const file = fileInput.files[0];
-            //0番目から2番目の文字の直前までを抽出
-            if(file.name.substring(0,2)==="20"){
-                //2024_00_00_00_00  17文字目以降を抽出 ０から始めて１６番目以降を抽出
-                file_name=file.name.substring(16);
-            } else {
-                file_name=file.name;        
-            }           
-            //document.getElementById("fn").innerHTML=file_name;
+        function handleFileSelect(event, cellId) {
+            const file = event.target.files[0];
             if (file) {
-                Papa.parse(file, {
-                    complete: function(results) {
-
-                        // 残りの行をquestions配列に追加 rowは列
-                        const newQuestions = results.data.slice(2).map((row, index) => {
-                            const gazou = decodeURIComponent(row[4] || '');
-                            if (gazou && !gazou.startsWith('data:image/png;base64,')) {
-                                console.warn(`ID ${index + 1}: 無効な画像データ`);
-                                // エラー処理をここに追加
-                            }
-                            return {
-                                id: file_name + (index + 1),
-                                question: row[0],
-                                answer: row[1],
-                                isRight: row[2] === '1',
-                                mistakeCount: parseInt(row[3] || 0),
-                                gazou: gazou
-                            };
-                        });
-
-                        // 既存のquestions配列に新しい質問を追加
-                        questions = questions.concat(newQuestions);
-
-                        displayQuestions();
-                    }
-                });
-                file_yomikomi_tyokugo = true; 
-                for (let i = 0; i < localStorage.length; i++) {
-                    let key = localStorage.key(i);
-                    if (key.startsWith("gazou")) {
-                        localStorage.removeItem(key);
-                        i--; // Adjust index after removal
-                    }
-                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const cell = document.getElementById(cellId);
+                    cell.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                };
+                reader.readAsDataURL(file);
             }
         }
 
-        function displayQuestions() {
-            const tbody = document.querySelector('#questionList tbody');
-            tbody.innerHTML = '';
-
-            const totalRows = 12;
-            const totalColumns = 12;
-            const columnsPerSet = 2;
-
-            // 12行分のtrを作成
-            for (let i = 0; i < totalRows; i++) {
-                const row = tbody.insertRow();
-                for (let j = 0; j < totalColumns; j++) {
-                    row.insertCell(); // 各行に12列分のtdを追加
-                }
-            }
-
-            // テーブルにquestions配列のデータを順番に埋めていく
-            let currentColumnSet = 0; // 現在の列セット (0, 2, 4, ...)
-            let currentRow = 0;
-
-            questions.forEach((q, index) => {
-                // 1列目にq.idを入れる
-                const idCell = tbody.rows[currentRow].cells[currentColumnSet];
-                idCell.innerHTML = `${q.id}`;
-                
-                // 2列目にcanvas要素を入れる
-                const canvasCell = tbody.rows[currentRow].cells[currentColumnSet + 1];
-                canvasCell.innerHTML = `
-                    <canvas class="myCanvas" id="canvas${q.id}" frameborder="1" 
-                            style="border: 2px solid black;" width="400" height="200"></canvas>
-                `;
-
-                currentRow++; // 次の行へ
-
-                // 12行目に到達したら次の列セットへ
-                if (currentRow >= totalRows) {
-                    currentRow = 0; // 行をリセットして1行目から再スタート
-                    currentColumnSet += columnsPerSet; // 次の列セットに移動
-                }
-            });
-
-            // ファイル読み込み直後の場合
-            if(file_yomikomi_tyokugo) {
-                questions.forEach(q => {
-                    if (q.isRight) {
-                        q_yomikomi(q.id, q.gazou);
-                    }
-                });
-                file_yomikomi_tyokugo = false;
-            }
-        }
-
-
-        /*
-        function displayQuestions(wrongOnly = false) {
-            const tbody = document.querySelector('#questionList tbody');
-            tbody.innerHTML = '';
-            questions.forEach(q => {
-                /*!wrongOnly または　!q.isRightのとき表示
-                    　!wrongonlyであれば!q.isRingtでなくても（全表示なら、誤も正も）表示される　
-                    　!wrongonlyでない場合は!q.isRingtでないと（誤表示なら、誤でないと）表示されない＝誤表示のときは誤のみが表示される
-                if (!wrongOnly || !q.isRight) {
-                    const row = tbody.insertRow();
-                    row.innerHTML = `
-                        <td>${q.id}</td>
-                        <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
-                            <!--${q.id===1 ? '<canvas id="canvas" frameborder="1" width="200" height="200"></canvas>':''} -->
-                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="400" height="200"></canvas>
-                        </td>
-                    `;
-                }
-            });
-
-            //ファイル読み込み直後の場合
-            if(file_yomikomi_tyokugo){
-                //ファイルの画像を読み込んで、localstrageに保存し、canvasに描画
-                questions.forEach(q => {
-                    //ただし、正答だけのものだけ　
-                    if (q.isRight) {
-                        q_yomikomi(q.id,q.gazou);
-                    }
-                });
-                file_yomikomi_tyokugo=false;
-            }
-        } 
-        */
+        document.getElementById('fileInput1').addEventListener('change', (e) => handleFileSelect(e, 'cell1'));
+        document.getElementById('fileInput2').addEventListener('change', (e) => handleFileSelect(e, 'cell2'));
+        document.getElementById('fileInput3').addEventListener('change', (e) => handleFileSelect(e, 'cell3'));
     </script>
 </body>
 </html>
