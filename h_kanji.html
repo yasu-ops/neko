@@ -943,11 +943,11 @@ function completeQuestionCreation() {
                         <td style="font-size: 20px;font-weight: bold;padding: 0px; text-align: mid;"><div class="vertical-text">${q.question}
                         </td>
                         <td bgcolor="white" style="border: 2px solid black;" > <!-- キャンバス -->
-                            <object class="left-align" type="image/svg+xml" data="edit.svg" width="50" height="50"></object>
-                            <button class="left-align" onclick="kaku(${q.id},${i})">書く</button>
+                            <!--<object class="left-align" type="image/svg+xml" data="edit.svg" width="50" height="50"></object>-->
+                            <!--<button class="left-align" onclick="kaku(${q.id},${i})">書く</button>-->
                             <!--<button class="right-align" onclick="scroll_on(${q.id})">画面スクロール</button>-->
-                            <object class="right-align" type="image/svg+xml" data="pan.svg" width="50" height="50"></object><br>
-                            <canvas class="myCanvas" id="canvas${q.id}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
+                            <!--<object class="right-align" type="image/svg+xml" data="pan.svg" width="50" height="50"></object>--><br>
+                            <canvas class="myCanvas" id="canvas${q.id}"  data-num1="${q.id}" data-num2="${i}" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
                             
                             <div style="font-size: 20px;font-weight: bold;">
                                 <button onclick="buttonclear(${q.id},${i})">消す</button>
@@ -1050,7 +1050,23 @@ function completeQuestionCreation() {
                     });
                 }
             }
+            test();
         }
+        function test(){
+            // Canvas要素を取得
+            // DOMが完全に読み込まれた後に実行
+            const canvases = document.querySelectorAll('canvas.myCanvas');
+            // 各canvasにクリックイベントリスナーを追加
+            canvases.forEach(canvas => {
+                canvas.addEventListener('click', function(event) { 
+                    let canvas_id = + canvas.id.substring(6);
+                    let gyou=canvas.dataset.num2;
+                    kaku(canvas_id,gyou); 
+                }); 
+            });
+
+        }
+
 //
 async function table_save() {
     const table = document.getElementById('questionList');
