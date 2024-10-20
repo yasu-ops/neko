@@ -516,9 +516,10 @@
             <br>正解：<button onclick="showAllAnswers()">表示</button>
             <button onclick="hideAllAnswers()">隠す</button>　　
             <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">↑を押した場所に戻る</button><br>
-            手書き欄のボタンの使い方<br>
-            ・「書く」＝手書きモードになる。<br>
-            ・「画面スクロール」ボタン＝うまくスクロールできないときに押す。<br>
+            手書き欄を使うときの注意点<br>
+            ・「書く」＝手書きモードになり、画面スクロールできなくなる。<br>
+            ・「画面スクロール」ボタン＝手書きモードから抜け出し、画面スクロールが可能になる。<br>
+            ・手書き欄のボタンは指で押す。（ペンは反応しない）
             ・字を消す時は線の色を白にする。
         </td>
     </tr>
@@ -955,9 +956,9 @@ function completeQuestionCreation() {
                             <div style="font-size: 20px;font-weight: bold;">
                                 <button onclick="buttonclear(${q.id},${i})">消す</button>
                                 色：
-                                <button style="background-color:black;" onclick="iro(${q.id},1)"> </button>
-                                <button style="background-color:white;"  onclick="iro(${q.id},2)"> </button>
-                                <button style="background-color:red;"  onclick="iro(${q.id},3)"> </button>
+                                <button style="background-color:black;" onclick="iro(${q.id},1)">　</button>
+                                <button style="background-color:white;"  onclick="iro(${q.id},2)">　</button>
+                                <button style="background-color:red;"  onclick="iro(${q.id},3)">　</button>
                                 <!--
                                 <input id="inputColor${q.id}" type="color" list="color-picker${q.id}" value="#000000" onchange="kaku(${q.id},${i});Colorbutton(${q.id})">
                                 <datalist id="color-picker${q.id}">
