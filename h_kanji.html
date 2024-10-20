@@ -476,20 +476,19 @@
 </head>
 <body>
 <div style="text-align: right;">※CSVファイルの処理に PapaParse ライブラリを使用しています。<br></div>
-<span style="font-size: 50px">漢字の練習 </span><button id="otona_hyouji" onclick="toggleRow('otona')">補助メニューを隠す</button>（補助メニュー：問題読み込み・やりかけ保存・解答結果保存・teams提出用画像作成・表示切替）
+<span style="font-size: 50px">漢字の練習 </span><button id="otona_hyouji" onclick="toggleRow('otona')">読み込み・保存メニューを表示する</button>
 
 <table style="font-size: 20px;font-weight: bold;">
-    <tr id="otona">
+    <tr id="otona" class="hidden">
         <td width="140px">
-            補助メニュー
+            読み込み<br>保存<br>メニュー
         </td>
         <td>
             ★<label for="fileInput">問題読み込み　※やりかけの問題も読み込める</label><br>
             　<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
             ★解答結果を保存：<button onclick="saveAnswers(1)">保存</button>　※やりかけの問題も保存可能<br>
-            ※手書き解答は「合ってたら押す」でチェックしたものだけが保存される。<br>
+            ※手書き解答は「正解」にチェックを入れたものだけが保存される。<br>
             ※iPadだとダウンロードフォルダに保存されるので、保存したらすぐに現代の国語フォルダに移す。<br>
-            ★表示切替：<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
             <!--★問題作成：<button onclick="createQuestionForm(true,false)">新規</button>
             <button onclick="handleQuestionCreation()">修正・追加・削除</button>
             <button onclick="saveAnswers(2)">作成した問題の保存</button><br>
@@ -516,11 +515,14 @@
             <br>正解：<button onclick="showAllAnswers()">表示</button>
             <button onclick="hideAllAnswers()">隠す</button>　　
             <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">↑を押した場所に戻る</button><br>
-            手書き欄を使うときの注意点<br>
-            ・「書く」＝手書きモードになり、画面スクロールできなくなる。<br>
-            ・「画面スクロール」ボタン＝手書きモードから抜け出し、画面スクロールが可能になる。<br>
+            手書きをしない場合<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
+            ■使い方■<br>
+            ・「書く」を押す→指やペンで答えを書く→正解表示<br>
+            　→正解なら「正解」にレ→「画面スクロール」を押して次の問題へ<br>
+            ・表示で「間違った問題だけ」を押すと「正解」にレをつけなかった問題だけ表示される。<br>
             ・<span style="color:red">ペンは字を書く時だけ（ボタンはペンでは反応しない）</span><br> 
-            ・字を消す時は線の色を白にする。
+            ・字を消す時は線の色を白にする。<br>
+            ・手書き欄の<span style="background-color:aqua;">↑</span>を押すとこのメニューに戻る。
         </td>
     </tr>
 </table>
@@ -576,10 +578,10 @@
             var row = document.getElementById(rowId);
             if (row.classList.contains('hidden')) {
                 row.classList.remove('hidden');
-                document.getElementById("otona_hyouji").textContent="補助メニューを隠す";
+                document.getElementById("otona_hyouji").textContent="読み込み・保存メニューを隠す";
             } else {
                 row.classList.add('hidden');
-                document.getElementById("otona_hyouji").textContent="補助メニューを表示";
+                document.getElementById("otona_hyouji").textContent="読み込み・保存メニューを表示";
             }
         }
 
@@ -981,7 +983,7 @@ function completeQuestionCreation() {
                             </span>
                         </td>
                         <td bgcolor="#FEE3D7" style="font-size: 20px;font-weight: bold;padding: 0px; text-align: center;">
-                            <span id="dekitara_guide${q.id}">${q.isRight ? "" : "合<br>っ<br>て<br>た<br>ら<br>押<br>す<br>↓<br>"}</span>
+                            <span id="dekitara_guide${q.id}">${q.isRight ? "" : "正<br>解<br>↓<br>"}</span>
                             <input type="checkbox" ${q.isRight ? 'checked' : ''} onchange="updateRight(${q.id}, this.checked,${i})"><br>
                             <span id="seitou-${q.id}">${q.isRight ? '<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>' : ''}</span>
                         </td>    
