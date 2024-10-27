@@ -490,7 +490,7 @@
                 問題<br>読み込み
             </td>
             <td id="use1" >
-                下の「ファイルを選択」をタップし、問題データを読み込む。<br>
+                次の「ファイルを選択」をタップし、問題データを読み込む。<br>
                 ※問題データはteams＞１年＞現代の国語＞ファイル＞漢字練習フォルダ内＞〇月漢字1～3.csv。事前にダウンロードしておく。<br>
                 ※<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
             </td>
@@ -563,6 +563,18 @@
            </td>
         </tr>
 </table>
+<table><tr><td style="background-color: rgb(255, 227, 248);">
+    ★各種操作ボタン★（説明の中にあるのと同じもの）<br>
+    問題読み込み：<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
+    <button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>
+    <button onclick="showWrong()">間違った問題だけ表示する</button>
+    <button onclick="showAllQuestions()">全部の問題を表示する</button><br>
+    <button onclick="saveAnswers(1)">途中保存</button>　
+    <button onclick="showAllAnswers()">正解を全部表示</button>
+    <button onclick="hideAllAnswers()">正解を全部隠す</button><br>
+    ※teams用のボタンを使う場合は説明を開いてください。
+
+</td></tr></table>
 
 <canvas class="canvas_dummy" id="canvas_dummy" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
 
