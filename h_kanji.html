@@ -483,35 +483,64 @@
 <span style="font-size: 50px">漢字の練習 </span>
 ※手書き欄の<span style="background-color:aqua;">↑</span>を押すとこのメニューに戻る。
 <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">手書き欄に戻る</button><br>
-
-<table style="font-size: 20px;font-weight: bold;">
+※説明を<button id="use9_hyouji" onclick="toggleRow(9)">閉じる</button>
+<table id="use9" style="font-size: 20px;font-weight: bold;">
         <tr>
-            <td width="140px">
-                使い方　<button id="use1_hyouji" onclick="toggleRow(1)">隠す</button>
+            <td width="70px">
+                Step1
             </td>
-            <td id="use1"  >
-                １：下の「ファイルを選択」をタップし、問題データを読み込む。<br>
-                　※問題データはteams＞１年＞現代の国語＞ファイル＞漢字練習フォルダ内＞〇月漢字1～3.csv。事前にダウンロードしておく。<br>
-                　※<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
-                ２：手書き欄で「書く」を押す→指やペンで答えを書く→正解表示ボタンを押す。<br>
-                　※<span style="color:red">ペンは字を書く時だけ（ボタンはペンでは反応しない）</span><br> 
-                　※字を一部修正する場合は線の色を白にして消しゴムとして使う。<br>
-                　※手書きをしない場合→<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
-                ３：正解なら　　　「正解」にレをつけて　　　次の問題へ<br>
-                　　不正解の場合は「画面スクロール」を押して次の問題へ<br>
-                ４：下の「間違った問題だけ」を押し、間違った問題だけやる。<br>
-                　<button onclick="showWrong()">間違った問題だけ表示する</button>
-                <button onclick="showAllQuestions()">全部の問題を表示する</button><br>
-                ５：中断する場合は右の保存ボタンをタップ→<button onclick="saveAnswers(1)">保存</button><br>
-                　<span style="color:red">注意</span>　手書き解答は<span style="color:red">「正解」にチェックを入れたものだけ</span>が保存される<br>
-                　※保存ボタンを押したとき、iPadだとダウンロードフォルダに保存される。<br>
+            <td id="use1" >
+                下の「ファイルを選択」をタップし、問題データを読み込む。<br>
+                ※問題データはteams＞１年＞現代の国語＞ファイル＞漢字練習フォルダ内＞〇月漢字1～3.csv。事前にダウンロードしておく。<br>
+                ※<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
             </td>
         </tr>
         <tr>
             <td>
-                teams課題の代わりに使う　<button id="use2_hyouji" onclick="toggleRow(2)">隠す</button>
+                Step2
             </td>
-            <td id="use2">
+            <td id="use2" >
+                手書き欄で「書く」を押す→指やペンで答えを書く→正解表示ボタンを押す。<br>
+                ※<span style="color:red">ペンは字を書く時だけ（ボタンはペンでは反応しない）</span><br> 
+                ※字を一部修正する場合は線の色を白にして消しゴムとして使う。<br>
+                ※手書きをしない場合→<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Step3
+            </td>
+            <td id="use3" >
+                正解なら　　　「正解」にレをつけて　　　次の問題へ<br>
+                不正解の場合は「画面スクロール」を押して次の問題へ<br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Step4
+            </td>
+            <td id="use4" >
+                下の「間違った問題だけ」を押し、間違った問題だけやる。<br>
+                ※<button onclick="showWrong()">間違った問題だけ表示する</button>
+                <button onclick="showAllQuestions()">全部の問題を表示する</button><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Step5
+            </td>
+            <td id="use5" >
+                中断する場合は右の保存ボタンをタップ→<button onclick="saveAnswers(1)">保存</button><br>
+                ※続きをやるときは保存したファイルをStep1で読み込む。<br>
+                ※<span style="color:red">注意</span>　手書き解答は<span style="color:red">「正解」にチェックを入れたものだけ</span>が保存される<br>
+                ※保存ボタンを押したとき、iPadだとダウンロードフォルダに保存される。<br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                teams<br>課題
+            </td>
+            <td id="use6">
                 <u>漢字練習プリント課題の代わりに手書き解答画像を提出する方法</u><br>
                 １：開いている問題の正解を全部手書きで書く。<br>
                 ２：右のボタンを押して手書きで書いた正解を画像として保存→<button onclick="table_save()">手書きを画像として保存</button><br>
@@ -523,7 +552,8 @@
         </tr>
         <tr>
             <td>
-                正解表示切替
+                正解<br>
+                表示<br>                
             </td>
             <td>
                 <button onclick="showAllAnswers()">正解を全部表示</button>
@@ -586,10 +616,10 @@
             var row = document.getElementById("use" + n);
             if (row.classList.contains('hidden')) {
                 row.classList.remove('hidden');
-                document.getElementById("use" + n + "_hyouji").textContent="隠す";
+                document.getElementById("use" + n + "_hyouji").textContent="閉じる";
             } else {
                 row.classList.add('hidden');
-                document.getElementById("use" + n + "_hyouji").textContent="表示";
+                document.getElementById("use" + n + "_hyouji").textContent="開く";
             }
         }
 
