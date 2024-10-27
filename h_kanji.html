@@ -480,61 +480,59 @@
 <a href=https://bitbucket.org/sommerhoff/anikanjivg>AniKanjiVG</a> is licensed by CC BY-SA Paul C. Sommerhoff<br>
 <a href=http://kanjivg.tagaini.net/>KanjiVG</a> is licensed by CC BY-SA Ulrich Apel.<br>
 </div>
-<span style="font-size: 50px">漢字の練習 </span><button id="otona_hyouji" onclick="toggleRow('otona')">読み込み・保存メニューを表示する</button>
+<span style="font-size: 50px">漢字の練習 </span>
+※手書き欄の<span style="background-color:aqua;">↑</span>を押すとこのメニューに戻る。
+<button style="background-color:aqua;text-align: center;" onclick="mae_basho()">手書き欄に戻る</button><br>
 
 <table style="font-size: 20px;font-weight: bold;">
-    <tr id="otona" class="hidden">
-        <td width="140px">
-            読み込み<br>保存<br>メニュー
-        </td>
-        <td>
-            ★<label for="fileInput">問題読み込み　※やりかけの問題も読み込める</label><br>
-            　<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
-            ※問題はteams＞１年＞現代の国語＞ファイル＞漢字練習フォルダ内＞〇月漢字1～3.csv<br>
-            ★解答結果を保存：<button onclick="saveAnswers(1)">保存</button>　※やりかけの問題も保存可能<br>
-            ※手書き解答は「正解」にチェックを入れたものだけが保存される。<br>
-            ※iPadだとダウンロードフォルダに保存される。（現代の国語フォルダに移す）<br>
-            <!--★問題作成：<button onclick="createQuestionForm(true,false)">新規</button>
-            <button onclick="handleQuestionCreation()">修正・追加・削除</button>
-            <button onclick="saveAnswers(2)">作成した問題の保存</button><br>
-            ※ＰＣでお手本がはみでたら→<button onclick="for_pc()">お手本を枠内におさめる</button><br>-->
-            ～～手書き解答を漢字練習プリントの代わりに提出する方法～～
-            <button onclick="table_save()">Ａ　正解を全部手書きで記入後、このボタンを押して画像として保存</button><br>
-            　　↓Ａボタンで試験範囲の３つの手書き正解画像が保存できたら…<br>
-            <button onclick="openInNewWindow()">Ｂ　このボタンを押して、３つの手書き画像を合体させた画像を作る</button><br>
-            ※Ｂボタンで作った画像を漢字練習プリントの代わりに提出できる。<br>
-            ※iPadだとダウンロードフォルダに保存される。（「現代の国語」フォルダに移す）
-            
-        </td>
-    </tr>
-</table>
-<p></p>
-<table style="font-size: 20px;font-weight: bold;">
         <tr>
-        <td width="140px">
-            メインメニュー<br>20241021
-        </td>
-        <td>
-            表示：<button onclick="showWrong()">間違った問題だけ</button>
-            <button onclick="showAllQuestions()">全部の問題</button>
-            <br>正解：<button onclick="showAllAnswers()">表示</button>
-            <button onclick="hideAllAnswers()">隠す</button>　　
-            <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">↑を押した場所に戻る</button><br>
-            手書きをしない場合<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
-            ■使い方■<br>
-            （１）「読み込み・保存」メニューを開き、問題データを読み込む。<br>
-            （２）「書く」を押す→指やペンで答えを書く→正解表示<br>
-            （３）正解なら「正解」にレ→次の問題へ<br>
-            　　　※不正解の場合は「画面スクロール」を押して次の問題へ<br>
-            （４）上の表示で「間違った問題だけ」を押し、間違った問題だけやる。<br>
-            （５）中断する場合は読み込み・保存メニューで保存<br>
-            ※書いた漢字をteamsの課題に添付するには？<br>
-            　　全部正解を書いてから「読み込み・保存」メニューで画像として保存。<br>
-            ※<span style="color:red">ペンは字を書く時だけ（ボタンはペンでは反応しない）</span><br> 
-            ※字を一部修正する場合は線の色を白にして消しゴムとして使う。<br>
-            ※手書き欄の<span style="background-color:aqua;">↑</span>を押すとこのメニューに戻る。
-        </td>
-    </tr>
+            <td width="140px">
+                使い方　<button id="use1_hyouji" onclick="toggleRow(1)">隠す</button>
+            </td>
+            <td id="use1"  >
+                １：下の「ファイルを選択」をタップし、問題データを読み込む。<br>
+                　※問題データはteams＞１年＞現代の国語＞ファイル＞漢字練習フォルダ内＞〇月漢字1～3.csv。事前にダウンロードしておく。<br>
+                　※<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
+                ２：手書き欄で「書く」を押す→指やペンで答えを書く→正解表示ボタンを押す。<br>
+                　※<span style="color:red">ペンは字を書く時だけ（ボタンはペンでは反応しない）</span><br> 
+                　※字を一部修正する場合は線の色を白にして消しゴムとして使う。<br>
+                　※手書きをしない場合→<button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>        
+                ３：正解なら　　　「正解」にレをつけて　　　次の問題へ<br>
+                　　不正解の場合は「画面スクロール」を押して次の問題へ<br>
+                ４：下の「間違った問題だけ」を押し、間違った問題だけやる。<br>
+                　<button onclick="showWrong()">間違った問題だけ表示する</button>
+                <button onclick="showAllQuestions()">全部の問題を表示する</button><br>
+                ５：中断する場合は右の保存ボタンをタップ→<button onclick="saveAnswers(1)">保存</button><br>
+                　<span style="color:red">注意</span>　手書き解答は<span style="color:red">「正解」にチェックを入れたものだけ</span>が保存される<br>
+                　※保存ボタンを押したとき、iPadだとダウンロードフォルダに保存される。<br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                teams課題の代わりに使う　<button id="use2_hyouji" onclick="toggleRow(2)">隠す</button>
+            </td>
+            <td id="use2">
+                <u>漢字練習プリント課題の代わりに手書き解答画像を提出する方法</u><br>
+                １：開いている問題の正解を全部手書きで書く。<br>
+                ２：右のボタンを押して手書きで書いた正解を画像として保存→<button onclick="table_save()">手書きを画像として保存</button><br>
+                ３：〇月漢字1～3.csvすべてについて、１・２をやる。<br>
+                ４：右のボタンを押して、〇月漢字1～3.csvの正解画像を１つにまとめる→<button onclick="openInNewWindow()">３つの手書き画像を合体させた画像を作る</button><br>
+                ５：４で作った画像を漢字練習プリントの課題に添付して提出<br>
+                ※保存ボタンを押したとき、iPadだと画像はダウンロードフォルダに保存される。
+            </td>
+        </tr>
+        <tr>
+            <td>
+                正解表示切替
+            </td>
+            <td>
+                <button onclick="showAllAnswers()">正解を全部表示</button>
+                <button onclick="hideAllAnswers()">正解を全部隠す</button>　　
+                
+           </td>
+        </tr>
+            </td>
+        </tr>
 </table>
 
 <canvas class="canvas_dummy" id="canvas_dummy" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
@@ -584,14 +582,14 @@
         }
 
         
-        function toggleRow(rowId) {
-            var row = document.getElementById(rowId);
+        function toggleRow(n) {
+            var row = document.getElementById("use" + n);
             if (row.classList.contains('hidden')) {
                 row.classList.remove('hidden');
-                document.getElementById("otona_hyouji").textContent="読み込み・保存メニューを隠す";
+                document.getElementById("use" + n + "_hyouji").textContent="隠す";
             } else {
                 row.classList.add('hidden');
-                document.getElementById("otona_hyouji").textContent="読み込み・保存メニューを表示";
+                document.getElementById("use" + n + "_hyouji").textContent="表示";
             }
         }
 
