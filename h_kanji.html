@@ -492,7 +492,7 @@
             <td id="use1" >
                 次の「ファイルを選択」をタップし、問題データを読み込む。<br>
                 ※問題データはteams＞１年＞現代の国語＞ファイル＞漢字練習フォルダ内＞〇月漢字1～3.csv。事前にダウンロードしておく。<br>
-                ※<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
+                ※<input type="file" id="fileInput1" accept=".csv" onchange="loadQuestions(1)"><br>
             </td>
         </tr>
         <tr>
@@ -565,7 +565,7 @@
 </table>
 <table><tr><td style="background-color: rgb(255, 227, 248);">
     ★各種操作ボタン★（説明の中にあるのと同じもの）<br>
-    問題読み込み：<input type="file" id="fileInput" accept=".csv" onchange="loadQuestions()"><br>
+    問題読み込み：<input type="file" id="fileInput2" accept=".csv" onchange="loadQuestions(2)"><br>
     <button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>
     <button onclick="showWrong()">間違った問題だけ表示する</button>
     <button onclick="showAllQuestions()">全部の問題を表示する</button><br>
@@ -863,8 +863,8 @@ function completeQuestionCreation() {
 
 
 
-        function loadQuestions() {
-            const fileInput = document.getElementById('fileInput');
+        function loadQuestions(n) {
+            const fileInput = document.getElementById('fileInput'+n);
             const file = fileInput.files[0];
             //0番目から2番目の文字の直前までを抽出
             if(file.name.substring(0,2)==="20"){
