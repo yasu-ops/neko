@@ -10,6 +10,7 @@
             --button-width: 30px;
             --button-height: 30px;
             --button-font-size: 20px;
+            --text-font-size: 20px;
             --controls-text-align: right;
             --controls-display: none;
             --controls-display1: none; /*先頭の△・▼*/
@@ -69,7 +70,7 @@
 
         textarea {
             flex-grow: 1;
-            font-size: 20px;
+            font-size: var(--text-font-size);
             min-height: 24px; /*必要に応じて調整*/
             border: 1px solid #ccc;
             /*padding: 5px;*/
@@ -155,7 +156,6 @@
             height: var(--button-height);
             font-size: var(--button-font-size);
         }        
-
         #moto {
             display: none;
         }
@@ -177,6 +177,14 @@
             // 新しいウィンドウでファイルをだ
             window.open(newUrl, '_blank', 'width=800,height=600');
         }
+        function changefontSize(increment) {
+            const root = document.documentElement;
+            const currentFontSize = parseInt(getComputedStyle(root).getPropertyValue('--text-font-size'));
+            const newFontSize = currentFontSize + increment;
+            root.style.setProperty('--text-font-size', newFontSize + 'px');
+            TM.updateDOM();
+        }
+
         function changeButtonSize(increment) {
             const root = document.documentElement;
             const currentWidth = parseInt(getComputedStyle(root).getPropertyValue('--button-width'));
@@ -195,18 +203,20 @@
         function setumei_kakusu(){
             if(document.getElementById("setumei").style.display===""){
                 document.getElementById("setumei").style.display="none";
-                document.getElementById("setumei_hyouji").textContent="「使い方・ボタン表示設定」を表示する";
+                document.getElementById("setumei_hyouji1").textContent="「使い方・ボタン表示設定」を表示する";
+                document.getElementById("setumei_hyouji2").textContent="「使い方・ボタン表示設定」を表示する";
             } else {
                 document.getElementById("setumei").style.display="";
-                document.getElementById("setumei_hyouji").textContent="「使い方・ボタン表示設定」を隠す";
+                document.getElementById("setumei_hyouji1").textContent="「使い方・ボタン表示設定」を隠す";
+                document.getElementById("setumei_hyouji2").textContent="「使い方・ボタン表示設定」を隠す";
             }
         }
     </script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     </head>
 <body>
- <span style="font-size: 20px"> ★★アウトラインを作る★★</span>
- <button style="font-size: 20px" id="setumei_hyouji" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
+ <span style="font-size: 20px"> ★★アウトラインを作る★★</span><br>
+ <button style="font-size: 20px" id="setumei_hyouji1" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
 <div id="setumei">
 <table border="1" style="font-size: 20px;"" >
     <tr>
@@ -242,9 +252,10 @@
         </td>
         <td width="30%" style="vertical-align: top;">
             <u>ボタン表示設定</u><br><br>
-            <b>ソフトウエアキーボード</b><br>★非表示推奨★<br>
-            <input type="radio" name="keyboard-toggle" value="show">自動表示<br>
-            <input type="radio" name="keyboard-toggle" value="hide" checked>非表示<br>
+            <!--
+            <b>ソフトウエアキーボード</b><br>★スマホの人は非表示に！★<br>
+            <input type="radio" name="keyboard-toggle" value="show"  checked>表示<br>
+            <input type="radio" name="keyboard-toggle" value="hide">非表示<br>-->
             <b>△・▼ボタン</b><br>
             <input type="radio" name="button_display" value="left">左端
             <input type="radio" name="button_display" value="right"  checked>右端
@@ -271,11 +282,15 @@
     </tr>
 </table> 
 </div><br>
-<span class="upcontrols" >外部ファイルを読み込む（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
-<button onclick="TM.exportCSV()"  style="font-size:20px;">外部ファイルに保存（字下げ情報＋テキスト）</button>
-<button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部表示する</button>
-<button id="inu1" onclick="TM.clearAllkakusu()"  style="font-size:20px;">全部折りたたむ</button>
-<button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色を消す</button>
+<button style="font-size: 20px" id="setumei_hyouji2" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button><br>
+<span class="upcontrols" style="font-weight:bold;color:red">外部ファイル読み込み（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
+<button onclick="TM.exportCSV()"  style="font-size:20px;color: blue;font-weight: bold;">外部ファイルに保存</button>
+<button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部広げる</button>
+<button id="inu1" onclick="TM.clearAllkakusu()"  style="font-size:20px;">全部たたむ</button>
+<button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色消す</button>
+<button onclick="changefontSize(-1)"  style="font-size:20px">字を小さく</button>
+<button onclick="changefontSize(1)"    style="font-size:20px">字を大きく</button>
+ソフトウエアキーボード（<input type="radio" name="keyboard-toggle" value="show"  checked>表示　<input type="radio" name="keyboard-toggle" value="hide">非表示）
 <div id="app"></div>
 
 <script>
@@ -381,7 +396,6 @@
                     });                
                 });        
                 this.addTextarea();
-
             }
             addColorClearButton() {
                 const ColorClearButton = document.createElement('button');
@@ -643,7 +657,6 @@
                     button.addEventListener('click', () => this.handleButtonClick(label, container));
                     textareaAndNumberWrapper.appendChild(button);
                 });
-                
                 const buttonsLabels3 = ['↑', '↓'];
                 buttonsLabels3.forEach(label => {
                     const button = document.createElement('button');
@@ -663,7 +676,7 @@
                 const textareaNumber = document.createElement('div');
                 textareaNumber.className = 'textarea-number';
                 textareaAndNumberWrapper.appendChild(textareaNumber);
-                
+               
                 const buttonsLabels4 = ['↑','↓'];
                 buttonsLabels4.forEach(label => {
                     const button = document.createElement('button');
@@ -1326,9 +1339,6 @@
                     //
                     this.removeTextarea(index);
                     this.moveCursor(index, -1);
-
-
-
                 }
             }
             highlightGroup(index) {
@@ -2104,8 +2114,12 @@ async function captureHighResImage(num) {
     // 基本的なスケールファクター（デバイスのピクセル比）
     const baseScale = window.devicePixelRatio || 1;
     
-    // 追加の解像度倍率（必要に応じて調整） original2
-    const resolutionMultiplier = 0.5;
+    // 追加の解像度倍率（必要に応じて調整） original2 あるいは0.5
+    let kaizoudo = prompt("解像度を入力してください。初期値は0.5。iPadの場合は初期値のままでよい。PCで画像が荒くなる場合は解像度を上げる。ファイル名を指定後、「ダウンロードしますか？」というメッセージが表示されなかったら、もう一度ボタンを押して解像度を下げて再チャレンジ。","0.5");
+            if(kaizoudo==="" || kaizoudo===null){
+                    return;
+            }        
+    const resolutionMultiplier = parseFloat(kaizoudo);
     
     // 最終的なスケールファクター
     const finalScale = baseScale * resolutionMultiplier;
@@ -2136,7 +2150,7 @@ async function captureHighResImage(num) {
                 console.error('Failed to copy image: ', err);
             });
         }else{
-            let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",TM.getFormattedDate()+"保存の"+TM.file_name_first.slice(0,-4) + ".png");
+            let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",TM.file_name_first.slice(0,-4) + ".png");
             if(filename==="" || filename===null){
                     return;
             }        
