@@ -228,8 +228,9 @@
             <li>補足的な文を字下げしたり、非表示にしたりして、文章の骨組みを「見える化」する。<span style="color: blue;font-weight: bold;">（作業を中断するときは、この「使い方」のすぐ下にある「外部ファイルに保存」をタップして保存し、作業を再開する時は一時保存したファイルを「外部ファイル読み込み」で読み込む。）</span></li>
             <blockquote>
                 <ul>
-                    <li>前の文を補足している文（補足説明・例など）は前の文より字下げする。(字下げ・字上げ＝指で←/→ボタンをタップ。またはキーボードでctrl＋←/ctrl+→。)</li>
-                    <li>補足部分は非表示にする。(△ボタン＝下位の文がしまわれて非表示に。▼ボタン＝しまわれていたのが広げられて再表示。■iPadでのキー操作■しまう＝ctr+s、広げる=ctrl+w　※sは「しまう」のsi。wはwideのw。）</li>
+                    <li><b>前の文を補足している文</b>（補足説明・例など）は前の文より字下げする。(字下げ・字上げ＝指で←/→ボタンをタップ。またはキーボードでctrl＋←/ctrl+→。)</li>
+                    <li><b>後の文を補足している文</b>（補足説明・例など）はそれらの文の前に入力欄を新たに作り、そこに※をつけた見出し文を入力し、補足文を見出しより字下げする。(入力欄の挿入方法：直前の入力欄の末尾でEnterを押す）</li>
+                    <li><b>補足部分は非表示にする。</b>(△ボタン＝下位の文がしまわれて非表示に。▼ボタン＝しまわれていたのが広げられて再表示。■iPadでのキー操作■しまう＝ctr+s、広げる=ctrl+w　※sは「しまう」のsi。wはwideのw。）</li>
                     <li>←/→ボタンや△▼ボタンを左側にしたい場合は、この説明文の右にある「ボタン表示設定」で設定してください。</li>
                     <li><b>字下げ・字上げ、表示・非表示の操作をするときは、画面上部の「『使い方・ボタン表示設定』を隠す」をタップして、この説明を非表示にしてから行ってください。</b></li>
                 </ul>
@@ -238,7 +239,8 @@
             <li>ツリー図ができたら、情報が多すぎたり、不足したりしていないか、確認する（自分の感覚でよい）。</li>
             <blockquote>
                 <ul>
-                <li>情報が多すぎる場合は△で非表示部分を増やし（←字下げしていない場合は字下げしてから！）、情報が不足している場合は▼で非表示部分を減らす。</li>
+                <li>情報が不足していて、文章の内容がつかみにくくなってしまう場合は▼で非表示部分を減らす。（<b>補足文であっても、その部分がないと文章の内容がつかみにくくなってしまう、という場合</b>は、補足文をランクアップして、表示してよい。）</li>
+                <li>情報が多すぎる場合は△で非表示部分を増やす（←字下げしていない場合は字下げしてから！）</li>
                 <li>枠の中の１行の字数を増減させたい場合は、作成ボタンを押して２回目の質問で数値を変えられる。></div></li>
                 </ul>
             </blockquote>
@@ -1960,6 +1962,7 @@
                 document.getElementById('neko1').style.display='';
                 document.getElementById('neko2').style.display='';
                 document.getElementById('neko3').style.display='';
+                document.getElementById('neko4').style.display='';
 
             }
             writeOutput5() {
@@ -2049,6 +2052,10 @@
     <button id="neko2" onclick="hideImage()" class="upcontrols" style="font-weight:bold;color:brown;display: none;">ツリー図やマインドマップを消す（各文を操作する時は必ず消してから操作する）</button>
     
 </div>
+<span id="neko4" style="font-weight:bold;color:red;display: none;">
+ツリー図が作れない場合は空欄がないか調べてください（あると作れない）。空欄がない場合は作ったランク付けデータを外部ファイルに一度保存して、
+safariも含めてすべてのアプリを閉じ、もう一度、このサイトを開いて、保存した外部ファイルを読み込み、ツリー図生成ボタンを押してください。
+それでも作れない場合はiPadを再起動して、試してみてください。それでも生成できない場合は先生に申し出て下さい。</span>
     
 <textarea id="moto"></textarea><br> 
 <pre id="yasu">
@@ -2086,7 +2093,7 @@ function hideImage() {
     document.getElementById('neko1').style.display='none';
     document.getElementById('neko2').style.display='none';
     document.getElementById('neko3').style.display='none';
-
+    document.getElementById('neko4').style.display='none';
 }
 
 async function captureHighResImage(num) {
