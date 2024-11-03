@@ -36,7 +36,7 @@
         <ol>
         <li><span style="color: red;font-weight: bold;">「ファイルを選択」ボタンをタップして、所定のファイル（プリントに指示してあります。）を読み込む。</span>（iPadの場合は「このiPad内」の、先ほど自分で選んだフォルダの中にあるはずです。）
             <span><!--<input type="file" id="file-input" accept=".txt">--><input type="file" id="upload"></li>
-        <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く。<br>
+        <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く(下線を引くのは文や部分ではなく、語句。例：✕私は<u>難解な統語法に困惑し</u> ○私は<u>難解</u>な<u>統語法</u>に<u>困惑</u>し、)<br>
         <u>下線の引き方（下線が引いてあるところで以下の操作をすると下線が消えます）</u><br>
         <b>キーボードがある場合→</b>語選択＞<span style="font-size:20px;color: red;font-weight: bold;"><del>ctrl</del>cmd+U</span>　<b>iPad・iPhone→</b>語選択＞フォーマット＞アンダーライン　<b>機器問わず→</b>下線ボタン表示＞下線を引きたい語の近くに三本線をドラッグ＞語選択＞Ｕボタン</br>
         <u>語の選択の仕方</u><br>
@@ -51,6 +51,7 @@
         </ol>
     </span>
     <button id="showbar" onclick="showFloatingToolbar()">下線ボタン表示</button><span style="font-size:20px;color: red;font-weight: bold;">※注意※　iPadのキーボードで下線を引く場合はcmd+Uを押してください。</span>
+    <br>★下線を引くのは文や部分ではなく、語句。（例：✕私は<u>難解な統語法に困惑し</u> ○私は<u>難解</u>な<u>統語法</u>に<u>困惑</u>し、）
     <div id="editor"></div>
     <button onclick="extractTexts()">下線部を抽出</button>
     <button onclick="copyExtractedText()" id="copyButton" style="display:none;">AIへの貼り付け用にコピー</button>
@@ -397,12 +398,12 @@ document.head.appendChild(style);
 
         function displayResults(extractedItems) {
             const resultDiv = document.getElementById('result');
-            let resultHTML = '頁,下線部の語句,読み,意味,下線部の前後10字を含む文字列\n';
+            let resultHTML = '場所,下線部の語句,読み,意味,下線部の前後10字を含む文字列\n';
 
             extractedItems.forEach(page => {
                 if (page.type === 'page') {
                     page.underlinedItems.forEach(item => {
-                        resultHTML += `${page.text},${item.text},,,…${item.context}…\n`;
+                        resultHTML += `${page.text},${item.text},,,～${item.context}～\n`;
                     });
                 }
             });
