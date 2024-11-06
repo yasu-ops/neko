@@ -27,31 +27,42 @@
     <div style="text-align: right;">リッチテキストエディタの処理にquill.jsを使っています。<br>このサイトは授業中以外は使用しないでください。</div>
     <span style="font-size: 15px;">
         <u>読めない語句・意味のわからない語句について調べる</u><br>
-        <span style="font-weight: bold;">～～１・４・５組の皆さんへ：変更点があります。以下の変更点１・２を読んでから作業に取り組んでください。～～</span><br>
-        <ul>
-            <li><b>変更点１</b>「インターネット時代の音楽産業.txt」は読み込めなくなりました。teams＞１年＞現代の国語＞１・４・５・６組個人作業＞「インターネット時代の音楽産業.json」をダウンロードして、読み込み用に使ってください。</li>
-            <li><b>変更点２</b>下線を引いた状態を一時保存できるようになりました。下記の３で保存できます。保存したファイルは１で読み込んで作業を再開できます。</li>
-            <!--<li><b>変更点３</b>ChatGPTに表を作ってもらい、表のままwordに貼り付けるようにしました。ChatGPTが作った表をコピーする時は、<u>コピー用アイコンをタップせず、表のセルをなぞって、手動で選択して</u>、浮かび上がるメニューでコピーを選んで、コピーしてください。</li>-->
-        </ul>
         <ol>
-        <li><span style="color: red;font-weight: bold;">「ファイルを選択」ボタンをタップして、所定のファイル（プリントに指示してあります。）を読み込む。</span>（iPadの場合は「このiPad内」の、先ほど自分で選んだフォルダの中にあるはずです。）
-            <span><!--<input type="file" id="file-input" accept=".txt">--><input type="file" id="upload"></li>
-        <li>下に表示されたテキストで、読めない語句・意味のわからない語句に下線を引く(下線を引くのは文や部分ではなく、語句。例：✕私は<u>難解な統語法に困惑し</u> ○私は<u>難解</u>な<u>統語法</u>に<u>困惑</u>し、)<br>
-        <u>下線の引き方（下線が引いてあるところで以下の操作をすると下線が消えます）</u><br>
-        <b>キーボードがある場合→</b>語選択＞<span style="font-size:20px;color: red;font-weight: bold;"><del>ctrl</del>cmd+U</span>　<b>iPad・iPhone→</b>語選択＞フォーマット＞アンダーライン　<b>機器問わず→</b>下線ボタン表示＞下線を引きたい語の近くに三本線をドラッグ＞語選択＞Ｕボタン</br>
-        <u>語の選択の仕方</u><br>
-        ダブルタップ＞「指で範囲広げる」<br>
-        <b>または</b><br>
-        ダブルタップ＞キーボードでカーソルを語句の先頭に。＞「ctrlの下の↑」＋▶」で範囲を広げる。</br>
-        <u>その他</u><br>
-        ★カーソルキーが動かない＞文字を打ってみたり、他のアプリを閉じてみたりする。</li>
-        <li><span style="color: blue;font-weight: bold;">作業を中断して、一時保存したい場合⇒</span><button id="save">ファイルに保存</button>※保存したファイルは上記１の「ファイルを選択」で読み込んで作業を再開できます。</li>
-        <li>読めない語句やわからない語句に下線を引き終わったら、一番下の「下線部を抽出」ボタンをタップ。</li>
-        <li>「AIへの貼り付け用にコピー」というボタンが出てくるので、タップ。（このあとの操作はプリントを見てください。）</li>
+        <li>この説明文の下の<span style="color: red;font-weight: bold;">赤字の「外部ファイル読み込み」</span>の下の「ファイルを選択」ボタンをタップして、下線を引くファイルを読み込む。</li>            
+        <li>表示されたテキストで、読めない語句・意味のわからない語句に下線を引く(下線を引くのは文や部分ではなく、語句。例：✕私は<u>難解な統語法に困惑し</u> ○私は<u>難解</u>な<u>統語法</u>に<u>困惑</u>し、)<br>
+            <ul>
+                <li>語を選択する</li>
+                    <ul>
+                    <li><b>指</b>　語の近くでダブルタップしてから、「指で範囲広げる」<br>
+                    <b>または</b></li>
+                    <li><b>キーボード</b>　語の近くで一度タップし、キーボードでカーソルを語句の先頭に。そのあと、「ctrlの下の↑」＋▶」で範囲を広げる。</br></li>
+                    </ul>
+                <li>下線を引く</li>
+                    <ul>
+                    <li><b>iPadで、キーボードを使う場合</b><br>
+                        語を選択してから、<span style="font-size:20px;color: red;font-weight: bold;"><del>ctrl+U</del>→cmd+U</span></li>
+                    <li><b>iPadでキーボードを使わない場合・iPhoneの場合</b><br>
+                        語選を選択してから、浮かび上がるメニューで「フォーマット」＞アンダーライン</li>
+                    <li><b>機器問わず</b><br>
+                        この説明文の下の「下線ボタン表示」ボタンを押す＞下線を引きたい語の近くに三本線をドラッグ＞語を選択する＞Ｕボタンを押す</li>
+                    </ul>
+                <li>カーソルキーが動かない場合<br>
+                    文字を打ってみたり、他のアプリを閉じてみたりする。</li>
+            </ul>
+        <li>作業を中断して、一時保存したい場合はこの説明文の下の<span style="color: blue;font-weight: bold;">青字の「外部ファイルに保存」</span>を押して保存。作業を再開する場合は、外部ファイル読み込みで保存したファイルを読み込む。</li>
+        <li>下線を引き終わったら、一番下の「下線部を抽出」ボタンをタップ。（タップする前に、この説明文の下の<span style="color: blue;font-weight: bold;">青字の「外部ファイルに保存」</span>を押して保存しておこう。）</li>
+        <li>「AIへの貼り付け用にコピー」というボタンが出てくるので、タップ。</li>
         </ol>
     </span>
-    <button id="showbar" onclick="showFloatingToolbar()">下線ボタン表示</button><span style="font-size:20px;color: red;font-weight: bold;">※注意※　iPadのキーボードで下線を引く場合はcmd+Uを押してください。</span>
-    <br>★下線を引くのは文や部分ではなく、語句。（例：✕私は<u>難解な統語法に困惑し</u> ○私は<u>難解</u>な<u>統語法</u>に<u>困惑</u>し、）
+    <table border="1" style="border-collapse: collapse;">
+        <tr>
+            <td><span style="font-size:20px;color: red;font-weight: bold;">外部ファイルを読み込む<input type="file" id="upload"></span></td>
+            <td><button style="color: blue;font-weight: bold;" id="save">外部ファイルに保存</button></td>
+        </tr>
+    </table>
+    <span style="font-size:20px;color: brown;font-weight: bold;">※注意※　iPadのキーボードで下線を引く場合はcmd+Uを押してください。</span>
+    <br>★下線を引くのは文や部分ではなく、語句。（例：✕私は<u>難解な統語法に困惑し</u> ○私は<u>難解</u>な<u>統語法</u>に<u>困惑</u>し、）<br>
+    <button id="showbar" onclick="showFloatingToolbar()">下線ボタン表示</button>
     <div id="editor"></div>
     <button onclick="extractTexts()">下線部を抽出</button>
     <button onclick="copyExtractedText()" id="copyButton" style="display:none;">AIへの貼り付け用にコピー</button>
