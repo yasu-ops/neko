@@ -483,21 +483,21 @@
 <span style="font-size: 50px">漢字の練習 </span>
 ※手書き欄の<span style="background-color:aqua;">↑</span>を押すとこのメニューに戻る。
 <button style="background-color:aqua;text-align: center;" onclick="mae_basho()">手書き欄に戻る</button><br>
-※説明を<button id="use9_hyouji" onclick="toggleRow(9)">閉じる</button>
+※下の説明を<button id="use1_hyouji" onclick="toggleRow()">非表示にする</button>
 <table id="use9" style="font-size: 20px;font-weight: bold;">
         <tr>
             <td style="background-color: rgb(194, 247, 224)" width="80px">
-                問題<br>読み込み
+                １問題<br>読み込み
             </td>
             <td id="use1" >
                 次の「ファイルを選択」をタップし、問題データを読み込む。<br>
-                ※問題データはteams＞１年＞現代の国語＞ファイル＞漢字練習フォルダ内＞〇月漢字1～3.csv。事前にダウンロードしておく。<br>
+                ※問題データはteams＞１年＞現代の国語＞ファイル＞漢字練習＞漢字練習サイト用データにある。<br>
                 ※<input type="file" id="fileInput1" accept=".csv" onchange="loadQuestions(1)"><br>
             </td>
         </tr>
         <tr>
             <td style="background-color: rgb(194, 247, 224)" >
-                答えを<br>書く
+                ２答えを<br>書く
             </td>
             <td id="use2" >
                 手書き欄で「書く」を押す→指やペンで答えを書く→正解表示ボタンを押す。<br>
@@ -508,7 +508,7 @@
         </tr>
         <tr>
             <td style="background-color: rgb(194, 247, 224)" >
-                答え<br>合わせ
+                ３答え<br>合わせ
             </td>
             <td id="use3" >
                 正解なら　　　「正解」にレをつけて　　　次の問題へ<br>
@@ -518,7 +518,7 @@
         </tr>
         <tr>
             <td style="background-color: rgb(194, 247, 224)" >
-                間違ったものだけやる
+                ４間違ったものだけやる
             </td>
             <td id="use4" >
                 下の「間違った問題だけ」を押し、間違った問題だけやる。<br>
@@ -528,7 +528,7 @@
         </tr>
         <tr>
             <td style="background-color: rgb(194, 247, 224)" >
-                中断
+                ５中断
             </td>
             <td id="use5" >
                 中断する場合は右の保存ボタンをタップ→<button onclick="saveAnswers(1)">保存</button><br>
@@ -553,8 +553,8 @@
         </tr>
         <tr>
             <td style="background-color: rgb(194, 247, 224)" >
-                正解<br>
-                表示<br>                
+                （正解<br>
+                表示）<br>                
             </td>
             <td>
                 <button onclick="showAllAnswers()">正解を全部表示</button>
@@ -565,14 +565,17 @@
 </table>
 <table><tr><td style="background-color: rgb(255, 227, 248);">
     ★各種操作ボタン★（説明の中にあるのと同じもの）<br>
+    ※上の説明を理解したら、上の説明を非表示にして、ここのボタンで操作して使おう！<br>
+    上の説明を<button id="use2_hyouji" onclick="toggleRow()">非表示にする</button><br>
     問題読み込み：<input type="file" id="fileInput2" accept=".csv" onchange="loadQuestions(2)"><br>
+    ※上の説明内のボタンでファイルを読み込んでも、ここには「ファイルが選択されていません」と表示されますが、問題ありません。<br>
     <button onclick="toggledisplay()">手書き欄：表示←→非表示</button><br>
     <button onclick="showWrong()">間違った問題だけ表示する</button>
     <button onclick="showAllQuestions()">全部の問題を表示する</button><br>
     <button onclick="saveAnswers(1)">途中保存</button>　
     <button onclick="showAllAnswers()">正解を全部表示</button>
     <button onclick="hideAllAnswers()">正解を全部隠す</button><br>
-    ※teams用のボタンを使う場合は説明を開いてください。
+    ※teams用提出用ボタンは上の説明の中のみにあります。
 
 </td></tr></table>
 
@@ -623,14 +626,16 @@
         }
 
         
-        function toggleRow(n) {
-            var row = document.getElementById("use" + n);
+        function toggleRow(){
+            var row = document.getElementById("use9");
             if (row.classList.contains('hidden')) {
                 row.classList.remove('hidden');
-                document.getElementById("use" + n + "_hyouji").textContent="閉じる";
+                document.getElementById("use1_hyouji").textContent="非表示にする";
+                document.getElementById("use2_hyouji").textContent="非表示にする";
             } else {
                 row.classList.add('hidden');
-                document.getElementById("use" + n + "_hyouji").textContent="開く";
+                document.getElementById("use1_hyouji").textContent="表示する";
+                document.getElementById("use2_hyouji").textContent="表示する";
             }
         }
 
