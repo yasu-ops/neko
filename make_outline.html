@@ -158,6 +158,7 @@
         }        
         #moto {
             display: none;
+            /*display: inline-block;*/
         }
         .open-button1{
             background: red;
@@ -924,7 +925,9 @@
                     case '▼':
                         //現在の位置
                         scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
+                        //1201_1/3 
+                            //広げたら、キーを押した文を頂点とするグループ化解除
+                            this.highlightGroupOff(index);
                         this.toggleVisibility(index, true);
 
                         //元の位置に表示する
@@ -1714,7 +1717,7 @@
                     let openButton1 = this.textareas[i].querySelector('.open-button1');
                     let closeButton2 = this.textareas[i].querySelector('.close-button2');
                     let openButton2 = this.textareas[i].querySelector('.open-button2');
-
+                    //表示する場合
                     if(show===true){
                         //インデント変数が0の場合
                         if(indent_kiroku===0){
@@ -1722,6 +1725,9 @@
                             this.textareas[i].style.display='';
                             //  もし、▼なら、インデントを記録
                             if(closeButton1.style.display === 'none'){
+                                //1201_2/3グループ化
+                                this.highlightGroup(i);
+                                //インデントを記録
                                 indent_kiroku=this.getIndent(this.textareas[i]);
                             }
                         //インデント変数が0でない場合
@@ -1733,6 +1739,8 @@
                             }else{
                                 this.textareas[i].style.display='';
                                 indent_kiroku=this.getIndent(this.textareas[i]);
+                                //1201_3/3 グループ化
+                                this.highlightGroup(i);
                             }
                         }
                         /*
@@ -1741,6 +1749,7 @@
                         closeButton2.style.display = '';
                         openButton2.style.display = 'none';
                         */
+                    //たたむ場合
                     } else {
                         //△ボタンを押した時、その行のボタンが▼になっていたら、それはそのままにしておく。
                         this.textareas[i].style.display='none';
@@ -1820,8 +1829,8 @@
                     textareaNumber.textContent = index;
                 });
             }
-           
-            writeOutput() {
+           //word
+           old_writeOutput() {
                 let output =  '{\\rtf1\\ansi\\deff0 {\\fonttbl{\\f0 Times New Roman;}}\n';
                 this.textareas.forEach(textareaDiv => {
                     const textarea = textareaDiv.querySelector('textarea');
@@ -1843,6 +1852,33 @@
 
                 this.downloadRTF(output, filename);
             }
+            //1214 
+            writeOutput() {
+                let output = '';
+                this.textareas.forEach(textareaDiv => {
+                    const textarea = textareaDiv.querySelector('textarea');
+                    const btn = textareaDiv.querySelector('.indent-number');
+                    const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
+                    
+                    // インデント数分のタブを先頭に追加
+                    const tabs = '\t'.repeat(indent);
+                    
+                    output += tabs + textarea.value + '\n';
+                });
+                output += '}';
+                let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",this.getFormattedDate()+"_"+this.file_name_first.slice(0,-4)+".doc");
+                if(filename==="" || filename===null){
+                    return;
+                }
+
+                // テキストファイルとしてダウンロード
+                const blob = new Blob([output], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+            }
+            //mindmap
             writeOutput3() {
                 let ans = confirm("表示されている行のみマインドマップにしますか?(はい=OK いいえ=cancel。「いいえ」を選ぶと表示されていない行もマインドマップ化されます。)");
                 let output = '';
@@ -1856,11 +1892,13 @@
                         const btn = textareaDiv.querySelector('.indent-number');
                         //const indent = Math.floor(parseInt(textarea.style.marginLeft) / 20);
                         const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
-                        const spaces = ' '.repeat(indent);
+                        const spaces = ' '.repeat(indent);                        
                         if(textarea.value.slice(0,1)==='+'){
-                            tmp=textarea.value.slice(1);
+                            //1214 tmp=textarea.value.slice(1);
+                            tmp=textarea.value.slice(1).replace(/\(/g, '（') .replace(/\)/g, '）');
                         } else {
-                            tmp=textarea.value;
+                            //1214 tmp=textarea.value;
+                            tmp=textarea.value.replace(/\(/g, '（') .replace(/\)/g, '）');
                         }
                         const escapedText = spaces+tmp+'\n';
                         output += escapedText;
@@ -1874,6 +1912,7 @@
                 document.getElementById('neko2').style.display='';
                 document.getElementById('neko3').style.display='';
             }
+            //tree
             writeOutput4(num){ 
                 let ans = confirm("表示されている行のみツリー図にしますか?(はい=OK いいえ=cancel。「いいえ」を選ぶと表示されていない行もツリー図内に表示されます。)");
                 let output = '';
@@ -1906,7 +1945,8 @@
                         const indent = Math.floor(parseInt(btn.style.marginLeft) / 20);
 
                         //const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>');
-                        const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>').replace(new RegExp(`(.{${mojisu}})`, 'g'), '$1<br>');
+                        //1214 const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>').replace(new RegExp(`(.{${mojisu}})`, 'g'), '$1<br>');  
+                        const content = this.escapeHtml(textarea.value).replace(/\n/g, '<br>').replace(new RegExp(`(.{${mojisu}})`, 'g'), '$1<br>').replace(/\(/g, '（') .replace(/\)/g, '）') .replace(/ \[/g, '［') .replace(/\] /g, '］');
                         const label = generateAlphabetLabel(index);
                         textareasData.push({ label, content, indent });
                     }
@@ -1967,6 +2007,7 @@
                 document.getElementById('neko3').style.display='';
 
             }
+            //pptx
             writeOutput5() {
                 let pres = new PptxGenJS();
                 let currentSlide = null;
