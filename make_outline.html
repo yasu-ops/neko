@@ -214,7 +214,10 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-    </head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+</head>
 <body>
  <span style="font-size: 20px"> ★★アウトラインを作る★★</span><br>
  <button style="font-size: 20px" id="setumei_hyouji1" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
@@ -1874,6 +1877,82 @@
                 // テキストファイルとしてダウンロード
                 this.downloadRTF(output, filename);
             }
+            //excel
+            writeOutput2() {
+                let ans = confirm("表示されている行のみエクセルファイルにしますか?(はい=OK いいえ=cancel。「いいえ」を選ぶと表示されていない行もマインドマップ化されます。)");
+                let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。", this.getFormattedDate() + "_" + this.file_name_first.slice(0, -4) + ".xlsx");
+                
+                if (filename === "" || filename === null) {
+                    return;
+                }
+
+                function escapeParentheses(text) {
+                    return text.replace(/\(/g, '（').replace(/\)/g, '）');
+                }
+
+                let output = '';
+                let maxIndex = 0;
+
+                // 最大インデントと出力を同時に計算
+                this.textareas.forEach(textareaDiv => {
+                    if (!ans || textareaDiv.style.display === '') {
+                        const textarea = textareaDiv.querySelector('textarea');
+                        const btn = textareaDiv.querySelector('.indent-number');
+                        
+                        const indent = Math.floor(parseInt(btn.style.marginLeft || '0') / 20);
+                        maxIndex = Math.max(maxIndex, indent);
+                    }
+                });
+
+                this.textareas.forEach(textareaDiv => {
+                    if (!ans || textareaDiv.style.display === '') {
+                        const textarea = textareaDiv.querySelector('textarea');
+                        const btn = textareaDiv.querySelector('.indent-number');
+                        
+                        const indent = Math.floor(parseInt(btn.style.marginLeft || '0') / 20);
+                        const mae_commas = ','.repeat(indent);
+                        const ato_commas = ','.repeat(maxIndex - indent);
+
+                        let tmp = textarea.value;
+                        if (tmp.startsWith('+')) {
+                            tmp = tmp.slice(1);
+                        }
+                        
+                        tmp = escapeParentheses(tmp);
+                        
+                        const escapedText = mae_commas + tmp + ato_commas + '\n';
+                        output += escapedText;
+                    }
+                });
+
+                // 以下のエクセル出力処理は変更なし
+                const rows = output.split('\n')
+                    .filter(row => row.trim() !== '') // 空行を除外
+                    .map(row => row.split(',').map(cell => cell.trim())); // カンマで分割し、トリム
+                const worksheet = XLSX.utils.aoa_to_sheet(rows);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+                
+                const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+                
+                function s2ab(s) {
+                    const buf = new ArrayBuffer(s.length);
+                    const view = new Uint8Array(buf);
+                    for (let i = 0; i < s.length; i++) {
+                        view[i] = s.charCodeAt(i) & 0xFF;
+                    }
+                    return buf;
+                }
+                
+                saveAs(
+                    new Blob(
+                        [s2ab(wbout)],
+                        { type: 'application/octet-stream' }
+                    ),
+                    filename
+                );
+            }
+
             //mindmap
             writeOutput3() {
                 let ans = confirm("表示されている行のみマインドマップにしますか?(はい=OK いいえ=cancel。「いいえ」を選ぶと表示されていない行もマインドマップ化されます。)");
@@ -2086,6 +2165,7 @@
     <button id="inu3" onclick="TM.writeOutput4(2)" style="font-size:20px;" >上→下のツリーを生成</button>
     <button id="inu4" onclick="TM.writeOutput3()" style="font-size:20px;">マインドマップを生成</button>
     <button id="inu5" onclick="TM.writeOutput5()"  style="font-size:20px;">パワーポイントのスライドとして保存</button>
+    <button id="inu6" onclick="TM.writeOutput2()"  style="font-size:20px;">エクセルファイルとして保存</button>
 
 </div>
     
