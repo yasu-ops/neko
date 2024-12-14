@@ -1854,7 +1854,7 @@
             }
             //1214 
             writeOutput() {
-                let output = '';
+                let output =  '{\\rtf1\\ansi\\deff0 {\\fonttbl{\\f0 Times New Roman;}}\n';
                 this.textareas.forEach(textareaDiv => {
                     const textarea = textareaDiv.querySelector('textarea');
                     const btn = textareaDiv.querySelector('.indent-number');
@@ -1863,7 +1863,7 @@
                     // インデント数分のタブを先頭に追加
                     const tabs = '\t'.repeat(indent);
                     
-                    output += tabs + textarea.value + '\n';
+                    output += `{\\pard\\li ` + tabs + this.escapeRTF(textarea.value) +'\\par}\n';
                 });
                 output += '}';
                 let filename = prompt("ファイル名を付けてください。※iPadの場合は「ダウンロード」に保存されます。",this.getFormattedDate()+"_"+this.file_name_first.slice(0,-4)+".doc");
@@ -1872,11 +1872,7 @@
                 }
 
                 // テキストファイルとしてダウンロード
-                const blob = new Blob([output], { type: 'text/plain' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = filename;
-                link.click();
+                this.downloadRTF(output, filename);
             }
             //mindmap
             writeOutput3() {
