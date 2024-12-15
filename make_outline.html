@@ -1134,6 +1134,10 @@
                         this.toggleHighlightGroup(index);
                         break;
                     case '↑':
+                        //1214現在の位置
+                        //scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        //alert(scrollTop);
+
                         //カーソルがあるのがハイライトされたテキストエリアの場合---
                         if (textarea.style.backgroundColor !== '') {
                             //そのブロックの一番上のインデックスを取得
@@ -1166,6 +1170,7 @@
                                 //真上がハイライトされていない場合
                                 this.moveHighlightedUp(index);
                             }
+
                             //カーソルがあるのはハイライトされていないテキストエリアの場合    
                         } else {
                             //それがてっぺんのテキストエリアなら何もしない
@@ -1189,6 +1194,12 @@
 
                             }
                         }
+                        /*/1214元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
+                        */
                         /*
                         this.handleKeyDown({
                             target: textarea,
@@ -1199,6 +1210,9 @@
                         */
                         break;
                     case '↓':
+                        //1214 現在の位置
+                        //scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
                        //カーソルがあるのがハイライトされたテキストエリアの場合
                         if (textarea.style.backgroundColor !== '') {
                             //自身のハイライトされているテキストエリアの数を数える ２個
@@ -1259,6 +1273,12 @@
                                 }
                             }
                         }
+                        //1214元の位置に表示する
+                        /*window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });*/
+
                         /*
                         this.handleKeyDown({
                             target: textarea,
@@ -1287,6 +1307,10 @@
                         }
 
                         //★★★-----------------------------------------------------------------
+                        //1214現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        alert(scrollTop);
+
                         //カーソルがあるのがハイライトされたテキストエリアの場合---
                         if (textarea.style.backgroundColor !== '') {
                             //そのブロックの一番上のインデックスを取得
@@ -1344,12 +1368,22 @@
 
                             }
                         }
+                        //1214元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
+
                         //★★★-----------------------------------------------------------------
 
                     } else if (event.key === 'ArrowDown') {
                         if (event.preventDefault && typeof event.preventDefault === 'function') {
                            event.preventDefault();
                         }
+                        //1214現在の位置
+                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        alert(scrollTop);
+
                         //カーソルがあるのがハイライトされたテキストエリアの場合
                         if (textarea.style.backgroundColor !== '') {
                             //自身のハイライトされているテキストエリアの数を数える ２個
@@ -1410,6 +1444,12 @@
                                 }
                             }
                         }
+                        //1214元の位置に表示する
+                        window.scrollBy({
+                            top:scrollTop,
+                            behavior: 'instant'
+                        });
+
                     } else if (event.key === 's' || event.key === 'S' ) {
                         //真上がないか、真上と異なるグループ番号の時だけ閉じられる
                         event.preventDefault();
