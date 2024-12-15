@@ -2103,6 +2103,7 @@
             //1214 
             writeOutput() {
                 let output =  '{\\rtf1\\ansi\\deff0 {\\fonttbl{\\f0 Times New Roman;}}\n';
+                output += `{\\pard\\li ` + this.escapeRTF("全部選択して、wordアプリのメニューの123という番号のついたボタンを押すといい感じに仕上がります（ボタンを押したら、この文は削除してください）。") +'\\par}\n';
                 this.textareas.forEach(textareaDiv => {
                     const textarea = textareaDiv.querySelector('textarea');
                     const btn = textareaDiv.querySelector('.indent-number');
