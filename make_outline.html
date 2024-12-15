@@ -1135,8 +1135,9 @@
                         break;
                     case '↑':
                         //1214現在の位置
-                        //scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                        //alert(scrollTop);
+                        if(this.isSafari()){
+                            scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        }
 
                         //カーソルがあるのがハイライトされたテキストエリアの場合---
                         if (textarea.style.backgroundColor !== '') {
@@ -1194,12 +1195,13 @@
 
                             }
                         }
-                        /*/1214元の位置に表示する
-                        window.scrollBy({
-                            top:scrollTop,
-                            behavior: 'instant'
-                        });
-                        */
+                        //1214元の位置に表示する
+                        if(this.isSafari()){
+                            window.scrollBy({
+                                top:scrollTop,
+                                behavior: 'instant'
+                            });
+                        }
                         /*
                         this.handleKeyDown({
                             target: textarea,
@@ -1211,7 +1213,9 @@
                         break;
                     case '↓':
                         //1214 現在の位置
-                        //scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        if(this.isSafari()){
+                            scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        }
 
                        //カーソルがあるのがハイライトされたテキストエリアの場合
                         if (textarea.style.backgroundColor !== '') {
@@ -1274,10 +1278,12 @@
                             }
                         }
                         //1214元の位置に表示する
-                        /*window.scrollBy({
-                            top:scrollTop,
-                            behavior: 'instant'
-                        });*/
+                        if(this.isSafari()){
+                            window.scrollBy({
+                                top:scrollTop,
+                                behavior: 'instant'
+                            });
+                        }
 
                         /*
                         this.handleKeyDown({
@@ -1292,6 +1298,9 @@
             }
             handleInput(event) {
                     this.autoResize(event);
+            }
+            isSafari() {
+                return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             }
             handleKeyDown(event) {
                 const textarea = event.target;
@@ -1308,9 +1317,9 @@
 
                         //★★★-----------------------------------------------------------------
                         //1214現在の位置
-                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                        alert(scrollTop);
-
+                        if(this.isSafari()){
+                            scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        }
                         //カーソルがあるのがハイライトされたテキストエリアの場合---
                         if (textarea.style.backgroundColor !== '') {
                             //そのブロックの一番上のインデックスを取得
@@ -1369,10 +1378,12 @@
                             }
                         }
                         //1214元の位置に表示する
-                        window.scrollBy({
-                            top:scrollTop,
-                            behavior: 'instant'
-                        });
+                        if(this.isSafari()){
+                            window.scrollBy({
+                                top:scrollTop,
+                                behavior: 'instant'
+                            });
+                        }
 
                         //★★★-----------------------------------------------------------------
 
@@ -1381,8 +1392,9 @@
                            event.preventDefault();
                         }
                         //1214現在の位置
-                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                        alert(scrollTop);
+                        if(this.isSafari()){
+                            scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        }
 
                         //カーソルがあるのがハイライトされたテキストエリアの場合
                         if (textarea.style.backgroundColor !== '') {
@@ -1445,10 +1457,12 @@
                             }
                         }
                         //1214元の位置に表示する
-                        window.scrollBy({
-                            top:scrollTop,
-                            behavior: 'instant'
-                        });
+                        if(this.isSafari()){
+                            window.scrollBy({
+                                top:scrollTop,
+                                behavior: 'instant'
+                            });
+                        }
 
                     } else if (event.key === 's' || event.key === 'S' ) {
                         //真上がないか、真上と異なるグループ番号の時だけ閉じられる
