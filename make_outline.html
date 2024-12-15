@@ -3,8 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文章の骨組みをつかむ</title>
+    <title>思考の骨組み</title>
     <style>
+        /*折り畳み start*---------------------------------------------------------------/
+
+ /* 基本的なリセットとスタイル */
+        .tree-view {
+            font-family: Arial, sans-serif;
+            /*max-width: 600px;*/
+            /* margin: 20px auto;*/
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        /* 折りたたみ可能な要素 */
+        .tree-view input[type="checkbox"] {
+            display: none;
+        }
+
+        .tree-view label {
+            cursor: pointer;
+            display: block;
+            padding: 5px 10px;
+            /*background-color: #e0e0e0;*/
+            border-radius: 3px;
+            margin-bottom: 5px;
+            position: relative;
+            color:black;
+            font-weight: normal;
+
+        }
+
+        /* 折りたたみ可能な要素の前に矢印アイコンを追加 */
+        .tree-view label::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        /* チェックボックスがチェックされたときのスタイル */
+        .tree-view input[type="checkbox"]:checked + label::before {
+            transform: rotate(90deg);
+        }
+
+        /* 子要素の非表示と表示切り替え */
+        .tree-view .nested {
+            display: none;
+            padding-left: 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color:rgb(15, 6, 139);
+            font-weight: bold;
+        }
+
+        .tree-view input[type="checkbox"]:checked + label + .nested {
+            display: block;
+            max-height: 1000px;
+        }
+
+        /* サブ項目のスタイル */
+        .nested label {
+            /*background-color: #f0f0f0;*/
+            margin-bottom: 3px;
+        }
+
+
+        /*折り畳み end*---------------------------------------------------------------/
+
         /*表示の書式設定*/
         :root {
             --button-width: 30px;
@@ -220,82 +288,204 @@
 </head>
 <body>
  <span style="font-size: 20px"> ★★アウトラインを作る★★</span><br>
- <button style="font-size: 20px" id="setumei_hyouji1" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button>
-<div id="setumei">
-<table border="1" style="font-size: 20px;"" >
-    <tr>
-        <td width="70%" style="vertical-align: top;">
-            <u>使い方</u><br>
-            <span style="color: red;font-weight: bold;">この「使い方」は「『使い方・ボタン表示設定』を隠す」をタップして非表示にできます。</span>
-            <ul>
-            <li><b>入力欄の追加・削除/表示位置の移動/表示・非表示の切り替え</b>
-                <br>追加：入力欄内の末尾でEnterキー（iPadだと右端の上から3つ目のキー）
-                <br>削除：入力欄の先頭でBacKSpaceキー（iPadだと右端の上から２つ目の←キー）※削除された欄の内容は上の行の末尾に結合される。
-                <br>上下移動：ctrl+▲・ctrl+▼　または　↑↓ボタン（初期設定では非表示になっている。ボタンの表示設定で表示できる。）
-                <br>左右移動：ctrl＋◀・ctrl+▶　または　←/→ボタン
-                <br>隠す＝△（下位の文を隠す。）再表示＝▼（下位の文を再表示）※iPadだと、行を隠す＝ctrl+s、再表示=ctrl+w</li>
-            <li><b>カーソル移動</b>　▲▼キーで上の行や下の行に移る</li>
-            <li><b>入力内容の分割・結合・欄内改行</b><br>分割：分割したいところでenter<br>結合：入力欄の先頭でBackSpaceで上の行に結合される。<br>欄内改行：↑＋enter</li>
-            <li><b>保存・読み込み</b><br>保存：この「使い方」の下の「外部ファイルに保存」ボタン。
-                <br>読み込み：この「使い方」の下の「ファイルを選択」ボタン。</li>
-            <li><b>ボタンの大きさ・表示位置</b>　この「使い方」の右側で変更できる。</li>
-            <li><b>★注意点★　マインドマップ</b><br>（１）最初の行が中心のトピックになる。<br>（２）最初の行は字下げしない。他の行はすべて字下げする。</li>
-            <li><b>★注意点★　ツリー図</b><br>分岐させて、それを再び、１つにまとめたい場合は分岐の先頭以外（下記の例だとC、D）の最初に+をつけ、１つにまとめる箇所（下記の例だとE)を分岐の最後に字下げして付け足す。</li>
-                <blockquote>
-                    A<br>
-                    <blockquote>
-                        B<br>
-                        +C<br>
-                        +D<br>
-                        <blockquote>
-                            E<br>
-                        </blockquote>
-                    </blockquote>
-                </blockquote>
-            </ul>
-        </td>
-        <td width="30%" style="vertical-align: top;">
-            <u>ボタン表示設定</u><br><br>
-            <!--
-            <b>ソフトウエアキーボード</b><br>★スマホの人は非表示に！★<br>
-            <input type="radio" name="keyboard-toggle" value="show"  checked>表示<br>
-            <input type="radio" name="keyboard-toggle" value="hide">非表示<br>-->
-            <b>△・▼ボタン</b><br>
-            <input type="radio" name="button_display" value="left">左端
-            <input type="radio" name="button_display" value="right"  checked>右端
-            <input type="radio" name="button_display" value="none" >非表示<br>
-            <b>←・→</b><br>
-            <input type="radio" name="button_display1" value="left" >左端
-            <input type="radio" name="button_display1" value="right" checked>右端
-            <input type="radio" name="button_display1" value="both">両方
-            <input type="radio" name="button_display1" value="none" >非表示<br>
-            <b>↑・↓</b><br>
-            <input type="radio" name="button_display2" value="left" >左端
-            <input type="radio" name="button_display2" value="right" >右端
-            <input type="radio" name="button_display2" value="both">両方
-            <input type="radio" name="button_display2" value="none" checked >非表示<br>
-            <b>ボタンの大きさ</b></br>
-            <button onclick="changeButtonSize(-1)"  style="font-size:20px">小さく</button>
-            <button onclick="changeButtonSize(1)"    style="font-size:20px">大きく</button><br><br><br>
-            <ul>
-            <li>このサイトは授業以外では使わないでください。</li>
-            <li>このサイトは次のライブラリを利用しています。<br>pptxgen.js<br>mermaid.js<br>html2canvas.js<br>SheetJS (xlsx.js)<br>FileSaver.js></script>
-            </li>
-            </ul>
+ このサイトは授業用です。このサイトはpptxgen.js・mermaid.js・html2canvas.js・SheetJS (xlsx.js)・FileSaver.jsを利用しています。<br>
+  <div class="tree-view">
+    <!-- 使い方 -->
+    <input type="checkbox" id="section1">
+    <label for="section1"><u>使い方</u>（下で骨組みを操作する時はたたんでおく）</label>
+    <div class="nested">
+        <input type="checkbox" id="subsection1-1">
+        <label for="subsection1-1">新たな入力欄を挿入したい</label>
+        <div class="nested">
+            作成したい場所の直前の入力欄内の末尾でEnterキー（iPadだと右端の上から3つ目のキー）
+        </div>
 
-        </td>
-    </tr>
-</table> 
-</div><br>
-<button style="font-size: 20px" id="setumei_hyouji2" onclick="setumei_kakusu()">「使い方・ボタン表示設定」を隠す</button><br>
+        <input type="checkbox" id="subsection1-2">
+        <label for="subsection1-2">入力欄を削除したい</label>
+        <div class="nested">
+            入力欄の先頭でBacKSpaceキー（iPadだと右端の上から２つ目の←キー）※削除された欄の内容は上の行の末尾に結合される。
+        </div>
+
+        <input type="checkbox" id="subsection1-3">
+        <label for="subsection1-3">入力欄を上下に移動させたい</label>
+        <div class="nested">
+                上下移動：ctrl+▲・ctrl+▼　または　上下矢印ボタン（上下矢印ボタンは初期設定では非表示になっている。この下の「ボタンの表示位置・大きさの変更」で表示するよう変更できる。）<br>
+                ※たたむとたたんだまとまりで移動できる
+        </div>
+
+        <input type="checkbox" id="subsection1-4">
+        <label for="subsection1-4">
+            字下げしたい・字下げを戻したい
+        </label>
+        <div class="nested">
+                ctrl＋◀・ctrl+▶　または　←/→ボタン
+        </div>
+
+        <input type="checkbox" id="subsection1-5">
+        <label for="subsection1-5">
+            下位の文をたたみたい・たたんだ文を開きたい
+        </label>
+        <div class="nested">
+                たたむ＝△（下位の文を隠す。）再表示＝▼（下位の文を再表示）※iPadだと、行を隠す＝ctrl+s、再表示=ctrl+w</li>
+        </div>
+
+        <input type="checkbox" id="subsection1-6">
+        <label for="subsection1-6">
+            上の欄にカーソルを移したい・下の欄にカーソルを移したい
+        </label>
+        <div class="nested">
+                ▲▼キーで上の行や下の行に移る
+        </div>
+
+        <input type="checkbox" id="subsection1-7">
+        <label for="subsection1-7">
+            一つの欄の内容を２つの欄に分割したい
+        </label>
+        <div class="nested">
+                分割したいところでenter
+        </div>
+
+        <input type="checkbox" id="subsection1-8">
+        <label for="subsection1-8">
+            ２つの欄の内容を結合したい
+        </label>
+        <div class="nested">
+                ２つの欄を上下に並べて、下側の入力欄の先頭でBackSpace（iPadだと右端の上から２つ目の←キー）で上の行に結合される。
+        </div>
+
+        <input type="checkbox" id="subsection1-9">
+        <label for="subsection1-9">
+            欄の中で改行したい
+        </label>
+        <div class="nested">
+                シフトキー（iPadだと左端の上矢印キー）＋enter
+        </div>
+
+        <input type="checkbox" id="subsection1-10">
+        <label for="subsection1-10">
+            骨組みを外部ファイルに保存したい・保存したいファイルから骨組みを読み込みたい
+        </label>
+        <div class="nested">
+                保存：この「使い方」の下の「外部ファイルに保存」ボタン。<br>
+                読み込み：この「使い方」の下の「ファイルを選択」ボタン。<br>
+        </div>
+        <input type="checkbox" id="subsection1-10-2">
+        <label for="subsection1-10-2">
+            骨組みデータをワードやエクセルやパワーポイントで利用したい。
+        </label>
+        <div class="nested">
+               入力欄の下に変換用ボタンがある。
+        </div>
+
+        <input type="checkbox" id="subsection1-10-3">
+        <label for="subsection1-10-3">
+            骨組みをツリー図やマインマップにしたい。
+        </label>
+        <div class="nested">
+               入力欄の下に変換用ボタンがある。
+        </div>
+
+        <input type="checkbox" id="subsection1-11">
+        <label for="subsection1-11">
+            マインドマップを作る場合に守らなけれならない２つの条件
+        </label>
+        <div class="nested">
+                (1)最初の入力欄は字下げしない。<br>
+                (2)2つ目以降の入力欄はすべて字下げする。
+        </div>
+
+        <input type="checkbox" id="subsection1-12">
+        <label for="subsection1-12">
+            ツリー図で分岐させて、また束ねるには？
+        </label>
+        <div class="nested">
+            下のツリー図のようにAがB・C・Dに分岐してEに合流するようにするには、下の骨組みのように(1)Aのあとに分岐するB・C・Dを字下げして追加。(2)分岐の先頭B以外は最初に半角の+をつける。(3)B・C・Dのあとに字下げして、合流先のEを付け足す。
+            <table>
+                <tr>
+                    <td>ツリー図</td>
+                    <td></td>
+                    <td colspan="3">骨組み</td>
+                </tr>
+                <tr>
+                    <td rowspan="3"><img src="./tree.png" width="150px"></td>
+                    <td rowspan="3">＝</td>
+                    <td>A</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>B<br>+C<br>+D</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>E</td>
+                </tr>
+            </table>    
+        </div>
+    </div>
+
+    <!-- 第1階層 -->
+    <input type="checkbox" id="section2">
+    <label for="section2"><u>ボタンの表示位置・大きさの変更</u>（下で骨組みを操作する時はたたんでおく）</label>
+    <div class="nested">
+        <table border=1 style="vertical-align: top;">
+            <tr>
+                <td>
+                    △・▼ボタン（たたむ・開く）
+                </td>
+                <td>
+                    <input type="radio" name="button_display" value="left">左端
+                    <input type="radio" name="button_display" value="right"  checked>右端
+                    <input type="radio" name="button_display" value="none" >非表示
+                </td>
+            </tr>
+            <tr>
+                <td>        
+                   ←・→ボタン（字下げ・字下げを戻す）
+                </td>
+                <td>
+                    <input type="radio" name="button_display1" value="left" >左端
+                    <input type="radio" name="button_display1" value="right" checked>右端
+                    <input type="radio" name="button_display1" value="both">両方
+                    <input type="radio" name="button_display1" value="none" >非表示
+                </td>
+            </tr>
+            <tr>
+                <td>        
+                    上矢印・下矢印ボタン（欄の上下移動）
+                </td>
+                <td>
+                    <input type="radio" name="button_display2" value="left" >左端
+                    <input type="radio" name="button_display2" value="right" >右端
+                    <input type="radio" name="button_display2" value="both">両方
+                    <input type="radio" name="button_display2" value="none" checked >非表示<br>
+                </td>
+            </tr>
+            <tr>
+                <td>        
+                    上記のボタンの大きさ
+                </td>
+                <td>
+                    <button onclick="changeButtonSize(-1)"  style="font-size:20px">小さく</button>
+                    <button onclick="changeButtonSize(1)"    style="font-size:20px">大きく</button>
+                </td>
+                <td>
+            </tr>
+        </table> 
+    </div>
+</div>
 <span class="upcontrols" style="font-weight:bold;color:red">外部ファイル読み込み（<input style="font-size:20px;" type="file" id="csvFile" accept=".csv" onchange="TM.importCSV()">）</span>
-<button onclick="TM.exportCSV()"  style="font-size:20px;color: blue;font-weight: bold;">外部ファイルに保存</button>
+<button onclick="TM.exportCSV()"  style="font-size:20px;color: blue;font-weight: bold;">外部ファイルに保存</button><br>
 <button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部広げる</button>
 <button id="inu1" onclick="TM.clearAllkakusu()"  style="font-size:20px;">全部たたむ</button>
-<button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色消す</button>
+<!--<button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色消す</button>-->
 <button onclick="changefontSize(-1)"  style="font-size:20px">字を小さく</button>
-<button onclick="changefontSize(1)"    style="font-size:20px">字を大きく</button>
-ソフトウエアキーボード（<input type="radio" name="keyboard-toggle" value="show"  checked>表示　<input type="radio" name="keyboard-toggle" value="hide">非表示）
+<button onclick="changefontSize(1)"    style="font-size:20px">字を大きく</button><br>
+ソフトウエアキーボード（<input type="radio" name="keyboard-toggle" value="show"  checked>オン　<input type="radio" name="keyboard-toggle" value="hide">オフ）
+※<span style="color:red;"><b><u>スマホやキーボードなしのiPadの場合は</b></u></span>テキスト入力時のみ「オン」
 <div id="app"></div>
 
 <script>
@@ -1987,6 +2177,7 @@
                 document.getElementById('neko1').style.display='';
                 document.getElementById('neko2').style.display='';
                 document.getElementById('neko3').style.display='';
+                document.getElementById('neko4').style.display='';
             }
             //tree
             writeOutput4(num){ 
@@ -2081,6 +2272,7 @@
                 document.getElementById('neko1').style.display='';
                 document.getElementById('neko2').style.display='';
                 document.getElementById('neko3').style.display='';
+                document.getElementById('neko4').style.display='';
 
             }
             //pptx
@@ -2161,15 +2353,23 @@
 <br>
 <br>
 <div class="upcontrols2">
-    <button id="inu1" onclick="TM.writeOutput()"  style="font-size:20px;">word文書として保存</button>
-    <button id="inu2" onclick="TM.writeOutput4(1)" style="font-size:20px;">左→右のツリーを生成</button>
+    骨組みから<button id="inu2" onclick="TM.writeOutput4(1)" style="font-size:20px;">左→右のツリーを生成</button>
     <button id="inu3" onclick="TM.writeOutput4(2)" style="font-size:20px;" >上→下のツリーを生成</button>
-    <button id="inu4" onclick="TM.writeOutput3()" style="font-size:20px;">マインドマップを生成</button>
-    <button id="inu5" onclick="TM.writeOutput5()"  style="font-size:20px;">パワーポイントのスライドとして保存</button>
+    <button id="inu4" onclick="TM.writeOutput3()" style="font-size:20px;">マインドマップを生成</button><br><br>
+    骨組みを<button id="inu1" onclick="TM.writeOutput()"  style="font-size:20px;">word文書として保存</button>
     <button id="inu6" onclick="TM.writeOutput2()"  style="font-size:20px;">エクセルファイルとして保存</button>
-
-</div>
+    <button id="inu5" onclick="TM.writeOutput5()"  style="font-size:20px;">パワーポイントのスライドとして保存</button><br><br>
+    <button id="neko1" onclick="captureHighResImage(1)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像としてコピー（safariでは使用不可）</button><br>
+    <button id="neko3" onclick="captureHighResImage(2)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像として保存</button><br>
+    <button id="neko2" onclick="hideImage()" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを消す</button>
     
+</div>
+<span id="neko4" style="font-weight:bold;color:red;display: none;">
+    ※ツリー図が作れない場合の対処方法※<br>
+    ツリー図が作れない場合は空欄がないか調べてください（あると作れない）。空欄がないのにツリー図が作れない場合は作ったランク付けデータを外部ファイルに一度保存して、
+    safariも含めてすべてのアプリを閉じ、もう一度、このサイトを開いて、保存した外部ファイルを読み込み、ツリー図生成ボタンを押してください。
+    それでも作れない場合はiPadを再起動して、試してみてください。それでも生成できない場合は先生に申し出て下さい。</span>
+        
 <textarea id="moto"></textarea><br> 
 <pre id="yasu">
 </pre>
@@ -2195,9 +2395,6 @@
 <div id="dst">
 </div>
 
-<button id="neko1" onclick="captureHighResImage(1)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像としてコピー（safariでは使用不可）</button><br>
-<button id="neko3" onclick="captureHighResImage(2)" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを画像として保存</button><br>
-<button id="neko2" onclick="hideImage()" class="upcontrols" style="display: none;">表示されているツリー図やマインドマップを消す</button>
 
 <!--ローカルの場合は以下の一文を入れる
 <script src="./html2canvas.min.js"></script>-->
@@ -2209,6 +2406,7 @@ function hideImage() {
     document.getElementById('neko1').style.display='none';
     document.getElementById('neko2').style.display='none';
     document.getElementById('neko3').style.display='none';
+    document.getElementById('neko4').style.display='none';
 
 }
 
