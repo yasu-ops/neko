@@ -5,7 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>思考の骨組み</title>
     <style>
-        /*折り畳み start*---------------------------------------------------------------/
+    #floating-toolbar {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        padding: 5px;
+        display: none;
+        z-index: 9999;
+        cursor: move;
+    }
+    #floating-toolbar button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 10px;
+        padding: 5px 5px;
+    }
+    #drag-handle {
+        cursor: move;
+        user-select: none;
+        padding: 5px;
+        margin-bottom: 5px;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+
+/*折り畳み start*---------------------------------------------------------------/
 
  /* 基本的なリセットとスタイル */
         .tree-view {
@@ -145,10 +173,17 @@
         }
 
         .textarea-number {
-            width: 30px; /*必要に応じて調整*/
+            height: var(--button-height);
+            /*font-size: var(--text-font-size);*/
+            font-size: 15px;
+            color:blueviolet;
+            font-weight: bold;
+            /*
+            width: 30px; /*必要に応じて調整
             text-align: right;
             padding-right: 5px;
-            flex-shrink: 0;
+            flex-shrink: 0;*/
+            
         }
 
         /*csv読み込み・保存・G解除ボタンや、図をコピー・図を消すボタン*/
@@ -239,6 +274,7 @@
         }
     </style>
     <script>
+
         function openInNewWindow() {
             // 現在のファイルのURLを取得
             const currentUrl = window.location.href;
@@ -292,7 +328,14 @@
 <body>
  <span style="font-size: 20px"> ★★アウトラインを作る★★</span><br>
  このサイトは授業用です。このサイトはpptxgen.js・mermaid.js・html2canvas.js・SheetJS (xlsx.js)・FileSaver.jsを利用しています。<br>
-  <div class="tree-view">
+    
+    <div id="floating-toolbar" style="display:none;">
+        <div id="drag-handle">≡</div>
+        <button style="font-size:30px;background-color: red;" onclick="changefontSize(1)">大</button>
+        <button style="font-size:30px;background-color: red;" onclick="changefontSize(-1)">小</button>
+    </div>
+    
+    <div class="tree-view">
     <!-- 使い方 -->
     <input type="checkbox" id="section1">
     <label for="section1"><u>使い方</u>（下で骨組みを操作する時はたたんでおく）</label>
@@ -485,13 +528,91 @@
 <button onclick="TM.clearAlldasu()"  style="font-size:20px;">全部広げる</button>
 <button id="inu1" onclick="TM.clearAllkakusu()"  style="font-size:20px;">全部たたむ</button>
 <!--<button onclick="TM.clearAllHighlights()"  style="font-size:20px;">全部色消す</button>-->
-<button onclick="changefontSize(-1)"  style="font-size:20px">字を小さく</button>
-<button onclick="changefontSize(1)"    style="font-size:20px">字を大きく</button><br>
+<!--<button onclick="changefontSize(-1)"  style="font-size:20px">字を小さく</button>
+<button onclick="changefontSize(1)"    style="font-size:20px">字を大きく</button><br>-->
+<button onclick="show_font_btn()" id="showbar"  style="font-size:20px">字拡大ボタン表示</button>
 ソフトウエアキーボード（<input type="radio" name="keyboard-toggle" value="show"  checked>オン　<input type="radio" name="keyboard-toggle" value="hide">オフ）
 ※<span style="color:red;"><b><u>スマホやキーボードなしのiPadの場合は</b></u></span>テキスト入力時のみ「オン」
 <div id="app"></div>
 
 <script>
+            // フローティングツールバーの要素を作成
+        /*
+        var floatingToolbar = document.createElement('div');
+        floatingToolbar.id = 'floating-toolbar';
+        let bar_tmp='<div id="drag-handle">≡</div>'
+        bar_tmp = bar_tmp + '<button style="font-size:50px;background-color: red;" class="font_dai">大</button>';
+        bar_tmp = bar_tmp + '<button style="font-size:50px;background-color: red;" class="font_shou">小</button>';
+        alert(bar_tmp);
+        //floatingToolbar.innerHTML = bar_tmp;
+        floatingToolbar.innerHTML = '<div id="drag-handle">≡</div><button style="font-size:50px;background-color: red;" class="ql-underline">U</button>';
+        document.body.appendChild(floatingToolbar);        
+        */
+        var bar=document.getElementById("floating-toolbar");
+
+        //フローティングツールバー表示
+        function show_font_btn() {
+            var bar=document.getElementById("floating-toolbar");
+            var button = document.getElementById("showbar");
+
+            let left=0;
+            let top=0;
+            // 位置を設定
+            bar.style.left = 100 + 'px';
+            bar.style.top = 100 + 'px';
+            if(bar.style.display === 'block'){
+                bar.style.display = 'none';
+                button.innerText="字拡大ボタン表示";
+            } else {
+                bar.style.display = 'block';
+                button.innerText="字拡大ボタン非表示";
+            }
+
+        }
+
+        bar.addEventListener('mousedown', startDrag);
+        bar.addEventListener('touchstart', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+
+        // ドラッグ関連の変数
+        var isDragging = false;
+        var startX, startY, startLeft, startTop;
+
+        // ドラッグ開始処理
+        function startDrag(e) {
+            if (e.target.id === 'drag-handle') {
+                var bar=document.getElementById("floating-toolbar");
+                isDragging = true;
+                startX = e.clientX || e.touches[0].clientX;
+                startY = e.clientY || e.touches[0].clientY;
+                startLeft = bar.offsetLeft;
+                startTop = bar.offsetTop;
+                e.preventDefault();
+            }
+        }
+
+        // ドラッグ中処理
+        function drag(e) {
+            if (isDragging) {
+                var bar=document.getElementById("floating-toolbar");
+                var clientX = e.clientX || e.touches[0].clientX;
+                var clientY = e.clientY || e.touches[0].clientY;
+                var deltaX = clientX - startX;
+                var deltaY = clientY - startY;
+                bar.style.left = (startLeft + deltaX) + 'px';
+                bar.style.top = (startTop + deltaY) + 'px';
+                e.preventDefault();
+            }
+        }
+
+        // ドラッグ終了処理
+        function endDrag() {
+            isDragging = false;
+        }
+
         class TextareaManager {
             constructor() {
                 this.app = document.getElementById('app');
@@ -830,6 +951,10 @@
                 indentNumber.setAttribute('data-indent', indent); // indentを属性として保存
                 textareaAndNumberWrapper.appendChild(indentNumber);
                 
+                const textareaNumber = document.createElement('div');
+                textareaNumber.className = 'textarea-number';
+                textareaAndNumberWrapper.appendChild(textareaNumber);
+
                 //行の先頭12「△・▼」　controls_4_button close-button1 open-button1
                 const buttonLabels1 = ['△','▼'];
                 buttonLabels1.forEach(label => {
@@ -871,9 +996,6 @@
                 textarea.addEventListener('keydown', this.handleKeyDown.bind(this));
                 textareaAndNumberWrapper.appendChild(textarea); 
 
-                const textareaNumber = document.createElement('div');
-                textareaNumber.className = 'textarea-number';
-                textareaAndNumberWrapper.appendChild(textareaNumber);
                
                 const buttonsLabels4 = ['↑','↓'];
                 buttonsLabels4.forEach(label => {
@@ -2077,7 +2199,9 @@
             updateTextareaNumbers() {
                 this.textareas.forEach((container, index) => {
                     const textareaNumber = container.querySelector('.textarea-number');
-                    textareaNumber.textContent = index;
+                    //textareaNumber.textContent = index;
+                    //textareaNumber.textContent ="<u>文"+ (100 + index+1).toString().slice(-2)+"</u>";
+                    textareaNumber.innerHTML ="<u>文"+ (100 + index+1).toString().slice(-2)+"</u>";
                 });
             }
            //word
