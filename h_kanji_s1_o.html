@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, no-store, must-revalidate">
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Expires" CONTENT="0">
+
+    <title>kanji practice</title>
+    <!--ローカルの場合は以下の一文を入れる
+    <script src="./papaparse.min.js"></script>-->
+    <!--ローカルの場合は以下の一文をコメントアウト-->
+    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+/* 2025/2/2　ここから*/
+
+/* 2025/2/2 ここまで*/
+
+        .canvas_dummy {
+            display: none;
+        }
+        .vertical-table {
+            border-collapse: collapse;            
+        }
+        .vertical-table td {
+            /*border: 1px solid #000;*/
+            /*padding: 10px;*/
+            height: 200px;
+            width: 50px; /* セルの幅を指定 */
+        }
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            height: 100%;
+            width: 100%; /* 幅を100%に設定 */
+            display: flex;
+            align-items: flex-start; /* 垂直方向の上端揃え（見た目上は右揃え） */
+            justify-content: flex-start; /* 複数行の場合の上端揃え */
+            overflow-x: auto; /* 横方向のスクロールを可能にする */
+            white-space: normal; /* テキストの折り返しを許可 */
+        }
+        .left-align {
+            float: left;
+        }
+        .right-align {
+            float: right;
+        }        
+        label {
+            font-size: 20px; /* ラベルのフォントサイズを設定 */
+            font-weight: bold;
+        }
+        input[type="file"] {
+            font-size: 20px; /* ファイル選択ボタンのフォントサイズを設定 */
+            font-weight: bold;
+        }
+        table {
+            /*border-collapse: collapse;*/
+            width: "100%";
+        }
+        th, td {
+            /*border: 1px solid black;*/
+            padding: 8px;
+            text-align: left;
+            /* white-space: nowrap; */
+            white-space: wrap;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-size: 20px; 
+        }
+        button {
+            margin: 5px;
+            font-size: 20px; 
+            font-weight: bold;
+        }
+        /* canvas タグの背景にルーラーを指定 
+        #myCanvas {
+            background: url(imgs/bg_ruler.png) no-repeat;
+        }*/
+
+        .noto-serif jp-regular {
+            font-family: "Noto Serif JP", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        input[type="checkbox"] {
+            width: 35px; /* 幅を設定 */
+            height:35px; /* 高さを設定 */
+        }
+        .question-input, .answer-input {
+            width: 100%;  /* 親要素の幅いっぱいに広げる */
+            max-width: 300px;  /* 最大幅を設定 */
+            height: 2em;  /* フォントサイズの2倍の高さ */
+            font-size: 20px; 
+            font-weight: bold;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+<script>
+    /*
+    preventDefault() メソッドを呼び出そうとしたときに、イベントリスナーが「パッシブ（受動的）」として扱われているとpreventDefault() が機能しません。
+    パッシブイベントリスナーは、ブラウザがスクロールやズームなどのデフォルトの動作を最適化するために導入されたもので、これによりパフォーマンスが向上します。
+    しかし、パッシブイベントリスナーでは preventDefault() を使用してデフォルトの動作を防ぐことができません。
+　　この問題を解決するには、イベントリスナーを設定する際に { passive: false } オプションを指定する必要があります。
+    */
+ 
+    let c;
+    let ctx;
+    // ドラッグ中かどうかを表すフラグ
+    let dragging = false;
+    // 前回のポインタの位置を記録する変数
+    let lastPos;
+    let currentColor = '#000000'; // デフォルトの色を黒に設定
+    let currentlineWidth=9;
+
+
+
+    /*
+    function startDrawing(e) {
+        isDrawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        //ctx.strokeStyle = 'black';
+        //ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    }
+
+    function stopDrawing() {
+        isDrawing = false;
+    }
+    */
+    //既存
+    function touchStartHandler(e){
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ドラッグを終了する
+            down(pos(e.changedTouches[0]))
+        }
+    }
+    function touchEndHandler(e){
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ドラッグを終了する
+            up(pos(e.changedTouches[0]))
+        }
+    }
+    function touchMoveHandler(e) {
+        e.preventDefault();
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ポインタ
+            move(pos(e.changedTouches[0]));
+        }
+    }
+    //
+    function resizeCanvas() {
+        const canvas = document.getElementById('canvas_bg');
+        // キャンバスの論理サイズをクライアントサイズに合わせる
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+    }
+    function kaku(num) {
+        // 変数の宣言
+        let i;
+        if(display_mode===2){
+
+            // canvas要素を取得する
+            c = document.getElementById('canvas_dummy');
+            // canvasの2Dコンテキストを取得する
+            ctx = c.getContext('2d');
+
+        } else {
+            // canvas要素を取得する
+            c = document.getElementById('canvas_bg');
+            // canvasの2Dコンテキストを取得する
+            ctx = c.getContext('2d');
+
+
+            resizeCanvas();
+
+            // 線の色を青にする
+            ctx.strokeStyle = 'black';
+            currentColor='black';
+            //document.getElementById("inputColor"+num).value=currentColor;
+            // 線の太さを1にする
+            ctx.lineWidth=9;
+            currentlineWidth=9;
+            ctx.lineCap = 'round';
+
+            c.addEventListener('touchstart',touchStartHandler);
+            c.addEventListener('touchend',touchEndHandler);
+            c.addEventListener('touchmove',touchMoveHandler, { passive: false });
+            window.addEventListener('touchmove',touchMoveHandler, { passive: false });
+
+            openURL(num,0);
+            
+        }
+    }
+
+
+    /* B: スクロールを有効にする
+    function scroll_on(num){
+        c = document.getElementById('canvas'+num);
+        highlightCell("questionList",0,0);  
+        c.removeEventListener('pointerdown', startDrawing);
+        //c.removeEventListener('pointermove', draw,{ passive: false });
+        c.removeEventListener('pointermove', draw);
+        c.removeEventListener('pointerup', stopDrawing);
+        c.removeEventListener('pointerout', stopDrawing);
+        //window.removeEventListener('pointermove', draw,{ passive: false });
+        c.style.touchAction='';
+    }
+    */
+    function scroll_on(num){
+        c = document.getElementById('canvas'+num);
+        highlightCell("questionList",0,0);  
+        c.removeEventListener('touchstart', touchStartHandler);
+        c.removeEventListener('touchend', touchEndHandler);
+        c.removeEventListener('touchmove', touchMoveHandler, { passive: false });
+        window.removeEventListener('touchmove', touchMoveHandler, { passive: false });
+    }
+    
+
+    // ポインタの位置に線を描く関数
+    function move(pos) {
+        if(ctx){
+            // ドラッグ中なら
+            if (dragging) {
+                // 新しいパスを開始
+                ctx.beginPath();
+                // 前回の位置から現在の位置まで線を引く
+                // パスの始点
+                ctx.moveTo(lastPos[0], lastPos[1]);
+                // パスの終点
+                ctx.lineTo(pos[0], pos[1]);
+                // パスを描画
+                ctx.stroke();
+                // 現在の位置を記録する
+                lastPos = pos;
+            }
+        }
+    } 
+
+    // ドラッグを開始する関数
+    function down(pos) {
+        // ドラッグ中フラグを真にする
+        dragging = true
+        // 現在の位置を記録する
+        lastPos = pos
+    }
+
+    // ドラッグを終了する関数
+    function up(pos) {
+        // 現在の位置に線を描く
+        move(pos)
+        // ドラッグ中フラグを偽にする
+        dragging = false
+    }
+
+    // イベントオブジェクトからcanvas内の相対座標を取得する関数
+    function pos(e) {
+        if(c){
+            // canvasの左上隅の座標を取得する
+            const x = e.clientX - c.getBoundingClientRect().left;
+            const y = e.clientY - c.getBoundingClientRect().top;
+            // xとyを配列として返す
+            return [x, y];
+        }
+    }
+
+    /* 
+    マウスダウンイベントeが発生したら、
+    １　pos(e)で、そのイベントの開始位置の座標を取得し、
+    ２　ドラッグフラッグをtrueにして、
+    ３　その座標をlastposに格納する
+    */
+   
+    addEventListener('mousedown', (e) => {
+        // ドラッグを開始する
+        down(pos(e))
+    })
+    
+    /* 
+    マウスアップイベントeが発生したら、
+    １　pos(e)で、そのイベントの開始位置の座標を取得し、
+    ２　move(e)で、記録されたlastposから現在の位置までの線を引く
+    ３　ドラッグフラッグをfalseにする
+    */
+   
+    addEventListener('mouseup', (e) => {
+        // ドラッグを終了する
+        up(pos(e))
+    })
+    
+    /* 
+    マウス移動イベントeが発生したら、
+    １　pos(e)で、そのイベントの開始位置の座標を取得し、
+    ２　move(e)で、記録されたlastposから現在の位置までの線を引く
+    ３　ドラッグフラッグをfalseにする
+    */
+   
+    addEventListener('mousemove', (e) => {
+        // ポインタの位置に線を描く
+        move(pos(e))
+    })
+    
+    /* 
+    タッチスタートイベントeが発生したら、
+    １　pos(e.changedTouches[0])で、そのイベントの1本目の指を開始位置の座標を取得し、
+    ２　ドラッグフラッグをtrueにして、
+    ３　その座標をlastposに格納する
+    addEventListener('touchstart', (e) => {
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ドラッグを開始する
+            down(pos(e.changedTouches[0]))
+        }
+    })
+    */
+    /* 
+    タッチエンドイベントeが発生したら、
+    １　pos(e.changedTouches[0])で、そのイベントの1本目の指を開始位置の座標を取得し、
+    ２　move(e)で、記録されたlastposから現在の位置までの線を引く
+    ３　ドラッグフラッグをfalseにする
+    addEventListener('touchend', (e) => {
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ドラッグを終了する
+            up(pos(e.changedTouches[0]))
+        }
+    })
+    */
+    /* 
+    タッチ移動イベントeが発生したら、
+    １　pos(e)で、そのイベントの開始位置の座標を取得し、
+    ２　move(e)で、記録されたlastposから現在の位置までの線を引く
+    ３　ドラッグフラッグをfalseにする
+    addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        // タッチされたポインタが1つだけなら
+        if (e.changedTouches.length === 1) {
+            // ポインタ
+            move(pos(e.changedTouches[0]))
+        }
+    }, { passive: false })
+    */
+
+
+
+        
+        
+    function buttonclear(num){
+        //kaku(num);
+        ctx.clearRect(0, 0, c.width, c.height);
+        // canvasに再描画する
+        ctx.beginPath();
+        ctx.stroke();
+    }
+        
+    function iro(iro_num){
+        if( c === document.getElementById('canvas_bg')){
+            switch(iro_num){
+                case 1:ctx.strokeStyle='black';currentColor='black';break;
+                case 2:ctx.strokeStyle='white';currentColor='white';break;
+                case 3:ctx.strokeStyle='red';currentColor='red';break;
+            }
+            ctx.lineWidth=currentlineWidth;
+        }
+        
+    }
+    /*
+    function Colorbutton(num){
+        if(ctx){
+            currentColor= document.getElementById("inputColor"+num).value;
+            alert(currentColor);
+            ctx.strokeStyle=currentColor;
+            ctx.lineWidth=currentlineWidth;
+        }
+    }
+    */
+
+    function hutoku(){
+        if( c === document.getElementById('canvas_bg')){
+            currentlineWidth=currentlineWidth+1;
+            ctx.lineWidth=currentlineWidth;
+            ctx.strokeStyle=currentColor;
+            document.getElementById("hutosa").innerHTML=currentlineWidth;
+        }
+    }
+
+    function hosoku(){
+        if( c === document.getElementById('canvas_bg')){
+            currentlineWidth=currentlineWidth-1;
+            ctx.lineWidth=currentlineWidth;
+            ctx.strokeStyle=currentColor;
+            document.getElementById("hutosa").innerHTML=currentlineWidth;
+        }        
+    }
+
+
+    // 今書いた画像をquestions配列とlocalStorageへ保存
+    // 簡易表示でも画像を保存しないと詳細表示にしたときにエラーになるから、一瞬詳細表示にする
+    function buttonSave(num){
+
+        //kaku(num);
+        var png = c.toDataURL("image/png");
+        if (png && png.startsWith('data:image/png;base64,')) {
+            questions[num-1].gazou = png;
+            localStorage.setItem("gazou"+num, png);
+            var v = localStorage.getItem("gazou"+num);
+        } else {
+            console.warn('無効な画像データが生成されました');
+            // エラー処理をここに追加
+        }
+        //idou(num,1);
+        //buttonclear();
+        //if(display_mode===1){
+        //    scroll_on(num);
+        //}
+    }
+    //　localStrage画像読み込み
+    function yomikomi(num){
+        if(display_mode===1){
+            // canvasとコンテキストを取得
+            const c2 = document.getElementById('canvas_bg');
+            const ctx2 = c2.getContext('2d');
+
+            // localStorageから画像データを取得
+            var v = localStorage.getItem("gazou" + num);
+
+            // 画像を読み込む
+            const img = new Image();
+            img.onload = function() {
+                // 画像をcanvasに描画
+                ctx2.drawImage(img, 0, 0, c2.width, c2.height);
+            };
+            img.src = v;
+        }
+    }
+    //　questions配列画像読み込み->localStorageへの保存とcanvasへの読み込み
+    function q_yomikomi(num,data){
+        if(display_mode===1){
+            const c2 = document.getElementById('canvas_bg');
+            const ctx2 = c2.getContext('2d');
+            
+            if (data && data.startsWith('data:image/png;base64,')) {
+                localStorage.setItem("gazou"+num, data);
+                if(num===1){
+                    const img = new Image();
+                    img.onload = function() {
+                        ctx2.drawImage(img, 0, 0, c2.width, c2.height);
+                    };
+                    img.onerror = function() {
+                        console.error('画像の読み込みに失敗しました');
+                        // エラー処理をここに追加
+                    };
+                    img.src = data;
+                }
+            } else {
+                console.warn('無効な画像データ');
+                // エラー処理をここに追加
+            }
+        }
+    }
+</script>
+</head>
+<body>
+    <table id="use9" style="font-size: 20px;font-weight: bold;">
+        <tr>
+            <td colspan="2" style="text-align: right;font-size: 15px;font-weight:normal">
+                <span >
+                    このサイトではhtml2canvas.js/PapaParse.js/createjs.jsを使用しています。<br>
+                    また、<a href="https://www.miraisoft.de/anikanjivgx/">AniKanjiVG X</a>を利用しています。<br>    
+                    <a href="https://bitbucket.org/sommerhoff/anikanjivg">AniKanjiVG</a> is licensed by CC BY-SA Paul C. Sommerhoff<br>
+                    <a href="http://kanjivg.tagaini.net/">KanjiVG</a> is licensed by CC BY-SA Ulrich Apel.<br>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+               <span style="font-size: 50px">小１用　漢字の練習 </span>
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color: rgb(194, 247, 224)" width="130px">
+                問題を解く
+            </td>
+            <td id="use1" >
+                （１）下の「ファイルを選択」をタップし、はじめての問題ややりかけの問題を読み込む。<br>
+                <input type="file" id="fileInput2" accept=".csv" onchange="loadQuestions(2)"><br>
+                （２）やりかけの状態を保存する。→<button onclick="saveAnswers(1)">保存</button><br>
+                （３）もういちどやる→<button onclick="showWrong()">にがてなやつだけやる</button><button onclick="showAllQuestions()">ぜんぶやる</button>
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color: rgb(244, 245, 218)" width="220px">
+                ※問題を０から作る
+            </td>
+            <td>
+                <button onclick="createQuestionForm(true,false)">新規問題入力欄と新規正解入力欄を表示する</button>
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color: rgb(243, 196, 204)" >
+                ※既存の問題を修正する
+            </td>
+            <td>
+            下の「ファイルを選択」をタップし、加工したい既存の問題を読み込む。<br>
+            <input type="file" id="fileInput1" accept=".csv" onchange="loadQuestions(1)"><br>            
+            </td>
+        </tr>
+    </table>
+
+<canvas class="canvas_dummy" id="canvas_dummy" frameborder="1"  style="border: 2px solid black;" width="${Math.floor(window.innerWidth * 0.58)}" height="300"></canvas>
+
+<p></p>
+<span id="mondai_su" style="color:red;font-size: 20px;font-weight: bold;"></span>
+<div id="cv" class="canvas-container">
+</div>
+<div id="q_con" class="question-container">
+</div>
+<!-- 右上コントロール -->
+<div id="left_btn" class="controls-overlay">
+</div>
+<!-- 下部コントロール -->
+<div id="bottom_btn" class="bottom-controls">
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+    <script>
+        let questions = [];
+        let file_yomikomi_tyokugo = false; 
+        let file_name;
+        let display_mode = 1;
+        let wrong_mode=false;
+        let lastScrollPosition=0;
+        let mondaisu;
+
+        // CSSスタイル
+        var style = document.createElement('style');
+        style.textContent = `
+            .canvas-container {
+                position: relative;
+                width: 100%;
+                height: 100vh;
+                touch-action: none; /* タッチスクロールを無効化 */
+            }
+            .myCanvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+            .question-container {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                z-index: 2;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                max-width: 90%;
+            }
+            .question-text {
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .answer-text {
+                font-size: 40px;
+                margin: 10px 0;
+            }
+            .controls-overlay {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                z-index: 2;
+                background: rgba(255, 255, 255, 0.8);
+                padding: 10px;
+                border-radius: 8px;
+            }
+            .bottom-controls {
+                position: absolute;
+                bottom: 20px;
+                left: 0;
+                width: 100%;
+                padding: 20px;
+                z-index: 2;
+                background: rgba(255, 255, 255, 0.8);
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+        `;
+
+        function toggledisplay(){
+            questions.forEach(q =>{
+                if(wrong_mode){
+                    if(!q.isRight){
+                        const answerSpan = document.getElementById(`answer-${q.id}`);
+                        const answerButton = answerSpan.previousElementSibling;
+                        q.ans=answerSpan.style.display;
+                        q.ans_btn=answerButton.style.display;
+                    } 
+                } else {
+                    const answerSpan = document.getElementById(`answer-${q.id}`);
+                    const answerButton = answerSpan.previousElementSibling;
+                    q.ans=answerSpan.style.display;
+                    q.ans_btn=answerButton.style.display;
+                }
+            });
+            if(display_mode === 1){
+                display_mode = 2;
+                displayQuestions(wrong_mode,2);
+            } else {
+                display_mode = 1;
+                displayQuestions(wrong_mode,1);
+            }
+        }
+
+        
+        function toggleRow(num){
+            var row = document.getElementById("use9");
+            if(num===1) {
+                row.classList.remove('hidden');
+                const cv = document.querySelector('#cv');
+                cv.innerHTML='';
+                const l_btn = document.querySelector('#left_btn');
+                l_btn.innerHTML='';
+                const q_con = document.querySelector('#q_con');
+                q_con.innerHTML='';
+                const b_btn = document.querySelector('#bottom_btn');
+                b_btn.innerHTML='';
+                document.head.removeChild(style);
+       
+                //document.getElementById("use1_hyouji").textContent="非表示にする";
+                //document.getElementById("use2_hyouji").textContent="非表示にする";
+            } else {
+                row.classList.add('hidden');
+                document.head.appendChild(style);
+                //document.getElementById("use1_hyouji").textContent="表示する";
+                //document.getElementById("use2_hyouji").textContent="表示する";
+            }
+        }
+
+        function openInNewWindow() {
+            // 現在のファイルのURLを取得
+            const currentUrl = window.location.href;
+            // 現在のファイルのディレクトリを取得
+            const directory = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
+            // 新しいウィンドウで開くファイルのURLを生成
+            const newUrl = directory + '/teams_kadai.html';
+            // 新しいウィンドウでファイルを開く
+            window.open(newUrl, '_blank', 'width=800,height=600');
+        }
+
+//ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+function toHalfWidth(str) {
+    return str.replace(/[０-９]/g, function(ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
+    });
+}
+function handleQuestionCreation() {
+    if (questions.length > 0) {
+        let addToExisting=true;
+        let input = prompt("問題の追加をする場合は追加する問題数を入力してOKを押してください。既存の問題の修正のみの場合は空欄のままOKを押してください。【注意】いずれの場合も解答欄に書かれた字は消えます。中止=キャンセル）");
+        if (input===""){
+            numNewQuestions=0;
+        } else {
+            input = toHalfWidth(input);
+            // 半角数字かどうかをチェック
+            if (/^\d+$/.test(input)) {
+                numNewQuestions=input;
+            } else {
+                // 無意味な文字列の場合はメソッドを中止
+                alert("有効な問題数を入力してください。");
+                return;
+            }
+        }
+        createQuestionForm(numNewQuestions, true);
+    } else {
+        alert("問題を読み込んでからボタンを押して下さい");
+    }
+}
+
+function createQuestionForm(numNewQuestions, addToExisting) {
+    let numQuestions = numNewQuestions;
+    if (questions.length > 0 && addToExisting == false) {
+        const ans = confirm("読み込まれた問題はすべて消えてしまいますが、よいですか？（いいえ=キャンセル）");
+        if(!ans){
+            return;
+        } 
+    }
+    if (!addToExisting) {
+        let input = prompt("作成する問題数を入力してください（中止=キャンセル）");
+        input = toHalfWidth(input);
+        // 半角数字かどうかをチェック
+        if (/^\d+$/.test(input)) {
+            numQuestions=input;
+        } else {
+            // 無意味な文字列の場合はメソッドを中止
+            alert("有効な問題数を入力してください。");
+            return;
+        }
+    }
+    //const table = document.querySelector('#questionList');
+    //table.innerHTML = '';
+
+    const formContainer = document.createElement('div');
+    formContainer.id = 'questionFormContainer';
+
+    // 新しいテキストノードを作成
+    const noticeText = document.createElement('p');
+    noticeText.textContent = '※Enterで下の行に移ります。';
+    noticeText.style.fontSize = '20px'; // ここでフォントサイズを指定します
+    noticeText.style.fontWeight = 'bold'; // ここでフォントサイズを指定します
+
+    // formContainerの一番先頭に追加
+    formContainer.insertBefore(noticeText, formContainer.firstChild);
+
+    document.body.appendChild(formContainer);
+
+    if (addToExisting) {
+        // 既存の問題を表示
+        questions.forEach(q => {
+            addQuestionRow(formContainer, q.question, q.answer);
+        });
+    }
+
+    // 新しい問題の入力欄を追加（numNewQuestionsが0より大きい場合のみ）
+    for (let i = 0; i < numQuestions; i++) {
+        addQuestionRow(formContainer);
+    }
+    addControlButtons(formContainer);
+    setupKeyboardNavigation(formContainer);
+}
+
+function addQuestionRow(container, questionText = '', answerText = '') {
+    const row = document.createElement('div');
+    row.className = 'question-row';
+
+    const questionTextarea = document.createElement('textarea');
+    questionTextarea.placeholder = '問題';
+    questionTextarea.value = questionText;
+    questionTextarea.className = 'question-input';
+    
+    const answerTextarea = document.createElement('textarea');
+    answerTextarea.placeholder = '正解';
+    answerTextarea.value = answerText;
+    answerTextarea.className = 'answer-input';
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '削除';
+    deleteButton.onclick = function() {
+        container.removeChild(row);
+    };
+
+    row.appendChild(questionTextarea);
+    row.appendChild(answerTextarea);
+    row.appendChild(deleteButton);
+    container.appendChild(row);
+
+    // テキストエリアの高さを自動調整する関数
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // 入力時に高さを自動調整
+    questionTextarea.addEventListener('input', function() {
+        autoResize(this);
+    });
+    answerTextarea.addEventListener('input', function() {
+        autoResize(this);
+    });
+
+    // 初期表示時にも高さを調整
+    autoResize(questionTextarea);
+    autoResize(answerTextarea);
+}
+function addControlButtons(container) {
+    const buttonContainer = document.createElement('div');
+    buttonContainer.id = 'controlButtons';
+
+    const completeButton = document.createElement('button');
+    completeButton.textContent = '作成完了';
+    completeButton.onclick = completeQuestionCreation;
+
+    const addRowButton = document.createElement('button');
+    addRowButton.textContent = '行追加';
+    addRowButton.onclick = function() {
+        const numRows = parseInt(prompt("追加する行数を入力してください："));
+        if (!isNaN(numRows) && numRows > 0) {
+            for (let i = 0; i < numRows; i++) {
+                addQuestionRow(container);
+            }
+            container.appendChild(buttonContainer);
+            setupKeyboardNavigation(container);
+        }
+    };
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = '中止';
+    cancelButton.onclick = function() {
+        document.body.removeChild(container);
+    };
+
+    buttonContainer.appendChild(completeButton);
+    buttonContainer.appendChild(addRowButton);
+    buttonContainer.appendChild(cancelButton);
+    container.appendChild(buttonContainer);
+}
+
+function setupKeyboardNavigation(container) {
+    const inputs = container.querySelectorAll('textarea');
+    inputs.forEach((input, index) => {
+        input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                const nextInput = inputs[index + 2];
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                const prevInput = inputs[index - 2];
+                if (prevInput) {
+                    prevInput.focus();
+                }
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                const nextInput = inputs[index + 1];
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            } else if (event.key === 'ArrowLeft'){
+                event.preventDefault();
+                const prevInput = inputs[index - 1];
+                if (prevInput) {
+                    prevInput.focus();
+                }
+            }
+        });
+    });
+}
+
+function completeQuestionCreation() {
+    const rows = document.querySelectorAll('.question-row');
+    questions = Array.from(rows).map((row, index) => {
+        const questionText = row.querySelector('.question-input').value;
+        const answerText = row.querySelector('.answer-input').value;
+        return {
+            id: index + 1,
+            question: questionText,
+            answer: answerText,
+            isRight: false,
+            mistakeCount: 0,
+            gazou: '',
+            ans:'none',
+            ans_btn:'inline'
+        };
+    });
+
+    document.body.removeChild(document.getElementById('questionFormContainer'));
+    saveAnswers(2);
+}
+
+//-----------------------------------------------------------------
+
+
+
+        function loadQuestions(n) {
+            const fileInput = document.getElementById('fileInput'+n);
+            const file = fileInput.files[0];
+            mondaisu=0;
+            //0番目から2番目の文字の直前までを抽出
+            if(file.name.substring(0,2)==="20"){
+                //2024_00_00_00_00  17文字目以降を抽出 ０から始めて１６番目以降を抽出
+                file_name=file.name.substring(16);
+            } else {
+                file_name=file.name;        
+            }           
+            if (file) {
+                Papa.parse(file, {
+                    complete: function(results) {
+
+                        // 残りの行をquestions配列に格納 rowは列
+                        questions = results.data.slice(0).map((row, index) => {
+                            mondaisu++;
+                            const gazou = decodeURIComponent(row[4] || '');
+                            if (gazou && !gazou.startsWith('data:image/png;base64,')) {
+                                console.warn(`ID ${index + 1}: 無効な画像データ`);
+                                // エラー処理をここに追加
+                            }
+                            return {
+                                id: index + 1,
+                                question: row[0],
+                                answer: row[1],
+                                isRight: row[2] === '1',
+                                mistakeCount: parseInt(row[3] || 0),
+                                gazou: gazou,
+                                ans:'none',
+                                ans_btn:'inline'
+                            };
+                        }); 
+                        if(n===2){
+                            displayQuestions(wrong_mode,display_mode);
+                        }else{
+                            handleQuestionCreation();
+                        }
+                    }
+                });
+                file_yomikomi_tyokugo = true; 
+                for (let i = 0; i < localStorage.length; i++) {
+                    let key = localStorage.key(i);
+                    if (key.startsWith("gazou")) {
+                        localStorage.removeItem(key);
+                        i--; // Adjust index after removal
+                    }
+                }
+            }
+        }
+        
+        //questionList 行、列とも0から始まる
+        function highlightCell(tableId, x, y) {
+            // テーブル要素を取得
+            var table = document.getElementById(tableId);
+            
+            // テーブルの全てのセルの背景色をリセット
+            for (var i = 0; i < table.rows.length; i++) {
+                for (var j = 0; j < table.rows[i].cells.length; j++) {
+                    table.rows[i].cells[j].style.border = '';
+                }
+            }
+            if(x!=0 && y!=0){
+                // 指定されたセルの背景色を黄色に変更
+                if (y < table.rows.length && x < table.rows[y].cells.length) {
+                    table.rows[y].cells[x].style.border = '5px solid red';
+                }
+            }
+        }
+
+        function for_pc(){
+            questions.forEach(q => {
+                const iframe = document.getElementById(`frame${q.id}`);
+                iframe.style.transform = "scale(0.5)";
+            });
+        }
+
+        function idou(num1,num2){
+            let num=num1+num2;
+            if(num!=0 && num!=(mondaisu+1) ){
+                displayQuestions(wrong_mode,num)
+            }
+        }
+
+
+        function displayQuestions(wrongOnly = false,number) {
+            let i=0;
+            let haba=0.1;
+            toggleRow(0);
+            
+            /*!wrongOnly または　!q2.isRightのとき表示
+                　!wrongonlyであれば!q2.isRingtでなくても（全表示なら、誤も正も）表示される　
+                　!wrongonlyでない場合は!q2.isRingtでないと（誤表示なら、誤でないと）表示されない＝誤表示のときは誤のみが表示される*/
+            
+
+            const q2 = questions.find(q => q.id === number);
+            if (q2) {
+                if (wrongOnly && q2.isRight) {
+                    idou(number,1);
+                }else{
+                    const cv = document.querySelector('#cv');
+                    cv.innerHTML='';
+                    const data1 = `
+                            <canvas class="myCanvas" id="canvas_bg" ></canvas>
+                        `;
+                    cv.innerHTML=data1
+                    const q_con = document.querySelector('#q_con');
+                    q_con.innerHTML='';
+                    const data2 = `
+                        <span class="question-text">
+                            （${q2.id}）${q2.question}：こたえ
+                        </span>
+                        <span class="answer-text" id="answer-${q2.id}">
+                            <span id="ans_str${q2.id}">「${q2.answer}」</span>
+                        </span>
+                        <div class="iframe-container">
+                            <iframe id="frame${q2.id}" 
+                                    src="" 
+                                    frameborder="1" 
+                                    scrolling="no" 
+                                    width="100%" 
+                                    height="100%" 
+                                    style="transform:scale(1);transform-origin:0 0;">
+                            </iframe>
+                        </div>
+                        <div style="text-align:center;">
+                        <span id="dekitara_guide${q2.id}" style="vertical-align: middle;">${q2.isRight ? "" : "かけるようになったらチェックをいれよう→"}</span>
+                        <input type="checkbox" ${q2.isRight ? 'checked' : ''} onchange="updateRight(${q2.id}, this.checked)" style="vertical-align: middle;"><br>
+                        <!--
+                        <span id="dekitara_guide${q2.id}">${q2.isRight ? "" : "かけるようになったらチェックをいれよう→"}</span>
+                        <input type="checkbox" ${q2.isRight ? 'checked' : ''} onchange="updateRight(${q2.id}, this.checked)"><br>
+                        -->
+                        <span id="seitou-${q2.id}">${q2.isRight ? '<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>' : ''}</span>
+                        <button onclick="openURL(${q2.id},0)">もういちど、かきじゅんをみる</button><br>
+                        <button onclick="idou(${q2.id},-1)">まえのかんじ</button>
+                        <button onclick="idou(${q2.id},1)">つぎのかんじ</button>
+                        </div>
+                        `;
+                    q_con.innerHTML = data2;
+
+                    const l_btn = document.querySelector('#left_btn');
+                    l_btn.innerHTML='';
+                    const data3 = `
+                        
+                        <button onclick="toggleRow(1)">メニューにもどる</button><br>
+                        
+                    `;
+                    l_btn.innerHTML = data3;
+
+                    const b_btn = document.querySelector('#bottom_btn');
+                    b_btn.innerHTML='';
+                    const data4 = `
+                        <button onclick="buttonclear()">けす</button>
+                        <button style="background-color:black;" onclick="iro(1)">くろ</button>
+                        <button style="background-color:white;" onclick="iro(2)">しろ</button>
+                        <button style="background-color:red;" onclick="iro(3)">あか</button>
+                        <button onclick="hosoku()">ほそく</button>
+                        <button onclick="hutoku()">ふとく</button>
+                        <span id="hutosa">9</span>
+                    `;
+                    b_btn.innerHTML = data4;
+
+                
+                    kaku(number);
+                }
+            }
+
+            if(display_mode===1){
+                //ファイル読み込み直後の場合
+                if(file_yomikomi_tyokugo){
+                    //ファイルの画像を読み込んで、localstrageに保存し、canvasに描画
+                    questions.forEach(q => {
+                        //ただし、正答だけのものだけ　
+                        if (q.isRight) {
+                            q_yomikomi(q.id,q.gazou);
+                        }
+                    });
+                    file_yomikomi_tyokugo=false;
+                    //displayQuestions(wrongmode,1);
+                //ファイル読み込み直後でない場合
+                } else {
+                    //localstrageから読み込みcanvasに描画
+                    const q2 = questions.find(q => q.id === number);
+                    if (q2) {
+                        //全問表示で
+                        if (!wrongOnly) {
+                            //正解のときだけ
+                            if(q2.isRight) {
+                                yomikomi(q2.id);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+//
+async function table_save() {
+    const table = document.getElementById('questionList');
+    
+    if (!table) {
+        console.error('Table element not found');
+        return;
+    }
+    
+    const rect = table.getBoundingClientRect();
+    
+    // 基本的なスケールファクター（デバイスのピクセル比）
+    const baseScale = window.devicePixelRatio || 1;
+    
+    // 追加の解像度倍率（必要に応じて調整）
+    let kaizoudo = prompt("iPadの場合は初期値0.5のままにしてください。他のデバイスの場合は試行錯誤して、いい感じの画像ができるよう数値をさがしてください。数値が高いほど解像度が高くなりますが、動作しなくなる可能性も高まります。「ダウンロードしますか？」というメッセージが表示されなかったら、もう一度ボタンを押して数値を下げて再チャレンジしてください。", "0.5");
+    if (kaizoudo === "" || kaizoudo === null) {
+        return;
+    }        
+    const resolutionMultiplier = parseFloat(kaizoudo);
+    
+    // 最終的なスケールファクター
+    const finalScale = baseScale * resolutionMultiplier;
+    
+    const canvas = await html2canvas(table, {
+        width: rect.width,
+        height: rect.height,
+        scale: finalScale,
+        logging: false,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: null
+    });
+
+    canvas.toBlob(function(blob) {
+        let filename = prompt("月と回を入れてください。※iPadの場合は「ダウンロード」に保存されます。", "月の回目の手書き漢字.png");
+        if (filename === "" || filename === null) {
+            return;
+        }        
+        const a = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 0);            
+    });
+}
+//
+
+        function go_top(){
+            lastScrollPosition=window.pageYOffset;
+            window.scroll(0,0);
+        }
+
+        function mae_basho(){
+            window.scroll(0,lastScrollPosition);
+        }
+
+        function showAnswer(id) {
+            const answerSpan = document.getElementById(`answer-${id}`);
+            const answerButton = answerSpan.previousElementSibling;
+            answerSpan.style.display = 'inline';
+            answerButton.style.display = 'none';
+        }
+
+        function hideAnswer(id) {
+            const answerSpan = document.getElementById(`answer-${id}`);
+            const answerButton = answerSpan.previousElementSibling;
+            answerSpan.style.display = 'none';
+            answerButton.style.display = 'inline';
+        }
+
+        function showAllAnswers() {
+            questions.forEach(q =>{
+                if(wrong_mode){
+                    if(!q.isRight){
+                        showAnswer(q.id);
+                    }
+                } else {
+                    showAnswer(q.id);
+                }
+            });
+        }
+
+        function hideAllAnswers() {
+            questions.forEach(q =>{
+                if(wrong_mode){
+                    if(!q.isRight){
+                        hideAnswer(q.id);
+                    }
+                } else {
+                    hideAnswer(q.id);
+                }
+            });
+        }
+
+        function showWrong(){
+            wrong_mode=true;
+            //document.getElementById('mondai_su').innerHTML = "～間違った問題のみ表示～";
+            displayQuestions(wrong_mode,1)
+        }
+        /*
+        function updateRight(number,gyou) {
+            const question = questions.find(q => q.id == number);
+            if (question) {
+                if(document.getElementById(`dekita${number}`).textContent==="できた"){
+                    document.getElementById(`seitou-${number}`).innerHTML='<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>';
+                    document.getElementById(`check${number}`).checked=true;
+                    document.getElementById(`dekita${number}`).textContent="とりけし";
+                    buttonSave(number,gyou);
+                } else {
+                    document.getElementById(`seitou-${number}`).innerHTML='';
+                    document.getElementById(`check${number}`).checked=false;
+                    document.getElementById(`dekita${number}`).textContent="できた";
+
+                }
+            }
+        }
+        */                
+        function updateRight(number, isRight) {
+            const question = questions.find(q => q.id === number);
+            if (question) {
+                if(isRight){
+                    document.getElementById(`seitou-${number}`).innerHTML='<object type="image/svg+xml" data="happy-face.svg" width="50" height="50"></object>';
+                    document.getElementById(`dekitara_guide${number}`).innerHTML="";
+                    buttonSave(number);
+                    question.isRight = isRight;
+                } else {
+                    document.getElementById(`seitou-${number}`).innerHTML='';
+                    document.getElementById(`dekitara_guide${number}`).innerHTML="かけるようになったらチェックをいれよう→";
+                    question.isRight = isRight;
+                }
+            }
+            //displayQuestions(wrong_mode,display_mode);
+        }
+        
+
+        // お手本表示
+        function openURL(id,moji_num) {
+            //if(ans!=""){
+            if(questions[id-1].answer!=""){
+                // テキストボックスの値を取得
+                var u = questions[id-1].answer;
+                //var u = ans;
+                var unicodeValue = u.charCodeAt(moji_num);
+                // Replace 'u' with '00' in the Unicode value
+                const unicodeValueStr = "0" + unicodeValue.toString(16).substr(0);
+                // iframeのsrc属性にURLを代入
+                // document.getElementById("frame0").src =  "https://www.miraisoft.de/anikanjivgx/?svg=" + u;
+                document.getElementById("frame"+id).src =  "https://www.miraisoft.de/anikanjivgx/svg/" + unicodeValueStr+".svg";
+            
+                var iframe = document.getElementById("frame"+id).getElementsByTagName('iframe');
+            }
+
+        }
+
+        function showAllQuestions() {
+            wrong_mode=false;
+            document.getElementById("mondai_su").innerHTML="";
+            displayQuestions(wrong_mode,display_mode);
+        }
+
+        function clearAllMistakes() {
+            questions.forEach(q => q.isRight = false);
+            wrong_mode=false;
+            displayQuestions(wrong_mode,display_mode);
+        }
+
+        function getFormattedDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            return `${year}_${month}_${day}_${hours}_${minutes}`;
+        }
+
+        function saveAnswers(num) {
+
+            let input;
+
+
+            questions.sort((a, b) => a.id - b.id);  // Sort by question number before saving
+            const csvContent = questions.map(q => [q.question, q.answer, `${q.isRight ? '1' : '0'}`,q.mistakeCount,encodeURIComponent(q.gazou)].join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                if(num===1){
+                    input = prompt("ファイル名を付けてください。",getFormattedDate()+"にやった"+file_name);
+                } else {
+                    input = prompt("ファイル名を付けてください。","の問題.csv");
+                }
+                if(input==="" || input===null){
+                    return;
+                }
+                link.setAttribute("download", input);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
