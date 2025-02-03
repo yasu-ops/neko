@@ -500,7 +500,7 @@
                 問題を解く
             </td>
             <td id="use1" >
-                （１）下の「ファイルを選択」をタップし、はじめての問題ややりかけの問題を読み込む。<br>
+                （１）下の「ファイルを選択」をタップし問題を読み込む。<br>
                 <input type="file" id="fileInput2" accept=".csv" onchange="loadQuestions(2)"><br>
                 （２）<button onclick="showAllQuestions()">もういちどやる</button><button onclick="showWrong()">レをつけなかったものだけやる</button><br>
                 （３）<button onclick="saveAnswers(1)">やりかけのものを保存する</button><br>
@@ -511,16 +511,18 @@
                 ※問題を０から作る
             </td>
             <td>
-                <button onclick="createQuestionForm(true,false)">新規問題入力欄と新規正解入力欄を表示する</button>
+                <button onclick="createQuestionForm(true,false)">新規問題入力欄と新規正解入力欄を表示する</button><br>
+                ※問題を解く画面を開いた後に上記の操作をする場合はこのサイトを再読み込みしてから上のボタンを押してください。
             </td>
         </tr>
         <tr>
-            <td style="background-color: rgb(243, 196, 204)" >
+            <td style="background-color: rgb(244, 245, 218)" >
                 ※既存の問題を修正する
             </td>
             <td>
             下の「ファイルを選択」をタップし、修正したい既存の問題を読み込む。<br>
-            <input type="file" id="fileInput1" accept=".csv" onchange="loadQuestions(1)"><br>            
+            <input type="file" id="fileInput1" accept=".csv" onchange="loadQuestions(1)"><br> 
+            ※問題を解く画面を開いた後に上記の操作をする場合はこのサイトを再読み込みしてから上のボタンを押してください。
             </td>
         </tr>
     </table>
