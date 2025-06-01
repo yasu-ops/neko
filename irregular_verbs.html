@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英語不規則動詞パズル</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const IrregularVerbsPuzzle = () => {
+            const verbData = [
+                ['be', 'was/were', 'been', 'である・いる'],
+                ['bear', 'bore', 'born/borne', '生む・運ぶ'],
+                ['beat', 'beat', 'beaten', '打つ'],
+                ['become', 'became', 'become', 'なる'],
+                ['begin', 'began', 'begun', '始める'],
+                ['bend', 'bent', 'bent', '曲げる'],
+                ['bet', 'bet', 'bet', '賭ける'],
+                ['bid', 'bid', 'bid', '値をつける'],
+                ['bind', 'bound', 'bound', '縛る'],
+                ['bite', 'bit', 'bitten', 'かむ'],
+                ['blow', 'blew', 'blown', '吹く'],
+                ['break', 'broke', 'broken', '壊す'],
+                ['breed', 'bred', 'bred', '飼育する'],
+                ['bring', 'brought', 'brought', '持参する'],
+                ['build', 'built', 'built', '建てる'],
+                ['burn', 'burnt', 'burnt', '燃やす'],
+                ['burst', 'burst', 'burst', '破裂する'],
+                ['buy', 'bought', 'bought', '買う'],
+                ['catch', 'caught', 'caught', '捕まえる'],
+                ['choose', 'chose', 'chosen', '選ぶ'],
+                ['come', 'came', 'come', '来る'],
+                ['cost', 'cost', 'cost', '費用がかかる'],
+                ['cut', 'cut', 'cut', '切る'],
+                ['deal', 'dealt', 'dealt', '取引する'],
+                ['dig', 'dug', 'dug', '掘る'],
+                ['do', 'did', 'done', 'する'],
+                ['draw', 'drew', 'drawn', '描く・引く'],
+                ['dream', 'dreamt', 'dreamt', '夢を見る'],
+                ['drink', 'drank', 'drunk', '飲む'],
+                ['drive', 'drove', 'driven', '運転する'],
+                ['eat', 'ate', 'eaten', '食べる'],
+                ['fall', 'fell', 'fallen', '落ちる'],
+                ['feed', 'fed', 'fed', '食べ物を与える'],
+                ['feel', 'felt', 'felt', '感じる'],
+                ['fight', 'fought', 'fought', '戦う'],
+                ['find', 'found', 'found', '見つける'],
+                ['flee', 'fled', 'fled', '逃げる'],
+                ['fly', 'flew', 'flown', '飛ぶ'],
+                ['forbid', 'forbade', 'forbidden', '禁止する'],
+                ['forget', 'forgot', 'forgotten', '忘れる'],
+                ['forgive', 'forgave', 'forgiven', '許す'],
+                ['freeze', 'froze', 'frozen', '凍る'],
+                ['get', 'got', 'got/gotten', '得る'],
+                ['give', 'gave', 'given', '与える'],
+                ['go', 'went', 'gone', '行く'],
+                ['grow', 'grew', 'grown', '成長する'],
+                ['hang', 'hung', 'hung', 'つるす'],
+                ['have', 'had', 'had', '持つ'],
+                ['hear', 'heard', 'heard', '聞く'],
+                ['hide', 'hid', 'hidden', '隠す'],
+                ['hit', 'hit', 'hit', '打つ'],
+                ['hold', 'held', 'held', '持つ'],
+                ['hurt', 'hurt', 'hurt', '傷つける'],
+                ['keep', 'kept', 'kept', '保つ'],
+                ['know', 'knew', 'known', '知る'],
+                ['lay', 'laid', 'laid', '置く'],
+                ['lead', 'led', 'led', '導く'],
+                ['learn', 'learnt', 'learnt', '学ぶ'],
+                ['leave', 'left', 'left', '去る'],
+                ['lend', 'lent', 'lent', '貸す'],
+                ['let', 'let', 'let', 'させる'],
+                ['lie', 'lay', 'lain', '横になる'],
+                ['light', 'lit', 'lit', '火をつける'],
+                ['lose', 'lost', 'lost', '失う'],
+                ['make', 'made', 'made', '作る'],
+                ['mean', 'meant', 'meant', '意味する'],
+                ['meet', 'met', 'met', '会う'],
+                ['pay', 'paid', 'paid', '支払う'],
+                ['put', 'put', 'put', '置く'],
+                ['read', 'read', 'read', '読む'],
+                ['ride', 'rode', 'ridden', '乗る'],
+                ['ring', 'rang', 'rung', '鳴る'],
+                ['rise', 'rose', 'risen', '上がる'],
+                ['run', 'ran', 'run', '走る'],
+                ['say', 'said', 'said', '言う'],
+                ['see', 'saw', 'seen', '見る'],
+                ['seek', 'sought', 'sought', '探す'],
+                ['sell', 'sold', 'sold', '売る'],
+                ['send', 'sent', 'sent', '送る'],
+                ['set', 'set', 'set', '設定する'],
+                ['shake', 'shook', 'shaken', '振る'],
+                ['shine', 'shone', 'shone', '輝く'],
+                ['shoot', 'shot', 'shot', '撃つ'],
+                ['show', 'showed', 'shown', '見せる'],
+                ['shut', 'shut', 'shut', '閉める'],
+                ['sing', 'sang', 'sung', '歌う'],
+                ['sink', 'sank', 'sunk', '沈む'],
+                ['sit', 'sat', 'sat', '座る'],
+                ['sleep', 'slept', 'slept', '眠る'],
+                ['slide', 'slid', 'slid', '滑る'],
+                ['speak', 'spoke', 'spoken', '話す'],
+                ['spend', 'spent', 'spent', '使う'],
+                ['spin', 'spun', 'spun', '回転する'],
+                ['split', 'split', 'split', '分割する'],
+                ['spread', 'spread', 'spread', '広げる'],
+                ['stand', 'stood', 'stood', '立つ'],
+                ['steal', 'stole', 'stolen', '盗む'],
+                ['stick', 'stuck', 'stuck', '刺す'],
+                ['strike', 'struck', 'struck', '打つ'],
+                ['swear', 'swore', 'sworn', '誓う'],
+                ['sweep', 'swept', 'swept', '掃く'],
+                ['swim', 'swam', 'swum', '泳ぐ'],
+                ['swing', 'swung', 'swung', '振る'],
+                ['take', 'took', 'taken', '取る'],
+                ['teach', 'taught', 'taught', '教える'],
+                ['tear', 'tore', 'torn', '破る'],
+                ['tell', 'told', 'told', '告げる'],
+                ['think', 'thought', 'thought', '考える'],
+                ['throw', 'threw', 'thrown', '投げる'],
+                ['understand', 'understood', 'understood', '理解する'],
+                ['wake', 'woke', 'woken', '目覚める'],
+                ['wear', 'wore', 'worn', '着る'],
+                ['win', 'won', 'won', '勝つ'],
+                ['wind', 'wound', 'wound', '巻く'],
+                ['write', 'wrote', 'written', '書く']
+            ];
+
+            const [selectedVerbs, setSelectedVerbs] = useState([]);
+            const [gameCards, setGameCards] = useState([]);
+            const [selectedCards, setSelectedCards] = useState([]);
+            const [matchedSets, setMatchedSets] = useState([]);
+            const [score, setScore] = useState(0);
+            const [attempts, setAttempts] = useState(0);
+            const [gameComplete, setGameComplete] = useState(false);
+            const [showMeaning, setShowMeaning] = useState(false);
+
+            const initializeGame = () => {
+                const shuffledVerbs = [...verbData].sort(() => Math.random() - 0.5);
+                const selectedVerbsData = shuffledVerbs.slice(0, 6);
+                setSelectedVerbs(selectedVerbsData);
+                const cards = [];
+                selectedVerbsData.forEach((verb, index) => {
+                    cards.push(
+                        { id: `${index}-0`, text: verb[0], verbIndex: index, meaning: verb[3] },
+                        { id: `${index}-1`, text: verb[1], verbIndex: index, meaning: verb[3] },
+                        { id: `${index}-2`, text: verb[2], verbIndex: index, meaning: verb[3] }
+                    );
+                });
+                setGameCards(cards.sort(() => Math.random() - 0.5));
+                setSelectedCards([]);
+                setMatchedSets([]);
+                setScore(0);
+                setAttempts(0);
+                setGameComplete(false);
+            };
+
+            const shuffleCards = () => {
+                setGameCards([...gameCards].sort(() => Math.random() - 0.5));
+                setSelectedCards([]);
+            };
+
+            const checkMatch = (selectedCards) => {
+                if (selectedCards.length !== 3) return false;
+                const verbIndex = selectedCards[0].verbIndex;
+                if (!selectedCards.every(c => c.verbIndex === verbIndex)) return false;
+                const correct = selectedVerbs[verbIndex];
+                return selectedCards.map(c => c.text).join(',') === correct.slice(0, 3).join(',');
+            };
+
+            const handleCardClick = (card) => {
+                if (selectedCards.find(c => c.id === card.id) || matchedSets.some(set => set.find(c => c.id === card.id))) return;
+                const newSelected = [...selectedCards, card];
+                setSelectedCards(newSelected);
+                if (newSelected.length === 3) {
+                    setAttempts(prev => prev + 1);
+                    if (checkMatch(newSelected)) {
+                        setMatchedSets(prev => [...prev, newSelected]);
+                        setScore(prev => prev + 100);
+                        if (matchedSets.length + 1 === selectedVerbs.length) setGameComplete(true);
+                        setTimeout(() => setSelectedCards([]), 500);
+                    } else {
+                        setTimeout(() => setSelectedCards([]), 1000);
+                    }
+                }
+            };
+
+            const getCardStyle = (card) => {
+                const isSelected = selectedCards.find(c => c.id === card.id);
+                const isMatched = matchedSets.some(set => set.find(c => c.id === card.id));
+                let style = "w-24 h-16 m-1 p-2 rounded-lg border-2 cursor-pointer transition-all duration-300 text-sm font-bold flex flex-col items-center justify-center ";
+                if (isMatched) return style + "bg-green-100 border-green-400 text-green-800 cursor-default scale-95";
+                if (isSelected) return style + "bg-blue-100 border-blue-400 text-blue-800 scale-105";
+                return style + "bg-white border-gray-300 hover:border-blue-300 hover:shadow-md";
+            };
+
+            useEffect(() => {
+                initializeGame();
+            }, []);
+
+            return (
+                <div className="max-w-4xl mx-auto p-6 bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+                    <div className="text-center mb-6">
+                        <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
+                            <span>⭐</span>
+                            英語不規則動詞パズル
+                            <span>⭐</span>
+                        </h1>
+                        <p className="text-gray-600 mb-4">同じ動詞の3つの形を正しい順序で選んでマッチさせよう！</p>
+                        <div className="flex justify-center gap-4 mb-4">
+                            <div className="bg-white rounded-lg p-3 shadow-sm">
+                                <div className="text-sm text-gray-500">スコア</div>
+                                <div className="text-xl font-bold text-purple-600">{score}</div>
+                            </div>
+                            <div className="bg-white rounded-lg p-3 shadow-sm">
+                                <div className="text-sm text-gray-500">試行回数</div>
+                                <div className="text-xl font-bold text-orange-600">{attempts}</div>
+                            </div>
+                            <div className="bg-white rounded-lg p-3 shadow-sm">
+                                <div className="text-sm text-gray-500">完了</div>
+                                <div className="text-xl font-bold text-teal-600">{matchedSets.length}/{selectedVerbs.length}</div>
+                            </div>
+                        </div>
+                        <div className="flex justify-center gap-2 mb-4">
+                            <button onClick={initializeGame} className="flex items-center gap-1 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                                <span>🔄</span>新しいゲーム
+                            </button>
+                            <button onClick={shuffleCards} className="flex items-center gap-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                <span>🔀</span>シャッフル
+                            </button>
+                            <button onClick={() => setShowMeaning(!showMeaning)} className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                                {showMeaning ? '意味を隠す' : '意味を表示'}
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap justify-center">
+                        {gameCards.map(card => (
+                            <div key={card.id} className={getCardStyle(card)} onClick={() => handleCardClick(card)}>
+                                <div>{card.text}</div>
+                                {showMeaning && <div className="text-xs text-gray-500">{card.meaning}</div>}
+                            </div>
+                        ))}
+                    </div>
+                    {gameComplete && (
+                        <div className="mt-6 text-center text-2xl font-bold text-green-600 flex justify-center items-center gap-2">
+                            <span>🏆</span> おめでとう！全ての動詞をマッチしました！
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<IrregularVerbsPuzzle />, document.getElementById('root'));
+    </script>
+</body>
+</html>
